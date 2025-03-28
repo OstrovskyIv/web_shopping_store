@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Хижина чудес</title>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<div id="preloader">
+  <div class="preloader-content">
+    <div class="loading-bar"></div>
+    <div class="title">Хижина чудес</div>
+    <div class="loading-text">0%</div>
+  </div>
+</div>
+
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="pictures/LoGo.png" alt="Логотип Хижины чудес" />
+      </a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="shop.html">Товары</a></li>
+        <li><a href="contacts.html">Корзина</a></li>
+        <li><a href="contacts.html"><i class="fas fa-user"></i> Аккаунт</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="backSharck">
+      <img src="pictures/backSharck.png" alt="Фоновое изображение Хижины чудес" />
+      <div class="welcome-message day-mode">Добро пожаловать в Хижину чудес! Здесь вы найдете самые загадочные и мистические товары.</div>
+      <div class="welcome-message night-mode">Приветствую, странник! Ты попал в мир, где реальность переплетается с тайнами. Готов ли ты к приключениям?</div>
+    </div>
+
+    <section id="aboutText">
+      <h1>Добро пожаловать в Хижину чудес</h1>
+    </section>
+
+    <div class="about-section">
+      <div class="leftSharck">
+        <img src="pictures/famPains.png" alt="Семья Пайнс" />
+      </div>
+
+      <div class="text-and-buttons">
+        <section id="aboutText">
+          <h2>О Хижине чудес</h2>
+          <div id="mainText">
+            <p><strong>Добро пожаловать в Хижину чудес — место, где реальность переплетается с тайнами, а каждый предмет
+                хранит свою историю.</strong></p>
+            <p>Здесь, среди скрипучих половиц и шепчущих стен, вы найдете не просто товары, а настоящие артефакты.
+              Загадочные книги, наполненные древними знаниями, кристаллы, мерцающие неведомой энергией, и карты, ведущие
+              туда, куда не ступала нога обычного человека.</p>
+            <p>Хижина чудес спрятана в самом сердце Гравити Фолз, и те, кто осмелится войти, уже не выйдут прежними. Что
+              вас ждет за прилавком? Мистика? Открытия? А, может, что-то, о чем лучше не знать?</p>
+            <p>Но одно можно сказать наверняка — скучно не будет. Готовы ли вы раскрыть тайны, скрытые в тени? Тогда
+              шагните вперед… если осмелитесь.</p>
+          </div>
+        </section>
+
+        <div class="buttons">
+          <button onclick="setDayMode()">День</button>
+          <button id="nightButton" onclick="setNightMode()">Ночь</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <section class="product-section">
+      <h2>Популярные сувениры</h2>
+      <div class="carousel">
+        <button class="carousel-button prev" onclick="moveCarousel(-1)">&#10094;</button>
+        <div class="carousel-container">
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/Puhla.png" alt="Магический кристалл" />
+              </div>
+              <div class="product-info">
+                <h3>Магический кристалл</h3>
+                <p class="price">500 $</p>
+                <p class="description">
+                  Этот кристалл обладает магическими свойствами, которые помогут вам
+                  в ваших приключениях.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/nightImage.jpg" alt="Книга заклинаний" />
+              </div>
+              <div class="product-info">
+                <h3>Книга заклинаний</h3>
+                <p class="price">1000 $</p>
+                <p class="description">
+                  Древняя книга, содержащая мощные заклинания и секреты магии.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/wendyFace.png" alt="Карта сокровищ" />
+              </div>
+              <div class="product-info">
+                <h3>Карта сокровищ</h3>
+                <p class="price">750 $</p>
+                <p class="description">
+                  Карта, ведущая к скрытым сокровищам и древним артефактам.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/stanlyFace.png" alt="Мозги" />
+              </div>
+              <div class="product-info">
+                <h3>Мозги влюблённых</h3>
+                <p class="price">7500 $</p>
+                <p class="description">
+                  Мозги были найдены после зомби апокалипсиса
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-button next" onclick="moveCarousel(1)">&#10095;</button>
+      </div>
+    </section>
+
+    <section class="exhibits-section ancient-scroll-theme">
+      <h2 class="section-title">Таинственные экспонаты</h2>
+      
+      <!-- Древнее письмо (добавлено перед интерфейсом) -->
+      <div class="letter-container">
+        <div class="ancient-letter">
+          <div class="letter-content">
+            <p class="letter-text">Только для избранных...</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="discovery-interface">
+        <button id="discoveryBtn" class="discovery-btn">
+          <i class="fas fa-scroll"></i> <!-- Изменена иконка на свиток -->
+          <span class="btn-tooltip">Развернуть древние свитки</span> <!-- Обновленный текст -->
+        </button>
+        
+        <div class="discovery-animation">
+          <div class="animation-path"></div>
+          <div class="animation-sphere"></div>
+        </div>
+      </div>
+      
+      <div class="exhibits-wrapper">
+        <div class="exhibit" data-index="1">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-crystal" style="margin-right: 10px;"></i> Кристалл видений</h3>
+              <p>Этот загадочный артефакт, найденный в глубинах пещер Гравити Фолз, позволяет своему владельцу заглядывать сквозь время и пространство. Говорят, он был создан древней цивилизацией, поклонявшейся треугольнику.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-history"></i> Происхождение: неизвестно</span>
+                <span><i class="fas fa-calendar-alt"></i> Обнаружен: 1982 год</span>
+                <span><i class="fas fa-eye"></i> Эффект: Видения будущего</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit1.jpg" alt="Кристалл видений" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="2">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-book-dead" style="margin-right: 10px;"></i> Дневник №3</h3>
+              <p>Личный дневник Стэнфорда Пайнса, содержащий подробные записи о паранормальных явлениях в Гравити Фолз и чертежи межпространственного портала. Последние страницы исписаны странными символами...</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-user"></i> Автор: Стэнфорд Пайнс</span>
+                <span><i class="fas fa-book"></i> Страниц: 288</span>
+                <span><i class="fas fa-lock"></i> Защита: Шифр Цезаря</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit2.jpg" alt="Дневник №3" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="3">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-map-marked-alt" style="margin-right: 10px;"></i> Карта Билла</h3>
+              <p>Мистическая карта, ведущая к порталам в другие измерения. Отмечены места силы и временные аномалии в окрестностях Гравити Фолз. При долгом рассмотрении можно заметить, как контуры карты медленно меняются.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-map"></i> Тип: Демоническая</span>
+                <span><i class="fas fa-skull-crossbones"></i> Опасность: Высокая</span>
+                <span><i class="fas fa-puzzle-piece"></i> Тайн: 13</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit3.jpg" alt="Карта Билла" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="4">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-brain" style="margin-right: 10px;"></i> Камень памяти</h3>
+              <p>Древний артефакт, способный хранить воспоминания и знания тех, кто к нему прикоснётся. Использовался шаманами для передачи мудрости между поколениями. При контакте с кожей вызывает странные видения.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-memory"></i> Вместимость: 1000 лет</span>
+                <span><i class="fas fa-mountain"></i> Найден: Гора Майндсэй</span>
+                <span><i class="fas fa-user-secret"></i> Последний владелец: Неизвестен</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit4.jpg" alt="Камень памяти" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="5">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-eye-slash" style="margin-right: 10px;"></i> Кулон невидимости</h3>
+              <p>Магический артефакт, делающий владельца невидимым для человеческого глаза и большинства приборов обнаружения. Происхождение остается загадкой. Побочный эффект - временная потеря осязания при длительном использовании.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-clock"></i> Длительность: 1 час</span>
+                <span><i class="fas fa-question"></i> Происхождение: Неизвестно</span>
+                <span><i class="fas fa-radiation-alt"></i> Побочные эффекты: Да</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit5.jpg" alt="Кулон невидимости" class="exhibit-img">
+          </div>
+        </div>
+      </div>
+    </section>
+  
+
+    <section class="employee-section">
+      <h2>Наши сотрудники</h2>
+      <div class="employee-container">
+        <!-- Владелец магазина -->
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/StanFace.png" alt="Сотрудник-Стэнли" />
+          </div>
+          <div class="employee-info">
+            <h3>Владелец магазина Стэнли Пайнс</h3>
+            <p class="description">
+              Стэнли — хитрый и жадный, но в душе добряк.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Стэнли', 'Пишите на: stanley@mysteryhut.com\nЗвоните в колокольчик у входа.')">Контакты</button>
+          </div>
+        </div>
+
+        <!-- Сотрудники -->
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/wendyFace.png" alt="Сотрудник-Венди" />
+          </div>
+          <div class="employee-info">
+            <h3>Старший сотрудник Венди Кордрой</h3>
+            <p class="description">
+              Венди — крутая, саркастичная, но всегда готовая помочь.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Венди', 'Пишите на: wendy@mysteryhut.com\nИщите её в лесу за хижиной.')">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/zooseFace.png" alt="Сотрудник-Зус" />
+          </div>
+          <div class="employee-info">
+            <h3>Главный помощник Зус Рамирес</h3>
+            <p class="description">
+              Зус — добрый, наивный и преданный друг.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Зус', 'Пишите на: soos@mysteryhut.com\nИщите его на диване с чипсами.')">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/DipperFace.png" alt="Сотрудник-Диппер" />
+          </div>
+          <div class="employee-info">
+            <h3>Младший сотрудник Диппер Пайнс</h3>
+            <p class="description">
+              Диппер - зануда, так что лучше ничего у него не спрашивайте.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Диппер', 'Пишите на: dipper@mysteryhut.com\nИщите его в библиотеке с дневником №3.')">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/MabelFace.png" alt="Сотрудник-Мэйбл" />
+          </div>
+          <div class="employee-info">
+            <h3>Младший сотрудник Мэйбл Пайнс</h3>
+            <p class="description">
+              Мэйбл — энергичная, весёлая и немного хаотичная.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Мэйбл', 'Пишите на: mabel@mysteryhut.com\nИщите её в комнате с единорогами.')">Контакты</button>
+          </div>
+        </div>
+
+        <!-- Временные сотрудники -->
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/StanfordFace.png" alt="Сотрудник-Стэнфорд" />
+          </div>
+          <div class="employee-info">
+            <h3>Владелец хижины Стэнфорд Пайнс</h3>
+            <p class="description">
+              Стэнфорд — гениальный, но загадочный учёный.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Стэнфорд', 'Пишите на: stanford@mysteryhut.com\nИщите его в подземной лаборатории.')">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/Puhla.png" alt="Сотрудник-Пухля" />
+          </div>
+          <div class="employee-info">
+            <h3>Временный сотрудник Пухля</h3>
+            <p class="description">
+              Пухля — милая, преданная и неожиданно умная свинка.
+            </p>
+            <button class="contact-button"
+              onclick="showContact('Пухля', 'Пишите на: waddles@mysteryhut.com\nИщите её в саду с морковкой.')">Контакты</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="registration-section">
+      <h2 id="discount-text">Получи скидку в 0% за регистрацию!</h2>
+      <p id="uncle-story-text">А также историю от Дяди Стэна!</p>
+      <button onclick="register()">Зарегистрироваться</button>
+      <button onclick="login()">Войти</button>
+    </section>
+
+    <section class="map">
+      <h2>А теперь попробуйте найти нас!</h2>
+      <div class="map-container" style="width: 100%;">
+        <div style="position: relative; overflow: hidden; width: 100%;">
+          <a href="https://yandex.by/maps?utm_medium=mapframe&utm_source=maps"
+            style="color: #eee; font-size: 12px; position: absolute; top: 0px">Яндекс Карты</a>
+          <a href="https://yandex.by/maps/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&utm_medium=mapframe&utm_source=maps&z=2"
+            style="color: #eee; font-size: 12px; position: absolute; top: 14px">Яндекс Карты</a>
+          <iframe src="https://yandex.by/map-widget/v1/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&z=2"
+            width="100%" height="500" frameborder="1" allowfullscreen="true" style="position: relative;"></iframe>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Хижина чудес. Все права защищены.</p>
+    <div class="social-icons">
+      <a href="https://t.me/ваш_телеграм" class="flip-cover-telegram" target="_blank">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="https://instagram.com/ваш_инстаграм" class="flip-cover-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://github.com/ваш_гитхаб" class="flip-cover-github" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="mailto:ваш_email@gmail.com" class="flip-cover-gmail" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a href="https://discord.gg/ваш_дискорд" class="flip-cover-discord" target="_blank">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- Модальное окно для каждого из персонажей -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-text"></p>
+    </div>
+  </div>
+
+  <!-- Модальное окно для регистрации -->
+  <div id="registrationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeRegistrationModal()">&times;</span>
+      <h2>Регистрация:</h2>
+      <form id="registrationForm">
+        <label for="username">Ваше имя:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Зарегистрироваться</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно для входа -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>Вход:</h2>
+      <form id="loginForm">
+        <label for="loginEmail">Email:</label>
+        <input type="email" id="loginEmail" name="email" required>
+
+        <label for="loginPassword">Пароль:</label>
+        <input type="password" id="loginPassword" name="password" required>
+
+        <button type="submit">Войти</button>
+      </form>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>
