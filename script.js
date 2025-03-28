@@ -730,6 +730,7 @@ document.querySelector('.employee:nth-child(7) .contact-button').onclick = () =>
 };
 //aaaaagafgaiugfasgfsuigfasiufugugasdfugfdgusifiudsuisiufgdsiuydgfasuyfgasufgsyfgsugfysyugfusygdfyufgsyugfusdgfyusgfsg
 document.addEventListener('DOMContentLoaded', function() {
+  // Элементы
   const discoveryBtn = document.getElementById('discoveryBtn');
   const animationSphere = document.querySelector('.animation-sphere');
   const animationPath = document.querySelector('.discovery-animation');
@@ -738,129 +739,155 @@ document.addEventListener('DOMContentLoaded', function() {
   const section = document.querySelector('.exhibits-section');
   const sectionTitle = document.querySelector('.section-title');
   
+  // Настройки анимации (уменьшил время для большей скорости)
+  const MOVE_DURATION = 400; // было 600 - теперь быстрее
+  const STOP_DURATION = 200;  // было 400 - короче паузы
+  
+  // Состояние
   let isOpen = false;
-  let currentExhibit = 0;
-  const exhibitDelay = 1000;
-  const exhibitPositions = [];
-  
-  // Рассчитываем позиции между блоками
+  let animationId = null;
+  let currentStop = 0;
+  let positions = [];
+
+  // Рассчитываем позиции остановок
   function calculatePositions() {
-      exhibitPositions.length = 0;
-      const firstExhibitTop = exhibits[0].getBoundingClientRect().top + window.scrollY;
+    const result = [];
+    const btnBottom = discoveryBtn.getBoundingClientRect().bottom + window.scrollY;
+    
+    // 1. Стартовая позиция
+    result.push({
+      y: btnBottom + 30,
+      pause: false
+    });
+    
+    // 2. Позиции экспонатов
+    exhibits.forEach((exhibit, i) => {
+      const rect = exhibit.getBoundingClientRect();
       
-      // Начальная позиция (выше первого блока)
-      exhibitPositions.push(firstExhibitTop - 200);
-      
-      // Позиции между блоками
-      for (let i = 0; i < exhibits.length; i++) {
-          const currentRect = exhibits[i].getBoundingClientRect();
-          const currentTop = currentRect.top + window.scrollY;
-          const currentBottom = currentTop + currentRect.height;
-          
-          if (i < exhibits.length - 1) {
-              const nextRect = exhibits[i + 1].getBoundingClientRect();
-              const nextTop = nextRect.top + window.scrollY;
-              exhibitPositions.push(currentBottom + (nextTop - currentBottom) / 2);
-          } else {
-              // Позиция после последнего блока
-              exhibitPositions.push(currentBottom + 100);
-          }
-      }
-  }
-  
-  // Показываем заголовок при загрузке
-  setTimeout(() => {
-      sectionTitle.classList.add('visible');
-  }, 500);
-  
-  discoveryBtn.addEventListener('click', function() {
-      if (isOpen) {
-          closeDiscovery();
-      } else {
-          calculatePositions(); // Пересчитываем позиции перед открытием
-          openDiscovery();
-      }
-  });
-  
-  function openDiscovery() {
-      isOpen = true;
-      discoveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      discoveryBtn.disabled = true;
-      section.classList.add('expanded');
-      exhibitsWrapper.classList.add('visible');
-      
-      // Устанавливаем высоту анимационной линии до последнего экспоната
-      const lastPosition = exhibitPositions[exhibitPositions.length - 1];
-      animationPath.style.height = (lastPosition - 80) + 'px'; // 80 - отступ от верха
-      
-      // Показываем шар
-      setTimeout(() => {
-          animationSphere.style.opacity = '1';
-          animationSphere.classList.add('sphere-active');
-          startAutoAnimation();
-      }, 500);
-  }
-  
-  function startAutoAnimation() {
-      const exhibitInterval = setInterval(() => {
-          if (currentExhibit >= exhibitPositions.length) {
-              clearInterval(exhibitInterval);
-              completeDiscovery();
-              return;
-          }
-          
-          moveSphereToPosition(currentExhibit);
-          currentExhibit++;
-      }, exhibitDelay);
-  }
-  
-  function moveSphereToPosition(index) {
-      const targetTop = exhibitPositions[index] - 80; // Корректируем позицию
-      animationSphere.style.top = targetTop + 'px';
-      
-      // Показываем экспонат (кроме первого и последнего индекса)
-      if (index > 0 && index <= exhibits.length) {
-          setTimeout(() => {
-              exhibits[index - 1].classList.add('visible');
-          }, 800);
-      }
-  }
-  
-  function completeDiscovery() {
-      setTimeout(() => {
-          animationSphere.style.opacity = '0';
-          animationSphere.classList.remove('sphere-active');
-          discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
-          discoveryBtn.disabled = false;
-      }, 1000);
-  }
-  
-  function closeDiscovery() {
-      isOpen = false;
-      currentExhibit = 0;
-      
-      // Сбрасываем анимацию
-      animationPath.style.height = '0';
-      animationSphere.style.opacity = '0';
-      animationSphere.classList.remove('sphere-active');
-      animationSphere.style.top = '-25px';
-      
-      // Скрываем экспонаты
-      exhibits.forEach(exhibit => {
-          exhibit.classList.remove('visible');
+      // Перед блоком
+      result.push({
+        y: rect.top + window.scrollY - 50,
+        pause: true,
+        showIndex: i
       });
       
-      // Возвращаем к исходному состоянию
-      discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
-      discoveryBtn.disabled = false;
-      section.classList.remove('expanded');
-      exhibitsWrapper.classList.remove('visible');
-  }
-  
-  // Пересчитываем позиции при изменении размера окна
-  window.addEventListener('resize', function() {
-      if (isOpen) {
-          calculatePositions();
+      // После блока (если не последний)
+      if (i < exhibits.length - 1) {
+        result.push({
+          y: rect.bottom + window.scrollY + 30,
+          pause: false
+        });
       }
+    });
+    
+    // 3. Финишная позиция
+    result.push({
+      y: exhibits[exhibits.length-1].getBoundingClientRect().bottom + window.scrollY + 100,
+      pause: true
+    });
+    
+    return result;
+  }
+
+  // Сброс анимации
+  function resetAnimation() {
+    clearTimeout(animationId);
+    
+    // Сбрасываем стили
+    animationSphere.style.transition = 'none';
+    animationSphere.style.top = '0';
+    animationSphere.style.opacity = '0';
+    animationPath.style.height = '0';
+    
+    // Скрываем только экспонаты
+    exhibits.forEach(ex => ex.classList.remove('visible'));
+    section.classList.remove('expanded');
+    exhibitsWrapper.classList.remove('visible');
+    
+    // Кнопка
+    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
+    discoveryBtn.disabled = false;
+    
+    isOpen = false;
+    currentStop = 0;
+  }
+
+  // Запуск/остановка анимации
+  function toggleAnimation() {
+    if (isOpen) {
+      resetAnimation();
+      return;
+    }
+    
+    // Подготовка
+    isOpen = true;
+    positions = calculatePositions();
+    const pathHeight = positions[positions.length-1].y - positions[0].y;
+    
+    // Настройка элементов (письмо НЕ скрываем)
+    animationPath.style.height = `${pathHeight}px`;
+    section.classList.add('expanded');
+    exhibitsWrapper.classList.add('visible');
+    discoveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    discoveryBtn.disabled = true;
+    
+    // Запуск анимации
+    setTimeout(() => {
+      animationSphere.style.opacity = '1';
+      animationSphere.style.top = '0';
+      
+      setTimeout(() => {
+        animationSphere.style.transition = `top ${MOVE_DURATION}ms linear`;
+        animate();
+      }, 10); // Уменьшил задержку
+    }, 100); // Уменьшил начальную задержку
+  }
+
+  // Анимация движения
+  function animate() {
+    if (currentStop >= positions.length) {
+      finishAnimation();
+      return;
+    }
+    
+    const pos = positions[currentStop];
+    animationSphere.style.top = `${pos.y - positions[0].y}px`;
+    
+    // Показ экспоната
+    if (pos.showIndex !== undefined) {
+      setTimeout(() => {
+        exhibits[pos.showIndex].classList.add('visible');
+      }, MOVE_DURATION/2);
+    }
+    
+    currentStop++;
+    const delay = pos.pause ? MOVE_DURATION + STOP_DURATION : MOVE_DURATION;
+    animationId = setTimeout(animate, delay);
+  }
+
+  // Завершение
+  function finishAnimation() {
+    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
+    discoveryBtn.disabled = false;
+  }
+
+  // Инициализация
+  setTimeout(() => {
+    sectionTitle.classList.add('visible');
+  }, 500);
+
+  // Клик по кнопке
+  discoveryBtn.addEventListener('click', toggleAnimation);
+
+  // Ресайз
+  window.addEventListener('resize', () => {
+    if (isOpen) {
+      positions = calculatePositions();
+      animationPath.style.height = `${positions[positions.length-1].y - positions[0].y}px`;
+      
+      if (currentStop > 0) {
+        animationSphere.style.top = `${positions[currentStop-1].y - positions[0].y}px`;
+      }
+    }
   });
 });
