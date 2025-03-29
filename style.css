@@ -52,8 +52,8 @@ nav ul li a:hover {
 nav ul li a {
   text-decoration: none;
   color: inherit;
-  font-family: 'Luminari', fantasy;
-  font-size: 30px;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 36px; /*раньше было 30*/
 }
 
 nav ul li a i {
