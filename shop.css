@@ -408,3 +408,22 @@
         height: 300px;
     }
 }
+
+.map-loader {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border: 5px solid rgba(255, 255, 255, 0.6);
+    border-top: 5px solid #723308;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1000;
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

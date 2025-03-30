@@ -2,30 +2,36 @@
 let map;
 let currentPlacemark;
 
+// ============== Debounce функция ==============
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 // ============== Основной код при загрузке страницы ==============
-document.addEventListener('DOMContentLoaded', function() {
-    // Загружаем Яндекс.Карты
+document.addEventListener('DOMContentLoaded', function () {
     loadYandexMap();
 
-    // Обработка формы доставки
     const form = document.getElementById('deliveryForm');
-    
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
             handleFormSubmit(form);
         });
     }
 
-    // Инициализация ночного режима
     initNightMode();
+    initLiveGeocoding();
 });
 
-// ============== Функция загрузки API Яндекс.Карт ==============
+// ============== Загрузка API Яндекс.Карт ==============
 function loadYandexMap() {
     const script = document.createElement('script');
-    script.src = 'https://api-maps.yandex.ru/2.1/?apikey=ваш_api_ключ&lang=ru_RU';
-    script.onload = function() {
+    script.src = 'https://api-maps.yandex.ru/2.1/?apikey=8ab80f75-7c79-4d7a-9a2f-f65185863093&lang=ru_RU';
+    script.onload = function () {
         ymaps.ready(initMap);
     };
     document.head.appendChild(script);
@@ -34,23 +40,25 @@ function loadYandexMap() {
 // ============== Инициализация карты ==============
 function initMap() {
     map = new ymaps.Map('map', {
-        center: [55.751244, 37.618423], // Москва по умолчанию
+        center: [55.751244, 37.618423],
         zoom: 10,
-        controls: ['zoomControl']
+        controls: ['zoomControl'],
+        behaviors: ['default', 'scrollZoom']
     });
+
+    map.cursors.push('arrow');
 }
 
-// ============== Обработчик отправки формы ==============
+// ============== Обработка формы ==============
 function handleFormSubmit(form) {
     const country = document.getElementById('country');
     const city = document.getElementById('city');
     const address = document.getElementById('address');
     const zip = document.getElementById('zip');
-    
+
     const inputs = [country, city, address, zip];
     let isValid = true;
-    
-    // Валидация полей
+
     inputs.forEach(input => {
         if (!input.value.trim()) {
             input.classList.add('error');
@@ -59,13 +67,12 @@ function handleFormSubmit(form) {
             input.classList.remove('error');
         }
     });
-    
+
     if (!isValid) {
         alert('Пожалуйста, заполните все обязательные поля!');
         return;
     }
-    
-    // Поиск на карте (если API загружено)
+
     if (typeof ymaps !== 'undefined') {
         searchOnMap(country.value, city.value, address.value)
             .then(() => showSuccessMessage(country.value, city.value, address.value))
@@ -78,49 +85,105 @@ function handleFormSubmit(form) {
     }
 }
 
-// ============== Поиск адреса на карте ==============
+// ============== Поиск на карте ==============
 function searchOnMap(country, city, address) {
     return new Promise((resolve, reject) => {
         const searchQuery = `${country}, ${city}, ${address}`;
-        
-        ymaps.geocode(searchQuery, {
-            results: 1
-        }).then(function(res) {
+
+        ymaps.geocode(searchQuery, { results: 1 }).then(res => {
             const firstGeoObject = res.geoObjects.get(0);
-            
-            if (!firstGeoObject) {
-                reject('Адрес не найден');
-                return;
-            }
-            
+            if (!firstGeoObject) return reject('Адрес не найден');
+
             const coordinates = firstGeoObject.geometry.getCoordinates();
-            
-            // Удаляем предыдущую метку
-            if (currentPlacemark) {
-                map.geoObjects.remove(currentPlacemark);
-            }
-            
-            // Добавляем новую метку
-            currentPlacemark = new ymaps.Placemark(coordinates, {
-                balloonContent: firstGeoObject.getAddress()
-            }, {
-                preset: 'islands#redDotIcon'
-            });
-            
+            const addressText = firstGeoObject.properties.get('text');
+
+            if (currentPlacemark) map.geoObjects.remove(currentPlacemark);
+
+            currentPlacemark = createAnimatedPlacemark(coordinates, addressText);
             map.geoObjects.add(currentPlacemark);
-            map.setCenter(coordinates);
-            
-            // Настраиваем зум в зависимости от точности адреса
-            if (address) map.setZoom(17);
-            else if (city) map.setZoom(12);
-            else map.setZoom(5);
-            
+            map.setCenter(coordinates, address ? 17 : city ? 12 : 5, {
+                duration: 600,
+                timingFunction: 'easeOut'
+            });
+
             resolve();
         }).catch(reject);
     });
 }
 
-// ============== Показать сообщение об успехе ==============
+// ============== Живой поиск с задержкой и индикатором ==============
+function initLiveGeocoding() {
+    const country = document.getElementById('country');
+    const city = document.getElementById('city');
+    const address = document.getElementById('address');
+    const loader = document.getElementById('mapLoader');
+
+    const debouncedSearch = debounce(() => {
+        if (typeof ymaps === 'undefined') return;
+
+        const parts = [
+            country.value.trim(),
+            city.value.trim(),
+            address.value.trim()
+        ];
+
+        let query = '';
+        if (parts[0]) query = parts[0];
+        if (parts[0] && parts[1]) query = `${parts[0]}, ${parts[1]}`;
+        if (parts[0] && parts[1] && parts[2]) query = `${parts[0]}, ${parts[1]}, ${parts[2]}`;
+
+        if (!query) return;
+
+        loader.style.display = 'block';
+
+        ymaps.geocode(query, { results: 1 }).then(res => {
+            loader.style.display = 'none';
+
+            const geoObj = res.geoObjects.get(0);
+            if (!geoObj) return;
+
+            const coords = geoObj.geometry.getCoordinates();
+            const balloonText = geoObj.properties.get('text');
+
+            if (currentPlacemark) map.geoObjects.remove(currentPlacemark);
+
+            currentPlacemark = createAnimatedPlacemark(coords, balloonText);
+            map.geoObjects.add(currentPlacemark);
+
+            const zoomLevel = parts[2] ? 17 : parts[1] ? 12 : 5;
+            map.setCenter(coords, zoomLevel, {
+                duration: 600,
+                timingFunction: 'easeOut'
+            });
+
+            currentPlacemark.balloon.open();
+        }).catch(() => {
+            loader.style.display = 'none';
+        });
+    }, 500);
+
+    [country, city, address].forEach(input => {
+        input.addEventListener('input', debouncedSearch);
+    });
+}
+
+// ============== Анимированный маркер ==============
+function createAnimatedPlacemark(coords, balloonText) {
+    return new ymaps.Placemark(coords, {
+        balloonContent: balloonText,
+        hintContent: 'Выбранная точка'
+    }, {
+        iconLayout: 'default#imageWithContent',
+        iconImageHref: 'https://yastatic.net/s3/mapsapi-icons/v1.0/placemark-blue.svg',
+        iconImageSize: [40, 40],
+        iconImageOffset: [-20, -40],
+        iconContentOffset: [0, 0],
+        iconContentLayout: null,
+        openBalloonOnClick: true
+    });
+}
+
+// ============== Модальное окно ==============
 function showSuccessMessage(country, city, address) {
     const modal = document.createElement('div');
     modal.className = 'delivery-modal';
@@ -133,16 +196,14 @@ function showSuccessMessage(country, city, address) {
             <button id="closeModalBtn">Закрыть</button>
         </div>
     `;
-    
     document.body.appendChild(modal);
-    
-    document.getElementById('closeModalBtn').addEventListener('click', function() {
+    document.getElementById('closeModalBtn').addEventListener('click', function () {
         document.body.removeChild(modal);
         document.querySelector('.delivery-form').reset();
     });
 }
 
-// ============== Инициализация ночного режима ==============
+// ============== Ночной режим ==============
 function initNightMode() {
     if (document.body.classList.contains('night-mode')) {
         document.body.style.backgroundColor = '#111';
