@@ -1,0 +1,410 @@
+/* Основные стили */
+.map-section {
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #d4b08c;
+    position: relative;
+}
+
+.delivery-header {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+.delivery-header h2 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #5a2806;
+    font-family: 'MedievalSharp', cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+    position: relative;
+}
+
+.delivery-header p {
+    font-size: 1.8rem;
+    color: #723308;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0;
+}
+
+/* Форма доставки */
+.delivery-form-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 50px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(90, 40, 6, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.delivery-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-row {
+    display: flex;
+    gap: 30px;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #5a2806;
+    font-size: 1.1rem;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 20px;
+    border: 2px solid #a08060;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s ease;
+    font-family: Arial, sans-serif;
+}
+
+.form-group input.map-input {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%235a2806" width="18px" height="18px"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 18px;
+    padding-right: 45px;
+}
+
+.form-group input:focus {
+    border-color: #723308;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(114, 51, 8, 0.2);
+    background-color: white;
+}
+
+.form-group input.error {
+    border-color: #ff4444;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    background-color: #723308;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    font-family: 'MedievalSharp', cursive;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn:hover {
+    background-color: #5a2806;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    transition: all 0.3s;
+}
+
+.submit-btn:hover::after {
+    left: 100%;
+}
+
+/* Стили для карты */
+.map-container {
+    width: 100%;
+    height: 650px;
+    margin-top: 0;
+    position: relative;
+    z-index: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    border: 10px solid #fff;
+    background-color: #f5f5f5;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/* Стили для модального окна */
+.delivery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transform: translateY(-20px);
+    animation: slideUp 0.3s forwards;
+}
+
+@keyframes slideUp {
+    to { transform: translateY(0); }
+}
+
+.modal-content h3 {
+    font-size: 2rem;
+    color: #5a2806;
+    margin-bottom: 20px;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.modal-content p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.modal-content strong {
+    color: #723308;
+    font-weight: bold;
+}
+
+.modal-note {
+    font-style: italic;
+    color: #666;
+    margin-top: 20px !important;
+}
+
+#closeModalBtn {
+    background-color: #723308;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    font-family: 'MedievalSharp', cursive;
+    transition: background-color 0.3s;
+}
+
+#closeModalBtn:hover {
+    background-color: #5a2806;
+}
+
+/* Ночной режим */
+.night-mode .map-section {
+    background-color: #1a120b;
+}
+
+.night-mode .delivery-header h2 {
+    color: #d4a017;
+    text-shadow: 0 0 10px rgba(212, 160, 23, 0.5);
+}
+
+.night-mode .delivery-header p {
+    color: #d4b483;
+}
+
+.night-mode .delivery-form-container {
+    background: rgba(34, 28, 20, 0.9);
+    border-color: rgba(212, 160, 23, 0.3);
+}
+
+.night-mode .form-group label {
+    color: #d4a017;
+}
+
+.night-mode .form-group input {
+    background-color: rgba(46, 40, 32, 0.9);
+    border-color: #5c3a21;
+    color: #f5e8d0;
+}
+
+.night-mode .form-group input:focus {
+    border-color: #d4a017;
+    box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.2);
+    background-color: rgba(58, 50, 40, 0.9);
+}
+
+.night-mode .submit-btn {
+    background-color: #d4a017;
+    color: #2a1e10;
+}
+
+.night-mode .submit-btn:hover {
+    background-color: #c19215;
+}
+
+.night-mode .delivery-modal {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.night-mode .modal-content {
+    background-color: #2a1e10;
+    color: #f5e8d0;
+}
+
+.night-mode .modal-content h3 {
+    color: #d4a017;
+}
+
+.night-mode .modal-content p {
+    color: #d4b483;
+}
+
+.night-mode .modal-content strong {
+    color: #d4a017;
+}
+
+.night-mode .modal-note {
+    color: #a08060;
+}
+
+.night-mode #closeModalBtn {
+    background-color: #d4a017;
+    color: #2a1e10;
+}
+
+.night-mode #closeModalBtn:hover {
+    background-color: #c19215;
+}
+
+/* Адаптация */
+@media (max-width: 1200px) {
+    .map-section {
+        padding: 50px 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .delivery-header h2 {
+        font-size: 2.5rem;
+    }
+    
+    .delivery-header p {
+        font-size: 1.5rem;
+    }
+    
+    .map-container {
+        height: 500px;
+    }
+    
+    .delivery-form-container {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .delivery-header h2 {
+        font-size: 2.2rem;
+    }
+    
+    .delivery-header p {
+        font-size: 1.3rem;
+    }
+    
+    .map-container {
+        height: 400px;
+        border-width: 5px;
+    }
+    
+    .form-group input {
+        padding: 12px 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .map-section {
+        padding: 40px 15px;
+    }
+    
+    .delivery-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .delivery-header p {
+        font-size: 1.1rem;
+    }
+    
+    .map-container {
+        height: 350px;
+    }
+    
+    .delivery-form-container {
+        padding: 25px;
+    }
+    
+    .submit-btn {
+        padding: 15px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-container {
+        height: 300px;
+    }
+}

@@ -360,16 +360,72 @@
     </section>
 
     <section class="map">
-      <h2>А теперь попробуйте найти нас!</h2>
-      <div class="map-container" style="width: 100%;">
-        <div style="position: relative; overflow: hidden; width: 100%;">
-          <a href="https://yandex.by/maps?utm_medium=mapframe&utm_source=maps"
-            style="color: #eee; font-size: 12px; position: absolute; top: 0px">Яндекс Карты</a>
-          <a href="https://yandex.by/maps/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&utm_medium=mapframe&utm_source=maps&z=2"
-            style="color: #eee; font-size: 12px; position: absolute; top: 14px">Яндекс Карты</a>
-          <iframe src="https://yandex.by/map-widget/v1/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&z=2"
-            width="100%" height="500" frameborder="1" allowfullscreen="true" style="position: relative;"></iframe>
+      <div class="map-header">
+        <h2 class="day-title">Тайные координаты Хижины</h2>
+        <h2 class="night-title">Давай заключим сделку, гений!</h2>
+        <div class="map-subtitle day-subtitle">Где реальность искажается...</div>
+        <div class="map-subtitle night-subtitle">Я покажу тебе путь, если ты покажешь мне душу...</div>
+      </div>
+      
+      <div class="map-container">
+        <div class="map-frame">
+          <!-- Оригинальный контейнер карты -->
+          <div style="position: relative; overflow: hidden; width: 100%; height: 100%;">
+            <a href="https://yandex.by/maps?utm_medium=mapframe&utm_source=maps"
+              style="color: #eee; font-size: 12px; position: absolute; top: 0px">Яндекс Карты</a>
+            <a href="https://yandex.by/maps/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&utm_medium=mapframe&utm_source=maps&z=2"
+              style="color: #eee; font-size: 12px; position: absolute; top: 14px">Яндекс Карты</a>
+            <iframe src="https://yandex.by/map-widget/v1/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&z=2"
+              width="100%" height="500" frameborder="0" allowfullscreen="true" style="position: relative;"></iframe>
+          </div>
+          
+          <!-- Элементы, которые появляются только ночью -->
+          <div class="map-overlay night-only"></div>
+          <div class="map-pin night-only" style="top: 30%; left: 45%;">
+            <i class="fas fa-map-pin"></i>
+            <div class="pin-tooltip">Точка входа в измерение</div>
+          </div>
         </div>
+        
+        <!-- Дневные подсказки -->
+        <div class="map-notes day-only">
+          <div class="note note-left">
+            <h3>Подсказка от Стэна</h3>
+            <p>"Ищите старый дуб с вырезанным глазом - там поворот на нашу дорогу."</p>
+          </div>
+          <div class="note note-right">
+            <h3>Координаты</h3>
+            <p>46°45' N<br>122°45' W</p>
+            <div class="compass">
+              <i class="fas fa-compass"></i>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Ночные подсказки -->
+        <div class="map-notes night-only">
+          <div class="note note-left">
+            <h3>Шепот Теней</h3>
+            <p>"Ищи врата там, где время течёт вспять, а камни поют..."</p>
+          </div>
+          <div class="note note-right">
+            <h3>Истинные координаты</h3>
+            <p>∞°∞' N<br>∞°∞' W</p>
+            <div class="compass">
+              <i class="fas fa-eye"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Дневная подпись -->
+      <div class="map-riddle day-only">
+        <p>Карта показывает, но не рассказывает. Приходите после заката.</p>
+      </div>
+      
+      <!-- Ночная подпись -->
+      <div class="map-riddle night-only">
+        <p>Ты нашел то, что искал? Или это нашло тебя?</p>
       </div>
     </section>
 
