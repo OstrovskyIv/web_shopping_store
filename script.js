@@ -1,4 +1,3 @@
-
 const dayEmployees = [
   {
     name: "Стэнли Пайнс",
@@ -167,7 +166,7 @@ function setNightMode() {
   const dayButton = document.querySelector('.buttons button[onclick="setDayMode()"]');
   const overlay = document.getElementById('overlay');
   const backSharckImage = document.querySelector('.backSharck img');
-  const logo = document.querySelector(".logo img"); // Добавляем получение логотипа
+  const logo = document.querySelector(".logo img");
 
   nightButton.disabled = true;
   dayButton.disabled = true;
@@ -189,14 +188,26 @@ function setNightMode() {
   setTimeout(() => {
     overlay.style.opacity = 0;
 
-    // Телепортация в начало страницы после завершения анимации
+    // Телепортация в начало страницы
     window.scrollTo({ top: 0, behavior: 'auto' });
 
-    // Обновляем логотип для ночного режима
+    // Показать ночные элементы карты
+    document.querySelectorAll('.night-only').forEach(el => {
+      el.style.display = 'block';
+    });
+    document.querySelectorAll('.map-notes.night-only').forEach(el => {
+      el.style.display = 'flex';
+    });
+    
+    // Скрыть дневные элементы карты
+    document.querySelectorAll('.day-only').forEach(el => {
+      el.style.display = 'none';
+    });
+
+    // Остальной существующий код...
     logo.src = "pictures/nightImageLogo.png";
     logo.alt = "Ночной логотип Хижины чудес";
 
-    // Изменение цветов всех блоков, кроме футера
     document.body.style.backgroundColor = "black";
     document.body.style.color = "white";
 
@@ -309,7 +320,7 @@ function setDayMode() {
   const nightButton = document.getElementById('nightButton');
   const overlay = document.getElementById('overlay');
   const backSharckImage = document.querySelector('.backSharck img');
-  const logo = document.querySelector(".logo img"); // Добавляем получение логотипа
+  const logo = document.querySelector(".logo img");
 
   nightButton.disabled = true;
   dayButton.disabled = true;
@@ -331,14 +342,26 @@ function setDayMode() {
   setTimeout(() => {
     overlay.style.opacity = 0;
 
-    // Телепортация в начало страницы после завершения анимации
+    // Телепортация в начало страницы
     window.scrollTo({ top: 0, behavior: 'auto' });
 
-    // Возвращаем дневной логотип
+    // Показать дневные элементы карты
+    document.querySelectorAll('.day-only').forEach(el => {
+      el.style.display = 'block';
+    });
+    document.querySelectorAll('.map-notes.day-only').forEach(el => {
+      el.style.display = 'flex';
+    });
+    
+    // Скрыть ночные элементы карты
+    document.querySelectorAll('.night-only').forEach(el => {
+      el.style.display = 'none';
+    });
+
+    // Остальной существующий код...
     logo.src = "pictures/LoGo.png";
     logo.alt = "Логотип Хижины чудес";
 
-    // Возвращение цветов всех блоков, кроме футера
     document.body.style.backgroundColor = "#d4b08c";
     document.body.style.color = "black";
 
