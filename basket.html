@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Доставка</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="basket.css"/>
+</head>
+<body>
+    <section class="map-section">
+        <div class="delivery-header">
+            <h2>Вы нас точно не найдете</h2>
+            <p>поэтому укажите адрес доставки</p>
+        </div>
+
+        <div class="delivery-form-container">
+            <form class="delivery-form" id="deliveryForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="country">Страна:</label>
+                        <input type="text" id="country" name="country" placeholder="Например: Беларусь" class="map-input" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Город:</label>
+                        <input type="text" id="city" name="city" placeholder="Например: Минск" class="map-input" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="address">Адрес:</label>
+                        <input type="text" id="address" name="address" placeholder="Улица, дом, квартира" class="map-input" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="zip">Почтовый индекс:</label>
+                        <input type="text" id="zip" name="zip" placeholder="220000" autocomplete="off">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Отправить запрос</button>
+            </form>
+        </div>
+
+        <div class="map-container">
+            <div class="map-loader" id="mapLoader"></div>
+            <div id="map" style="width: 100%; height: 100%;"></div>
+        </div>
+    </section>
+
+    <script src="basket.js"></script>
+</body>
+</html>

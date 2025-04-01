@@ -6,46 +6,430 @@
     <title>Доставка</title>
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="shop.css"/>
+    
 </head>
 <body>
-    <section class="map-section">
-        <div class="delivery-header">
-            <h2>Вы нас точно не найдете</h2>
-            <p>поэтому укажите адрес доставки</p>
-        </div>
-
-        <div class="delivery-form-container">
-            <form class="delivery-form" id="deliveryForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="country">Страна:</label>
-                        <input type="text" id="country" name="country" placeholder="Например: Беларусь" class="map-input" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="city">Город:</label>
-                        <input type="text" id="city" name="city" placeholder="Например: Минск" class="map-input" autocomplete="off">
-                    </div>
+    <header>
+      <div class="logo">
+        <a href="index.html">
+          <img src="pictures/LoGo.png" alt="Логотип Хижины чудес" />
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="shop.html">Товары</a></li>
+          <li><a href="basket.html">Корзина</a></li>
+          <li><a href="contacts.html"><i class="fas fa-user"></i> Аккаунт</a></li>
+        </ul>
+      </nav>
+    </header>
+  
+    <main>
+        <section class="products-section">
+            <h2>Наши уникальные товары</h2>
+            <div class="products-container">
+              <!-- Товар 1 -->
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/Puhla.png" alt="Магический кристалл">
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="address">Адрес:</label>
-                        <input type="text" id="address" name="address" placeholder="Улица, дом, квартира" class="map-input" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="zip">Почтовый индекс:</label>
-                        <input type="text" id="zip" name="zip" placeholder="220000" autocomplete="off">
-                    </div>
+                <div class="product-info">
+                  <h3>Магический кристалл</h3>
+                  <p class="description">Открывает порталы в другие измерения</p>
+                  <button class="details-btn" onclick="showProductDetails('Магический кристалл', 'pictures/Puhla.png', 'Этот кристалл обладает магическими свойствами, которые помогут вам в ваших приключениях. Используется для открытия порталов и предсказаний будущего.', 500)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">4.2</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
                 </div>
-                <button type="submit" class="submit-btn">Отправить запрос</button>
-            </form>
-        </div>
+              </div>
+          
+              <!-- Товар 2 -->
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/nightImage.jpg" alt="Книга заклинаний">
+                </div>
+                <div class="product-info">
+                  <h3>Книга заклинаний</h3>
+                  <p class="description">Древние знания, скрытые в страницах</p>
+                  <button class="details-btn" onclick="showProductDetails('Книга заклинаний', 'pictures/nightImage.jpg', 'Древняя книга, содержащая мощные заклинания и секреты магии. Только для избранных.', 1000)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">4.8</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+          
+              <!-- Товар 3 -->
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
 
-        <div class="map-container">
-            <div class="map-loader" id="mapLoader"></div>
-            <div id="map" style="width: 100%; height: 100%;"></div>
-        </div>
-    </section>
-
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+    
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/wendyFace.png" alt="Карта сокровищ">
+                </div>
+                <div class="product-info">
+                  <h3>Карта сокровищ</h3>
+                  <p class="description">Ведет к скрытым богатствам</p>
+                  <button class="details-btn" onclick="showProductDetails('Карта сокровищ', 'pictures/wendyFace.png', 'Карта, ведущая к скрытым сокровищам и древним артефактам. Но будьте осторожны - не все сокровища стоит искать.', 750)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">3.9</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+          
+              <!-- Товар 4 -->
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="pictures/stanlyFace.png" alt="Мозги влюблённых">
+                </div>
+                <div class="product-info">
+                  <h3>Мозги влюблённых</h3>
+                  <p class="description">Необычный ингредиент для зелий</p>
+                  <button class="details-btn" onclick="showProductDetails('Мозги влюблённых', 'pictures/stanlyFace.png', 'Мозги были найдены после зомби апокалипсиса. Идеально подходят для любовных зелий.', 7500)">Подробнее</button>
+                  <div class="rating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                    <span class="rating-value">2.5</span>
+                  </div>
+                  <button class="order-btn">Заказать</button>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          <!-- Модальное окно для деталей товара -->
+          <div id="productModal" class="modal">
+            <div class="modal-content">
+              <span class="close" onclick="closeProductModal()">&times;</span>
+              <h2 id="productModalTitle"></h2>
+              <img id="productModalImage" src="" alt="" style="width: 200px; height: 200px; object-fit: cover; border-radius: 10px; margin: 20px auto; display: block;">
+              <p id="productModalDescription"></p>
+              <p id="productModalPrice" style="font-size: 24px; font-weight: bold; margin: 20px 0;"></p>
+              <button class="order-btn" style="margin: 0 auto;">Заказать сейчас</button>
+            </div>
+          </div>
+    </main>
+  
+    <footer class="footer">
+      <p>&copy; 2025 Хижина чудес. Все права защищены.</p>
+      <div class="social-icons">
+        <a href="https://t.me/Bambuk_lov" class="flip-cover-telegram" target="_blank">
+          <i class="fab fa-telegram"></i>
+        </a>
+        <a href="https://www.instagram.com/bamboo__o_o/" class="flip-cover-instagram" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://github.com/OstrovskyIv" class="flip-cover-github" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:ostrovskyiml@gmail.com" class="flip-cover-gmail" target="_blank">
+          <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://discord.gg/FqbDXtj6vb" class="flip-cover-discord" target="_blank">
+          <i class="fab fa-discord"></i>
+        </a>
+      </div>
+    </footer>
+  
+    <script src="script.js"></script>
     <script src="shop.js"></script>
-</body>
+  </body>
 </html>
