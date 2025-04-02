@@ -99,35 +99,19 @@ nav ul li a i {
     transition: all 0.3s ease;
 }
 
-/* Стили для видео-прелоадера */
-.video-preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+.social-icons a:hover {
+    transform: scale(1.1);
+    background-color: #1b9029;
 }
 
-.video-preloader video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Анимация исчезновения прелоадера */
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; visibility: hidden; }
-}
-
-.video-preloader.hide {
-    animation: fadeOut 0.5s ease-out forwards;
+/* Стили для секций */
+.section-title {
+    font-size: 3rem;
+    color: #723308;
+    margin-bottom: 40px;
+    text-align: center;
+    font-family: 'MedievalSharp', cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Обновленные стили для секции товаров */
@@ -218,6 +202,43 @@ nav ul li a i {
     background-color: #1b9029;
 }
 
+/* Стили для секции экскурсий */
+.excursions-section {
+    padding: 60px 20px;
+    background-color: #e9e9e9;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.excursions-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.excursion-card {
+    flex: 1 1 calc(50% - 40px);
+    min-width: 400px;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.excursion-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
 /* Обновленные стили для рейтинга */
 .rating {
     margin: 15px 0;
@@ -226,23 +247,30 @@ nav ul li a i {
     justify-content: center;
     align-items: center;
     gap: 5px;
+    height: 50px; /* Фиксированная высота для контейнера */
 }
 
 .star {
     cursor: pointer;
-    color: #cccccc;
+    color: #cccccc; /* Серый цвет по умолчанию */
     transition: color 0.2s ease;
     position: relative;
+    font-size: 50px; /* Увеличьте размер звезд */
+    line-height: 50px; /* Добавляем для вертикального выравнивания */
 }
 
 .star.active {
-    color: #ffcc00;
+    color: #ffcc00; /* Цвет активной звезды (золотой) */
 }
 
 .rating-value {
     font-size: 1.2rem;
     margin-left: 10px;
     color: #333;
+    line-height: 50px; /* Совпадает с высотой звезд */
+    height: 50px;
+    display: inline-flex;
+    align-items: center;
 }
 
 .order-btn {
@@ -262,7 +290,7 @@ nav ul li a i {
 }
 
 /* Стили для модального окна товара */
-#productModal {
+.modal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -274,7 +302,7 @@ nav ul li a i {
     overflow: auto;
 }
 
-#productModal .modal-content {
+.modal-content {
     background-color: #fefefe;
     margin: 5% auto;
     padding: 30px;
@@ -297,7 +325,7 @@ nav ul li a i {
     }
 }
 
-#productModal .close {
+.close {
     position: absolute;
     right: 20px;
     top: 15px;
@@ -308,7 +336,7 @@ nav ul li a i {
     transition: color 0.3s;
 }
 
-#productModal .close:hover {
+.close:hover {
     color: #333;
 }
 
@@ -370,71 +398,40 @@ nav ul li a i {
     background-color: #147a22;
 }
 
-/* Ночной режим для товаров */
-.night-mode .products-section {
-    background-color: #111;
-}
-
-.night-mode .products-section h2 {
-    color: #d4a017;
-}
-
-.night-mode .product-card {
-    background-color: #333;
-}
-
-.night-mode .product-info h3 {
-    color: #fff;
-}
-
-.night-mode .product-info .description {
-    color: #ccc;
-}
-
-.night-mode .rating-value {
-    color: #fff;
-}
-
-.night-mode .details-btn {
-    background-color: #ff4444;
-}
-
-.night-mode .details-btn:hover {
-    background-color: #cc0000;
-}
-
-.night-mode .order-btn {
-    background-color: #ff4444;
-}
-
-.night-mode .order-btn:hover {
-    background-color: #cc0000;
-}
-
-/* Ночной режим для модального окна */
-.night-mode #productModal .modal-content {
-    background-color: #333;
+/* Базовый стиль для всех иконок */
+.social-icons a {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #777; /* Серый по умолчанию */
     color: white;
+    text-align: center;
+    line-height: 70px;
+    font-size: 32px;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
-.night-mode .modal-description {
-    color: #ccc;
+/* Стили при наведении для каждой платформы */
+.social-icons a.flip-cover-telegram:hover {
+    background-color: #0088cc;
 }
 
-.night-mode .modal-rating-value {
-    color: #fff;
+.social-icons a.flip-cover-instagram:hover {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
 }
 
-.night-mode .modal-price {
-    color: #d4a017;
+.social-icons a.flip-cover-github:hover {
+    background-color: #333;
 }
 
-.night-mode .modal-order-btn {
-    background-color: #ff4444;
+.social-icons a.flip-cover-gmail:hover {
+    background-color: #d44638;
 }
 
-.night-mode .modal-order-btn:hover {
-    background-color: #cc0000;
+.social-icons a.flip-cover-discord:hover {
+    background-color: #5865f2;
 }
 
 /* Адаптация для мобильных */
@@ -448,6 +445,12 @@ nav ul li a i {
     .product-card {
         flex: 1 1 calc(50% - 40px);
     }
+    
+    .excursion-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+        min-width: auto;
+    }
 }
 
 @media (max-width: 600px) {
@@ -456,8 +459,21 @@ nav ul li a i {
         max-width: 100%;
     }
     
-    #productModal .modal-content {
+    .modal-content {
         width: 90%;
         margin: 20% auto;
     }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    nav ul li a {
+        font-size: 24px;
+    }
+    
+    nav ul li {
+        margin-right: 50px;
+    }
 }
+
