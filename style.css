@@ -1013,14 +1013,13 @@ h1 {
   font-weight: 500;
 }
 
-/* Стили для контейнера иконок */
+/* Общие стили для иконок */
 .social-icons {
   display: flex;
   justify-content: center;
   gap: 25px;
 }
 
-/* Общие стили для иконок (увеличенные) */
 .social-icons a {
   display: inline-block;
   width: 70px;
@@ -1035,29 +1034,28 @@ h1 {
   transition: all 0.3s ease;
 }
 
-/* Анимация пульсации при наведении */
 .social-icons a:hover {
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
 /* Цвета для иконок при наведении */
-.flip-cover-telegram:hover {
+.social-icons a.flip-cover-telegram:hover {
   background-color: #0088cc;
 }
 
-.flip-cover-instagram:hover {
-  background-color: #e4405f;
+.social-icons a.flip-cover-instagram:hover {
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
 }
 
-.flip-cover-github:hover {
+.social-icons a.flip-cover-github:hover {
   background-color: #333;
 }
 
-.flip-cover-gmail:hover {
+.social-icons a.flip-cover-gmail:hover {
   background-color: #d44638;
 }
 
-.flip-cover-discord:hover {
+.social-icons a.flip-cover-discord:hover {
   background-color: #7289da;
 }
 
@@ -1095,54 +1093,6 @@ footer::before {
   100% {
     transform: translateX(0);
   }
-}
-
-/* Стили для контейнера иконок */
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-/* Общие стили для иконок */
-.social-icons a {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #444;
-  color: white;
-  text-align: center;
-  line-height: 50px;
-  font-size: 24px;
-  position: relative;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-/* Анимация пульсации при наведении */
-.social-icons a:hover {
-  transform: scale(1.1);
-}
-
-/* Цвета для иконок при наведении */
-.flip-cover-telegram:hover {
-  background-color: #0088cc;
-}
-
-.flip-cover-instagram:hover {
-  background-color: #e4405f;
-}
-
-.flip-cover-github:hover {
-  background-color: #333;
-}
-
-.flip-cover-gmail:hover {
-  background-color: #d44638;
-}
-
-.flip-cover-discord:hover {
-  background-color: #7289da;
 }
 
 @keyframes pulse {
