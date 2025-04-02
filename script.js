@@ -1,3 +1,33 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const preloader = document.getElementById("preloader");
+  const loadingText = document.querySelector(".loading-text");
+
+  // Проверка: была ли уже посещена сессия
+  const alreadyVisited = sessionStorage.getItem("alreadyVisited");
+
+  if (!alreadyVisited) {
+    // Первый визит: показываем прелоадер
+    sessionStorage.setItem("alreadyVisited", "true");
+
+    let percent = 0;
+    const loadingText = document.querySelector(".loading-text");
+
+    // Увеличиваем общее время анимации до 6 секунд (6000 мс)
+    // и уменьшаем частоту обновления до 100 мс
+    const interval = setInterval(() => {
+      percent += 1;
+      loadingText.textContent = `${percent}%`;
+      if (percent >= 100) {
+        clearInterval(interval);
+        preloader.classList.add("hide");
+      }
+    }, 60); // 100% за 6 сек (60*100=6000мс)
+  } else {
+    // Уже был визит: сразу скрываем прелоадер
+    preloader.classList.add("hide");
+  }
+});
+
 const dayEmployees = [
   {
     name: "Стэнли Пайнс",
@@ -658,14 +688,19 @@ function updateContacts(isNightMode) {
   });
 }
 
+
+
+
+
+
 // Ждем, пока страница полностью загрузится
 window.addEventListener("load", function () {
   const preloader = document.getElementById("preloader");
   const loadingText = document.querySelector(".loading-text");
 
   let percent = 0;
-  const interval = 50; // Интервал обновления (в миллисекундах)
-  const duration = 5000; // Общая длительность анимации (в миллисекундах)
+  const interval = 500; // Увеличиваем интервал обновления до 100 мс
+  const duration = 6000; // Увеличиваем общую длительность анимации до 6 секунд
   const increment = (100 * interval) / duration; // Шаг увеличения процентов
 
   // Функция для обновления процентов
@@ -686,7 +721,6 @@ window.addEventListener("load", function () {
   // Запускаем обновление процентов
   updatePercent();
 });
-
 
 
 document.querySelector('.employee:nth-child(1) .contact-button').onclick = () => {
@@ -751,7 +785,7 @@ document.querySelector('.employee:nth-child(7) .contact-button').onclick = () =>
     "Пухля — милая, преданная и неожиданно умная свинка."
   );
 };
-//aaaaagafgaiugfasgfsuigfasiufugugasdfugfdgusifiudsuisiufgdsiuydgfasuyfgasufgsyfgsugfysyugfusygdfyufgsyugfusdgfyusgfsg
+
 document.addEventListener('DOMContentLoaded', function() {
   // Элементы
   const discoveryBtn = document.getElementById('discoveryBtn');
@@ -915,3 +949,40 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Показываем прелоадер только при первой загрузке страницы
+document.addEventListener("DOMContentLoaded", function() {
+  const preloader = document.getElementById("preloader");
+  const loadingText = document.querySelector(".loading-text");
+
+  // Проверяем, был ли уже показан прелоадер в этой сессии
+  if (!sessionStorage.getItem('preloaderShown')) {
+    // Показываем прелоадер
+    preloader.classList.add("active");
+
+    let percent = 0;
+    const interval = 50;
+    const duration = 5000;
+    const increment = (100 * interval) / duration;
+
+    const updatePercent = () => {
+      percent += increment;
+      if (percent <= 100) {
+        loadingText.textContent = `${Math.floor(percent)}%`;
+        setTimeout(updatePercent, interval);
+      } else {
+        loadingText.textContent = "100%";
+        setTimeout(() => {
+          preloader.classList.remove("active");
+          sessionStorage.setItem('preloaderShown', 'true');
+        }, 500);
+      }
+    };
+
+    updatePercent();
+  }
+});
+
+// Очищаем sessionStorage при закрытии вкладки, чтобы прелоадер снова показался при следующем открытии
+window.addEventListener('beforeunload', function() {
+  sessionStorage.removeItem('preloaderShown');
+});
