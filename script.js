@@ -1,33 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
   const preloader = document.getElementById("preloader");
   const loadingText = document.querySelector(".loading-text");
-
-  // Проверка: была ли уже посещена сессия
   const alreadyVisited = sessionStorage.getItem("alreadyVisited");
 
   if (!alreadyVisited) {
-    // Первый визит: показываем прелоадер
-    sessionStorage.setItem("alreadyVisited", "true");
-
     let percent = 0;
-    const loadingText = document.querySelector(".loading-text");
+    const interval = 50;
+    const duration = 4500; // 4.5 секунды
+    const increment = (100 * interval) / duration;
 
-    // Увеличиваем общее время анимации до 6 секунд (6000 мс)
-    // и уменьшаем частоту обновления до 100 мс
-    const interval = setInterval(() => {
-      percent += 1;
-      loadingText.textContent = `${percent}%`;
-      if (percent >= 100) {
-        clearInterval(interval);
-        preloader.classList.add("hide");
+    const updatePercent = () => {
+      percent += increment;
+      if (percent <= 100) {
+        loadingText.textContent = `${Math.floor(percent)}%`;
+        setTimeout(updatePercent, interval);
+      } else {
+        loadingText.textContent = "100%";
+        setTimeout(() => {
+          preloader.classList.add("hide");
+          sessionStorage.setItem("alreadyVisited", "true");
+        }, 500);
       }
-    }, 60); // 100% за 6 сек (60*100=6000мс)
+    };
+
+    updatePercent();
   } else {
-    // Уже был визит: сразу скрываем прелоадер
     preloader.classList.add("hide");
   }
 });
-
 const dayEmployees = [
   {
     name: "Стэнли Пайнс",
