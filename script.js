@@ -1,3 +1,42 @@
+document.addEventListener("DOMContentLoaded", function() {
+  const preloader = document.getElementById("preloader");
+  
+  // Проверяем, был ли прелоадер показан в этой сессии
+  if (!sessionStorage.getItem('preloaderShown')) {
+    // Если нет - запускаем анимацию
+    startPreloaderAnimation();
+    sessionStorage.setItem('preloaderShown', 'true');
+  } else {
+    // Если уже был показан - сразу скрываем
+    preloader.classList.add("hide");
+  }
+});
+
+function startPreloaderAnimation() {
+  const preloader = document.getElementById("preloader");
+  let percent = 0;
+  const interval = 50;
+  const duration = 3500;
+  
+  const updatePercent = () => {
+    percent += (100 * interval) / duration;
+    if (percent <= 100) {
+      setTimeout(updatePercent, interval);
+    } else {
+      setTimeout(() => {
+        preloader.classList.add("hide");
+      }, 500);
+    }
+  };
+  
+  updatePercent();
+}
+
+// Очищаем флаг только при закрытии вкладки (не при переходах)
+window.addEventListener('unload', function() {
+  // Не очищаем sessionStorage, чтобы прелоадер не показывался при переходах
+});
+
 const dayEmployees = [
   {
     name: "Стэнли Пайнс",
@@ -612,36 +651,6 @@ function updateContacts(isNightMode) {
   });
 }
 
-// Ждем, пока страница полностью загрузится
-window.addEventListener("load", function () {
-  const preloader = document.getElementById("preloader");
-  const loadingText = document.querySelector(".loading-text");
-
-  let percent = 0;
-  const interval = 50; // Интервал обновления (в миллисекундах)
-  const duration = 5000; // Общая длительность анимации (в миллисекундах)
-  const increment = (100 * interval) / duration; // Шаг увеличения процентов
-
-  // Функция для обновления процентов
-  const updatePercent = () => {
-    percent += increment;
-    if (percent <= 100) {
-      loadingText.textContent = `${Math.floor(percent)}%`;
-      setTimeout(updatePercent, interval);
-    } else {
-      loadingText.textContent = "100%";
-      // Скрываем прелоадер после завершения
-      setTimeout(() => {
-        preloader.classList.add("hide");
-      }, 500); // Задержка перед исчезновением
-    }
-  };
-
-  // Запускаем обновление процентов
-  updatePercent();
-});
-
-
 
 document.querySelector('.employee:nth-child(1) .contact-button').onclick = () => {
   showContact(
@@ -706,35 +715,3 @@ document.querySelector('.employee:nth-child(7) .contact-button').onclick = () =>
   );
 };
 
-document.addEventListener("DOMContentLoaded", function() {
-  const preloader = document.getElementById("preloader");
-  
-  // Проверяем, был ли уже показан прелоадер в этой сессии
-  if (!sessionStorage.getItem('preloaderShown')) {
-    let percent = 0;
-    const interval = 50;
-    const duration = 3000; // Уменьшил время анимации
-    
-    const updatePercent = () => {
-      percent += (100 * interval) / duration;
-      if (percent <= 100) {
-        setTimeout(updatePercent, interval);
-      } else {
-        setTimeout(() => {
-          preloader.classList.add("hide");
-          sessionStorage.setItem('preloaderShown', 'true');
-        }, 500);
-      }
-    };
-    
-    updatePercent();
-  } else {
-    // Если прелоадер уже показывался, сразу скрываем его
-    preloader.classList.add("hide");
-  }
-});
-
-// Очищаем sessionStorage при закрытии вкладки
-window.addEventListener('beforeunload', function() {
-  sessionStorage.removeItem('preloaderShown');
-});
