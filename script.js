@@ -1,33 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const preloader = document.getElementById("preloader");
-  const loadingText = document.querySelector(".loading-text");
-  const alreadyVisited = sessionStorage.getItem("alreadyVisited");
-
-  if (!alreadyVisited) {
-    let percent = 0;
-    const interval = 50;
-    const duration = 4500; // 4.5 секунды
-    const increment = (100 * interval) / duration;
-
-    const updatePercent = () => {
-      percent += increment;
-      if (percent <= 100) {
-        loadingText.textContent = `${Math.floor(percent)}%`;
-        setTimeout(updatePercent, interval);
-      } else {
-        loadingText.textContent = "100%";
-        setTimeout(() => {
-          preloader.classList.add("hide");
-          sessionStorage.setItem("alreadyVisited", "true");
-        }, 500);
-      }
-    };
-
-    updatePercent();
-  } else {
-    preloader.classList.add("hide");
-  }
-});
 const dayEmployees = [
   {
     name: "Стэнли Пайнс",
@@ -509,23 +479,6 @@ function closeModal() {
   modal.style.display = "none";
 }
 
-// Инициализация при загрузке страницы
-document.addEventListener("DOMContentLoaded", () => {
-  const closeButton = document.querySelector(".close");
-  if (closeButton) {
-    closeButton.addEventListener("click", closeModal);
-  }
-  window.addEventListener("click", (event) => {
-    const modal = document.getElementById("modal");
-    if (event.target === modal) {
-      closeModal();
-    }
-  });
-
-  // Инициализация контактов (дневной режим по умолчанию)
-  updateContacts(false);
-});
-
 // Обработчики событий для кнопок ночного и дневного режима
 const nightButton = document.getElementById('nightButton');
 const dayButton = document.querySelector('.buttons button[onclick="setDayMode()"]');
@@ -591,35 +544,6 @@ function moveCarousel(direction) {
   const offset = -currentIndex * 100; 
   carouselContainer.style.transform = `translateX(${offset}%)`;
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const closeButton = document.querySelector(".close");
-  if (closeButton) {
-    closeButton.addEventListener("click", closeModal);
-  }
-  window.addEventListener("click", (event) => {
-    const modal = document.getElementById("modal");
-    if (event.target === modal) {
-      closeModal();
-    }
-  });
-
-  const logoLink = document.querySelector('.logo a');
-  if (logoLink) {
-    logoLink.addEventListener('click', (e) => {
-      e.preventDefault(); 
-      scrollToTopWithMode(); 
-    });
-  }
-
-  const homeLink = document.querySelector('nav ul li a[href="index.html"]');
-  if (homeLink) {
-    homeLink.addEventListener('click', (e) => {
-      e.preventDefault(); 
-      scrollToTopWithMode(); 
-    });
-  }
-});
 
 function scrollToTopWithMode() {
   const isNightMode = document.body.style.backgroundColor === "black"; // Проверяем, включён ли ночной режим
@@ -688,19 +612,14 @@ function updateContacts(isNightMode) {
   });
 }
 
-
-
-
-
-
 // Ждем, пока страница полностью загрузится
 window.addEventListener("load", function () {
   const preloader = document.getElementById("preloader");
   const loadingText = document.querySelector(".loading-text");
 
   let percent = 0;
-  const interval = 500; // Увеличиваем интервал обновления до 100 мс
-  const duration = 6000; // Увеличиваем общую длительность анимации до 6 секунд
+  const interval = 50; // Интервал обновления (в миллисекундах)
+  const duration = 5000; // Общая длительность анимации (в миллисекундах)
   const increment = (100 * interval) / duration; // Шаг увеличения процентов
 
   // Функция для обновления процентов
@@ -721,6 +640,7 @@ window.addEventListener("load", function () {
   // Запускаем обновление процентов
   updatePercent();
 });
+
 
 
 document.querySelector('.employee:nth-child(1) .contact-button').onclick = () => {
@@ -786,203 +706,35 @@ document.querySelector('.employee:nth-child(7) .contact-button').onclick = () =>
   );
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Элементы
-  const discoveryBtn = document.getElementById('discoveryBtn');
-  const animationSphere = document.querySelector('.animation-sphere');
-  const animationPath = document.querySelector('.discovery-animation');
-  const exhibitsWrapper = document.querySelector('.exhibits-wrapper');
-  const exhibits = document.querySelectorAll('.exhibit');
-  const section = document.querySelector('.exhibits-section');
-  const sectionTitle = document.querySelector('.section-title');
-  
-  // Настройки анимации (уменьшил время для большей скорости)
-  const MOVE_DURATION = 400; // было 600 - теперь быстрее
-  const STOP_DURATION = 200;  // было 400 - короче паузы
-  
-  // Состояние
-  let isOpen = false;
-  let animationId = null;
-  let currentStop = 0;
-  let positions = [];
-
-  // Рассчитываем позиции остановок
-  function calculatePositions() {
-    const result = [];
-    const btnBottom = discoveryBtn.getBoundingClientRect().bottom + window.scrollY;
-    
-    // 1. Стартовая позиция
-    result.push({
-      y: btnBottom + 30,
-      pause: false
-    });
-    
-    // 2. Позиции экспонатов
-    exhibits.forEach((exhibit, i) => {
-      const rect = exhibit.getBoundingClientRect();
-      
-      // Перед блоком
-      result.push({
-        y: rect.top + window.scrollY - 50,
-        pause: true,
-        showIndex: i
-      });
-      
-      // После блока (если не последний)
-      if (i < exhibits.length - 1) {
-        result.push({
-          y: rect.bottom + window.scrollY + 30,
-          pause: false
-        });
-      }
-    });
-    
-    // 3. Финишная позиция
-    result.push({
-      y: exhibits[exhibits.length-1].getBoundingClientRect().bottom + window.scrollY + 100,
-      pause: true
-    });
-    
-    return result;
-  }
-
-  // Сброс анимации
-  function resetAnimation() {
-    clearTimeout(animationId);
-    
-    // Сбрасываем стили
-    animationSphere.style.transition = 'none';
-    animationSphere.style.top = '0';
-    animationSphere.style.opacity = '0';
-    animationPath.style.height = '0';
-    
-    // Скрываем только экспонаты
-    exhibits.forEach(ex => ex.classList.remove('visible'));
-    section.classList.remove('expanded');
-    exhibitsWrapper.classList.remove('visible');
-    
-    // Кнопка
-    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
-    discoveryBtn.disabled = false;
-    
-    isOpen = false;
-    currentStop = 0;
-  }
-
-  // Запуск/остановка анимации
-  function toggleAnimation() {
-    if (isOpen) {
-      resetAnimation();
-      return;
-    }
-    
-    // Подготовка
-    isOpen = true;
-    positions = calculatePositions();
-    const pathHeight = positions[positions.length-1].y - positions[0].y;
-    
-    // Настройка элементов (письмо НЕ скрываем)
-    animationPath.style.height = `${pathHeight}px`;
-    section.classList.add('expanded');
-    exhibitsWrapper.classList.add('visible');
-    discoveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    discoveryBtn.disabled = true;
-    
-    // Запуск анимации
-    setTimeout(() => {
-      animationSphere.style.opacity = '1';
-      animationSphere.style.top = '0';
-      
-      setTimeout(() => {
-        animationSphere.style.transition = `top ${MOVE_DURATION}ms linear`;
-        animate();
-      }, 10); // Уменьшил задержку
-    }, 100); // Уменьшил начальную задержку
-  }
-
-  // Анимация движения
-  function animate() {
-    if (currentStop >= positions.length) {
-      finishAnimation();
-      return;
-    }
-    
-    const pos = positions[currentStop];
-    animationSphere.style.top = `${pos.y - positions[0].y}px`;
-    
-    // Показ экспоната
-    if (pos.showIndex !== undefined) {
-      setTimeout(() => {
-        exhibits[pos.showIndex].classList.add('visible');
-      }, MOVE_DURATION/2);
-    }
-    
-    currentStop++;
-    const delay = pos.pause ? MOVE_DURATION + STOP_DURATION : MOVE_DURATION;
-    animationId = setTimeout(animate, delay);
-  }
-
-  // Завершение
-  function finishAnimation() {
-    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
-    discoveryBtn.disabled = false;
-  }
-
-  // Инициализация
-  setTimeout(() => {
-    sectionTitle.classList.add('visible');
-  }, 500);
-
-  // Клик по кнопке
-  discoveryBtn.addEventListener('click', toggleAnimation);
-
-  // Ресайз
-  window.addEventListener('resize', () => {
-    if (isOpen) {
-      positions = calculatePositions();
-      animationPath.style.height = `${positions[positions.length-1].y - positions[0].y}px`;
-      
-      if (currentStop > 0) {
-        animationSphere.style.top = `${positions[currentStop-1].y - positions[0].y}px`;
-      }
-    }
-  });
-});
-
-// Показываем прелоадер только при первой загрузке страницы
 document.addEventListener("DOMContentLoaded", function() {
   const preloader = document.getElementById("preloader");
-  const loadingText = document.querySelector(".loading-text");
-
+  
   // Проверяем, был ли уже показан прелоадер в этой сессии
   if (!sessionStorage.getItem('preloaderShown')) {
-    // Показываем прелоадер
-    preloader.classList.add("active");
-
     let percent = 0;
     const interval = 50;
-    const duration = 5000;
-    const increment = (100 * interval) / duration;
-
+    const duration = 3000; // Уменьшил время анимации
+    
     const updatePercent = () => {
-      percent += increment;
+      percent += (100 * interval) / duration;
       if (percent <= 100) {
-        loadingText.textContent = `${Math.floor(percent)}%`;
         setTimeout(updatePercent, interval);
       } else {
-        loadingText.textContent = "100%";
         setTimeout(() => {
-          preloader.classList.remove("active");
+          preloader.classList.add("hide");
           sessionStorage.setItem('preloaderShown', 'true');
         }, 500);
       }
     };
-
+    
     updatePercent();
+  } else {
+    // Если прелоадер уже показывался, сразу скрываем его
+    preloader.classList.add("hide");
   }
 });
 
-// Очищаем sessionStorage при закрытии вкладки, чтобы прелоадер снова показался при следующем открытии
+// Очищаем sessionStorage при закрытии вкладки
 window.addEventListener('beforeunload', function() {
   sessionStorage.removeItem('preloaderShown');
 });
