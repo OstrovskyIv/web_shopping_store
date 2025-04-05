@@ -1485,3 +1485,92 @@ footer::before {
   pointer-events: none;
   transition: opacity 0.5s ease-out;
 }
+
+/* Ночная версия экспонатов */
+.night-mode .exhibits-section {
+  background: #0a0a0a;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23000000" d="M0 0h100v100H0z"/><path fill="none" stroke="%231a1a1a" stroke-width="0.5" d="M0 0h100v100H0z"/></svg>');
+}
+
+.night-mode .section-title {
+  color: #ff4444;
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.night-mode .ancient-letter {
+  background: #1a1a1a;
+  border: 1px solid #ff4444;
+}
+
+.night-mode .letter-content {
+  border: 2px dashed #ff4444;
+}
+
+.night-mode .letter-text {
+  color: #ff4444;
+}
+
+.night-mode .discovery-btn {
+  background: linear-gradient(145deg, #ff4444, #cc0000);
+  border: 2px solid #ff4444;
+  color: #000;
+}
+
+.night-mode .discovery-btn:hover {
+  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+}
+
+.night-mode .btn-tooltip {
+  background: rgba(26, 26, 26, 0.9);
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+.night-mode .discovery-animation {
+  background: linear-gradient(to bottom, 
+    rgba(26, 26, 26, 0.1) 0%, 
+    rgba(255, 68, 68, 0.6) 50%, 
+    rgba(26, 26, 26, 0.1) 100%);
+}
+
+.night-mode .animation-sphere {
+  background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000);
+  box-shadow: 0 0 25px 8px rgba(255, 68, 68, 0.5);
+}
+
+.night-mode .exhibit-content {
+  background: rgba(20, 20, 20, 0.8);
+  box-shadow: 0 10px 30px rgba(255, 68, 68, 0.2);
+}
+
+.night-mode .exhibit-content::before {
+  background: linear-gradient(0deg, rgba(26, 26, 26, 0) 0%, rgba(255, 68, 68, 0.1) 50%, rgba(26, 26, 26, 0) 100%);
+}
+
+.night-mode .exhibit-info h3 {
+  color: #ff4444;
+}
+
+.night-mode .exhibit-info p {
+  color: #ddd;
+}
+
+.night-mode .exhibit-meta span {
+  color: #ff9999;
+}
+
+.night-mode .exhibit-meta i {
+  color: #ff4444;
+}
+
+.night-mode .exhibit:nth-child(odd) .exhibit-content {
+  border-left: 8px solid #ff4444;
+}
+
+.night-mode .exhibit:nth-child(even) .exhibit-content {
+  border-right: 8px solid #ff4444;
+}
+
+.night-mode .exhibit-img {
+  border: 3px solid #ff4444;
+}

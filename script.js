@@ -715,3 +715,217 @@ document.querySelector('.employee:nth-child(7) .contact-button').onclick = () =>
   );
 };
 
+document.addEventListener("DOMContentLoaded", function() {
+  const closeButton = document.querySelector(".close");
+  if (closeButton) {
+    closeButton.addEventListener("click", closeModal);
+  }
+});
+
+// В конце script.js добавьте этот код
+document.addEventListener("DOMContentLoaded", function() {
+  const logoLink = document.querySelector('.logo a');
+  const homeLink = document.querySelector('nav ul li a[href="index.html"]');
+  
+  logoLink.addEventListener('click', function(e) {
+    if (document.body.classList.contains('night-mode')) {
+      e.preventDefault();
+      scrollToTopNightMode();
+    }
+  });
+  
+  homeLink.addEventListener('click', function(e) {
+    if (document.body.classList.contains('night-mode')) {
+      e.preventDefault();
+      scrollToTopNightMode();
+    }
+  });
+});
+
+function scrollToTopNightMode() {
+  // Плавный скролл наверх с небольшой задержкой
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+  
+  // Убедимся, что ночной режим остаётся активным
+  document.body.classList.add('night-mode');
+  
+  // Обновляем стили, если нужно
+  const header = document.querySelector("header");
+  header.style.backgroundColor = "#ff4444";
+  header.style.color = "black";
+  
+  const navLinks = document.querySelectorAll("nav ul li a");
+  navLinks.forEach(link => {
+    link.style.color = "black";
+  });
+  
+  const logo = document.querySelector(".logo img");
+  logo.src = "pictures/nightImageLogo.png";
+  logo.alt = "Ночной логотип Хижины чудес";
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Элементы
+  const discoveryBtn = document.getElementById('discoveryBtn');
+  const animationSphere = document.querySelector('.animation-sphere');
+  const animationPath = document.querySelector('.discovery-animation');
+  const exhibitsWrapper = document.querySelector('.exhibits-wrapper');
+  const exhibits = document.querySelectorAll('.exhibit');
+  const section = document.querySelector('.exhibits-section');
+  const sectionTitle = document.querySelector('.section-title');
+  
+  // Настройки анимации
+  const MOVE_DURATION = 300;
+  const STOP_DURATION = 200;
+  
+  // Состояние
+  let isOpen = false;
+  let animationId = null;
+  let currentStop = 0;
+  let positions = [];
+
+  // Рассчитываем позиции остановок
+  function calculatePositions() {
+    const result = [];
+    const btnBottom = discoveryBtn.getBoundingClientRect().bottom + window.scrollY;
+    
+    // 1. Стартовая позиция
+    result.push({
+      y: btnBottom + 30,
+      pause: false
+    });
+    
+    // 2. Позиции экспонатов
+    exhibits.forEach((exhibit, i) => {
+      const rect = exhibit.getBoundingClientRect();
+      
+      // Перед блоком
+      result.push({
+        y: rect.top + window.scrollY - 50,
+        pause: true,
+        showIndex: i
+      });
+      
+      // После блока (если не последний)
+      if (i < exhibits.length - 1) {
+        result.push({
+          y: rect.bottom + window.scrollY + 30,
+          pause: false
+        });
+      }
+    });
+    
+    // 3. Финишная позиция
+    result.push({
+      y: exhibits[exhibits.length-1].getBoundingClientRect().bottom + window.scrollY + 100,
+      pause: true
+    });
+    
+    return result;
+  }
+
+  // Сброс анимации
+  function resetAnimation() {
+    clearTimeout(animationId);
+    
+    // Сбрасываем стили
+    animationSphere.style.transition = 'none';
+    animationSphere.style.top = '0';
+    animationSphere.style.opacity = '0';
+    animationPath.style.height = '0';
+    
+    // Скрываем только экспонаты
+    exhibits.forEach(ex => ex.classList.remove('visible'));
+    section.classList.remove('expanded');
+    exhibitsWrapper.classList.remove('visible');
+    
+    // Кнопка
+    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
+    discoveryBtn.disabled = false;
+    
+    isOpen = false;
+    currentStop = 0;
+  }
+
+  // Запуск/остановка анимации
+  function toggleAnimation() {
+    if (isOpen) {
+      resetAnimation();
+      return;
+    }
+    
+    // Подготовка
+    isOpen = true;
+    positions = calculatePositions();
+    const pathHeight = positions[positions.length-1].y - positions[0].y;
+    
+    // Настройка элементов (письмо НЕ скрываем)
+    animationPath.style.height = `${pathHeight}px`;
+    section.classList.add('expanded');
+    exhibitsWrapper.classList.add('visible');
+    discoveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    discoveryBtn.disabled = true;
+    
+    // Запуск анимации
+    setTimeout(() => {
+      animationSphere.style.opacity = '1';
+      animationSphere.style.top = '0';
+      
+      setTimeout(() => {
+        animationSphere.style.transition = `top ${MOVE_DURATION}ms linear`;
+        animate();
+      }, 10);
+    }, 100);
+  }
+
+  // Анимация движения
+  function animate() {
+    if (currentStop >= positions.length) {
+      finishAnimation();
+      return;
+    }
+    
+    const pos = positions[currentStop];
+    animationSphere.style.top = `${pos.y - positions[0].y}px`;
+    
+    // Показ экспоната
+    if (pos.showIndex !== undefined) {
+      setTimeout(() => {
+        exhibits[pos.showIndex].classList.add('visible');
+      }, MOVE_DURATION/2);
+    }
+    
+    currentStop++;
+    const delay = pos.pause ? MOVE_DURATION + STOP_DURATION : MOVE_DURATION;
+    animationId = setTimeout(animate, delay);
+  }
+
+  // Завершение
+  function finishAnimation() {
+    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
+    discoveryBtn.disabled = false;
+  }
+
+  // Инициализация
+  setTimeout(() => {
+    sectionTitle.classList.add('visible');
+  }, 500);
+
+  // Клик по кнопке
+  discoveryBtn.addEventListener('click', toggleAnimation);
+
+  // Ресайз
+  window.addEventListener('resize', () => {
+    if (isOpen) {
+      positions = calculatePositions();
+      animationPath.style.height = `${positions[positions.length-1].y - positions[0].y}px`;
+      
+      if (currentStop > 0) {
+        animationSphere.style.top = `${positions[currentStop-1].y - positions[0].y}px`;
+      }
+    }
+  });
+});
