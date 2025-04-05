@@ -1,3 +1,40 @@
+// Прелоадер
+document.addEventListener("DOMContentLoaded", function() {
+    const preloader = document.getElementById("preloader");
+    
+    // Проверяем, был ли прелоадер показан в этой сессии
+    if (!sessionStorage.getItem('preloaderShown')) {
+      // Если нет - запускаем анимацию
+      startPreloaderAnimation();
+      sessionStorage.setItem('preloaderShown', 'true');
+    } else {
+      // Если уже был показан - сразу скрываем
+      preloader.classList.add("hide");
+    }
+  });
+  
+  function startPreloaderAnimation() {
+    const preloader = document.getElementById("preloader");
+    let percent = 0;
+    const interval = 50;
+    const duration = 3500;
+    
+    const updatePercent = () => {
+      percent += (100 * interval) / duration;
+      if (percent <= 100) {
+        setTimeout(updatePercent, interval);
+      } else {
+        setTimeout(() => {
+          preloader.classList.add("hide");
+        }, 500);
+      }
+    };
+    
+    updatePercent();
+  }
+  
+  // Остальной код basket.js остается без изменений
+
 let map;
 let currentPlacemark;
 

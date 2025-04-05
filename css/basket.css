@@ -1,3 +1,228 @@
+/* Общие стили из style.css */
+body {
+    margin: 0;
+    background-color: #d4b08c; 
+    font-family: Arial, sans-serif; 
+  }
+  
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8vh;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #2a2929;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
+    color: white;
+    padding: 0 40px;
+  }
+  
+  .logo{
+    margin-right: auto;
+    margin-left: 20px;
+  }
+  
+  .logo img {
+    width: 100px;
+    height: auto;
+    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.7)); 
+  }
+  
+  nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 10px;
+  }
+  
+  nav ul li {
+    margin-right: 200px;
+  }
+  
+  nav ul li:last-child {
+    margin-right: 0;
+  }
+  
+  nav ul li a:hover {
+    color: #1b9029;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: inherit;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 36px;
+  }
+  
+  nav ul li a i {
+    font-size: 25px;
+    margin-right: 10px;
+  }
+  
+  /* Прелоадер */
+  #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #363636;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    overflow: hidden;
+  }
+  
+  .preloader-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .loading-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: #000;
+    z-index: 1;
+    animation: fillScreen 4s linear forwards;
+  }
+  
+  .question-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30vw;
+    font-weight: bold;
+    color: white;
+    z-index: 2;
+    opacity: 1;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+  }
+  
+  .question-mark-fill {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30vw;
+    font-weight: bold;
+    color: black;
+    z-index: 3;
+    opacity: 1;
+    clip-path: inset(100% 0 0 0);
+    animation: fillQuestion 5s linear forwards;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+  }
+  
+  @keyframes fillScreen {
+    from { height: 0; }
+    to { height: 100%; }
+  }
+  
+  @keyframes fillQuestion {
+    from { clip-path: inset(100% 0 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+  
+  #preloader.hide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease-out;
+  }
+  
+  /* Футер */
+  .footer {
+    background-color: #2a2929;
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .footer p {
+    font-size: 24px;
+    margin-bottom: 30px;
+    font-weight: 500;
+  }
+  
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+  }
+  
+  .social-icons a {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #444;
+    color: white;
+    text-align: center;
+    line-height: 70px;
+    font-size: 32px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .social-icons a:hover {
+    transform: scale(1.1);
+  }
+  
+  .social-icons a.flip-cover-telegram:hover {
+    background-color: #0088cc;
+  }
+  
+  .social-icons a.flip-cover-instagram:hover {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+  }
+  
+  .social-icons a.flip-cover-github:hover {
+    background-color: #333;
+  }
+  
+  .social-icons a.flip-cover-gmail:hover {
+    background-color: #d44638;
+  }
+  
+  .social-icons a.flip-cover-discord:hover {
+    background-color: #7289da;
+  }
+  
+  footer::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%232a2929" fill-opacity="1" d="M0,160L48,149.3C96,139,192,117,288,128C384,139,480,181,576,192C672,203,768,181,864,160C960,139,1056,117,1152,112C1248,107,1344,117,1392,122.7L1440,128L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>') no-repeat center/cover;
+    animation: wave 5s infinite linear;
+  }
+  
+  @keyframes wave {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+
 /* Основные стили */
 .map-section {
     padding: 60px 20px;
@@ -427,3 +652,4 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+/* Основные стили */
