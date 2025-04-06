@@ -133,19 +133,6 @@ nav ul li a i {
     padding: 0 20px;
     box-sizing: border-box;
 }
-
-.product-card {
-    flex: 1 1 calc(25% - 40px);
-    min-width: 280px;
-    max-width: 320px;
-    background-color: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 20px;
-}
-
 .product-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
@@ -168,22 +155,10 @@ nav ul li a i {
     transform: scale(1.1);
 }
 
-.product-info {
-    padding: 20px;
-    text-align: center;
-}
-
 .product-info h3 {
     font-size: 1.8rem;
     margin-bottom: 10px;
     color: #333;
-}
-
-.product-info .description {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 20px;
-    min-height: 60px;
 }
 
 .details-btn {
@@ -200,6 +175,104 @@ nav ul li a i {
 
 .details-btn:hover {
     background-color: #1b9029;
+}
+
+/* Обновленные стили для карточек товаров */
+.product-card {
+    flex: 1 1 calc(25% - 40px);
+    min-width: 280px;
+    max-width: 320px;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-info {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-info h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #333;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-info .description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Стили для цены */
+.price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #5a2806;
+    margin: 10px 0;
+}
+
+/* Контейнер для кнопок и рейтинга */
+.actions-container {
+    margin-top: auto;
+    padding-top: 15px;
+}
+
+.rating {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    height: 30px;
+}
+
+.rating-value {
+    font-size: 1rem;
+    margin-left: 5px;
+    color: #333;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 1200px) {
+    .product-card {
+        flex: 1 1 calc(33.333% - 40px);
+    }
+}
+
+@media (max-width: 900px) {
+    .product-card {
+        flex: 1 1 calc(50% - 40px);
+    }
+}
+
+@media (max-width: 600px) {
+    .product-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .products-container {
+        padding: 0 10px;
+    }
 }
 
 /* Стили для секции экскурсий */
@@ -477,3 +550,19 @@ nav ul li a i {
     }
 }
 
+/* Счетчик корзины в навигации */
+nav ul li a .basket-counter {
+    display: none;
+    background-color: #1b9029;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 8px;
+    font-size: 0.8rem;
+    margin-left: 5px;
+    vertical-align: super;
+}
+
+.night-mode nav ul li a .basket-counter {
+    background-color: #d4a017;
+    color: #2a1e10;
+}
