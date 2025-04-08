@@ -929,3 +929,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// Функция обновления счетчика корзины
+function updateBasketCounter() {
+  const basket = JSON.parse(localStorage.getItem('basket')) || [];
+  const totalItems = basket.reduce((sum, item) => sum + item.quantity, 0);
+  const basketLinks = document.querySelectorAll('nav ul li a[href="basket.html"]');
+  
+  basketLinks.forEach(link => {
+      let counter = link.querySelector('.basket-counter');
+      
+      if (!counter) {
+          counter = document.createElement('span');
+          counter.className = 'basket-counter';
+          link.appendChild(counter);
+      }
+      
+      counter.textContent = totalItems;
+      counter.style.display = totalItems > 0 ? 'inline-block' : 'none';
+  });
+}
+
+// Обновляем счетчик при загрузке страницы
+document.addEventListener('DOMContentLoaded', updateBasketCounter);
+
+// Обновляем счетчик при изменениях в других вкладках
+window.addEventListener('storage', function(e) {
+  if (e.key === 'basket') {
+      updateBasketCounter();
+  }
+});

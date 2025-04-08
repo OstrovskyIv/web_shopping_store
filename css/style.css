@@ -1574,3 +1574,85 @@ footer::before {
 .night-mode .exhibit-img {
   border: 3px solid #ff4444;
 }
+
+.night-mode .product-section {
+  background-color: #111;
+  color: #fff;
+  border-top: 3px solid #ff4444;
+  border-bottom: 3px solid #ff4444;
+  padding: 40px 0;
+}
+
+.night-mode .product-section h2 {
+  color: #ff4444;
+  font-family: 'MedievalSharp', cursive;
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+  margin-bottom: 40px;
+}
+
+.night-mode .carousel {
+  max-width: 800px;
+}
+
+.night-mode .product {
+  background-color: #222;
+  border: 2px solid #ff4444;
+  box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+  transition: all 0.3s ease;
+}
+
+.night-mode .product:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 68, 68, 0.5);
+}
+
+.night-mode .product-info h3 {
+  color: #ff4444;
+  font-family: 'MedievalSharp', cursive;
+}
+
+.night-mode .product-info .price {
+  color: #ff9999;
+  font-weight: bold;
+}
+
+.night-mode .product-info .description {
+  color: #ddd;
+}
+
+.night-mode .carousel-button {
+  background-color: rgba(255, 68, 68, 0.7);
+  color: #000;
+  font-weight: bold;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.night-mode .carousel-button:hover {
+  background-color: rgba(255, 68, 68, 0.9);
+  transform: scale(1.1);
+}
+
+/* Счетчик корзины в навигации */
+nav ul li a .basket-counter {
+  display: none;
+  background-color: #1b9029;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 20px;
+  position: relative;
+  top: -10px;
+  margin-left: 5px;
+}
+
+.night-mode nav ul li a .basket-counter {
+  background-color: #d4a017;
+  color: #2a1e10;
+}
