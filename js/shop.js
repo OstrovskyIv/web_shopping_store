@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
           const productName = document.getElementById('productModalTitle').textContent;
           const productImage = document.getElementById('productModalImage').src;
           const productPriceText = document.getElementById('productModalPrice').textContent;
-          const productPrice = parseFloat(productPriceText.replace('Цена: ', '').replace(' руб.', ''));
+          const productPrice = parseFloat(productPriceText.replace('Цена: ', '').replace(' $.', ''));
           
           addToBasket({
               id: generateProductId(productName),
@@ -128,28 +128,35 @@ function addToBasket(product) {
   updateBasketCounter();
 }
 
+// Функция обновления счетчика корзины
 function updateBasketCounter() {
-  const basket = JSON.parse(localStorage.getItem('basket')) || [];
-  const totalItems = basket.reduce((total, item) => total + item.quantity, 0);
-  
-  let counterElement = document.querySelector('.basket-counter');
-  
-  if (!counterElement) {
-      counterElement = document.createElement('span');
-      counterElement.className = 'basket-counter';
-      const basketLink = document.querySelector('a[href="basket.html"]');
-      if (basketLink) {
-          basketLink.appendChild(counterElement);
-      }
+    const basket = JSON.parse(localStorage.getItem('basket')) || [];
+    const totalItems = basket.reduce((sum, item) => sum + item.quantity, 0);
+    const basketLinks = document.querySelectorAll('nav ul li a[href="basket.html"]');
+    
+    basketLinks.forEach(link => {
+        let counter = link.querySelector('.basket-counter');
+        
+        if (!counter) {
+            counter = document.createElement('span');
+            counter.className = 'basket-counter';
+            link.appendChild(counter);
+        }
+        
+        counter.textContent = totalItems;
+        counter.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    });
   }
   
-  if (totalItems > 0) {
-      counterElement.textContent = ` (${totalItems})`;
-      counterElement.style.display = 'inline';
-  } else {
-      counterElement.style.display = 'none';
-  }
-}
+  // Обновляем счетчик при загрузке страницы
+  document.addEventListener('DOMContentLoaded', updateBasketCounter);
+  
+  // Обновляем счетчик при изменениях в других вкладках
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'basket') {
+        updateBasketCounter();
+    }
+  });
 
 // Функции для модального окна товара
 function showProductDetails(name, image, description, price) {
@@ -157,7 +164,7 @@ function showProductDetails(name, image, description, price) {
   document.getElementById('productModalTitle').textContent = name;
   document.getElementById('productModalImage').src = image;
   document.getElementById('productModalDescription').textContent = description;
-  document.getElementById('productModalPrice').textContent = `Цена: ${price} руб.`;
+  document.getElementById('productModalPrice').textContent = `Цена: ${price} $.`;
   modal.style.display = 'block';
 }
 

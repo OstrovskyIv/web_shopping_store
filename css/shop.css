@@ -556,13 +556,18 @@ nav ul li a .basket-counter {
     background-color: #1b9029;
     color: white;
     border-radius: 50%;
-    padding: 2px 8px;
-    font-size: 0.8rem;
+    width: 20px;
+    height: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 20px;
+    position: relative;
+    top: -10px;
     margin-left: 5px;
-    vertical-align: super;
 }
 
 .night-mode nav ul li a .basket-counter {
     background-color: #d4a017;
     color: #2a1e10;
 }
+
