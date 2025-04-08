@@ -1005,7 +1005,6 @@ textarea:focus {
     }
 }
 
-/* Добавьте в basket.css */
 .empty-basket-message {
     text-align: center;
     padding: 50px 0;
@@ -1022,4 +1021,65 @@ textarea:focus {
 
 .night-mode .basket-icon {
     color: #d4a017;
+}
+
+.show-more-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.show-more-btn {
+    background: none;
+    border: none;
+    color: #723308;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 10px 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.show-more-btn:hover {
+    color: #5a2806;
+    text-decoration: underline;
+}
+
+.show-more-btn i {
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+}
+
+.show-more-btn:hover i {
+    transform: translateY(3px);
+}
+
+.night-mode .show-more-btn {
+    color: #d4a017;
+}
+
+.night-mode .show-more-btn:hover {
+    color: #c19215;
+}
+
+/* Счетчик корзины в навигации */
+nav ul li a .basket-counter {
+    display: none;
+    background-color: #1b9029;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 20px;
+    position: relative;
+    top: -10px;
+    margin-left: 5px;
+}
+
+.night-mode nav ul li a .basket-counter {
+    background-color: #d4a017;
+    color: #2a1e10;
 }

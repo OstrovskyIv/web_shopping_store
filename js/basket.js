@@ -133,19 +133,30 @@ function initLiveGeocoding() {
 
 // Отображение сообщения об успешном оформлении
 function showSuccessMessage(country, city, address) {
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const paymentMethod = document.querySelector('input[name="payment"]:checked').nextElementSibling.textContent;
+    
     const modal = document.createElement('div');
     modal.className = 'delivery-modal';
     modal.innerHTML = `
         <div class="modal-content">
-            <h3>Запрос принят!</h3>
-            <p>Ваш адрес доставки:</p>
-            <p><strong>${country}, ${city}, ${address}</strong></p>
-            <p class="modal-note">(Мы вас обязательно найдем)</p>
+            <h3>Заказ оформлен!</h3>
+            <div class="order-details">
+                <p><strong>Клиент:</strong> ${firstName} ${lastName}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Телефон:</strong> ${phone}</p>
+                <p><strong>Способ оплаты:</strong> ${paymentMethod}</p>
+                <p><strong>Адрес доставки:</strong> ${country}, ${city}, ${address}</p>
+            </div>
+            <p class="modal-note">Спасибо за заказ! Мы свяжемся с вами для подтверждения.</p>
             <button id="closeModalBtn">Закрыть</button>
         </div>
     `;
     document.body.appendChild(modal);
-    document.getElementById('closeModalBtn').addEventListener('click', function () {
+    document.getElementById('closeModalBtn').addEventListener('click', function() {
         document.body.removeChild(modal);
         document.querySelector('.delivery-form').reset();
     });
@@ -161,7 +172,16 @@ function initNightMode() {
 // Обработка отправки формы
 function handleFormSubmit(form) {
     if (basket.length === 0) {
-        alert('Ваша корзина пуста!');
+        const basketSection = document.querySelector('.basket-section');
+        // Прокрутка к корзине с анимацией
+        basketSection.scrollIntoView({ behavior: 'smooth' });
+        // Подсветка корзины
+        basketSection.style.border = '2px solid red';
+        basketSection.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+            basketSection.style.border = '';
+            basketSection.style.animation = '';
+        }, 1000);
         return;
     }
 
@@ -178,6 +198,7 @@ function handleFormSubmit(form) {
 
     let isValid = true;
 
+    // Проверка обязательных полей
     inputs.forEach(input => {
         if (!input.value.trim()) {
             input.classList.add('error');
@@ -187,8 +208,15 @@ function handleFormSubmit(form) {
         }
     });
 
+    // Проверка email
+    const email = document.getElementById('email').value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('email').classList.add('error');
+        isValid = false;
+        alert('Пожалуйста, введите корректный email адрес!');
+    }
+
     if (!isValid) {
-        alert('Пожалуйста, заполните все обязательные поля!');
         return;
     }
 
@@ -232,15 +260,18 @@ function updateBasketDisplay() {
             </div>
         `;
         totalQuantityElement.textContent = '0';
-        totalPriceElement.textContent = '0 $.';
+        totalPriceElement.textContent = '0.00 $.';
         checkoutBtn.disabled = true;
+        updateBasketIndicator();
         return;
     }
 
     let totalQuantity = 0;
     let totalPrice = 0;
+    const showAll = basketItemsContainer.classList.contains('show-all');
+    const itemsToShow = showAll ? basket : basket.slice(0, 5);
 
-    basketItemsContainer.innerHTML = basket.map(item => {
+    basketItemsContainer.innerHTML = itemsToShow.map(item => {
         totalQuantity += item.quantity;
         totalPrice += item.price * item.quantity;
 
@@ -249,12 +280,12 @@ function updateBasketDisplay() {
                 <img src="${item.image}" alt="${item.name}" class="basket-item-image">
                 <div class="basket-item-details">
                     <h3 class="basket-item-title">${item.name}</h3>
-                    <p class="basket-item-price">${item.price} $.</p>
+                    <p class="basket-item-price">${item.price.toFixed(2)} $.</p>
                 </div>
                 <div class="basket-item-actions">
                     <div class="quantity-control">
                         <button class="quantity-btn minus-btn">-</button>
-                        <input type="number" class="quantity-input" value="${item.quantity}" min="1">
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="999">
                         <button class="quantity-btn plus-btn">+</button>
                     </div>
                     <button class="remove-item-btn">✕</button>
@@ -263,11 +294,23 @@ function updateBasketDisplay() {
         `;
     }).join('');
 
+    // Добавляем кнопку "Показать еще" если товаров больше 5
+    if (basket.length > 5 && !showAll) {
+        basketItemsContainer.innerHTML += `
+            <div class="show-more-container">
+                <button id="showMoreBtn" class="show-more-btn">
+                    Показать еще ${basket.length - 5} товаров
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        `;
+    }
+
     totalQuantityElement.textContent = totalQuantity;
-    totalPriceElement.textContent = `${totalPrice} $.`;
+    totalPriceElement.textContent = `${totalPrice.toFixed(2)} $.`;
     checkoutBtn.disabled = false;
 
-    // Навешиваем обработчики событий
+    // Обработчики событий
     document.querySelectorAll('.minus-btn').forEach(btn => {
         btn.addEventListener('click', decreaseQuantity);
     });
@@ -283,6 +326,18 @@ function updateBasketDisplay() {
     document.querySelectorAll('.remove-item-btn').forEach(btn => {
         btn.addEventListener('click', removeItem);
     });
+
+    // Обработчик кнопки "Показать еще"
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', function() {
+            basketItemsContainer.classList.add('show-all');
+            updateBasketDisplay();
+        });
+    }
+
+    // Обновляем индикатор корзины
+    updateBasketIndicator();
 }
 
 function decreaseQuantity(e) {
@@ -301,25 +356,28 @@ function increaseQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
     const itemId = itemElement.dataset.id;
     const item = basket.find(item => item.id === itemId);
-
-    item.quantity++;
-    saveBasket();
-    updateBasketDisplay();
+    
+    if (item.quantity < 999) {
+        item.quantity++;
+        saveBasket();
+        updateBasketDisplay();
+    }
 }
 
 function updateQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
     const itemId = itemElement.dataset.id;
     const item = basket.find(item => item.id === itemId);
-    const newQuantity = parseInt(e.target.value);
+    let newQuantity = parseInt(e.target.value);
 
-    if (newQuantity > 0) {
-        item.quantity = newQuantity;
-        saveBasket();
-        updateBasketDisplay();
-    } else {
-        e.target.value = item.quantity;
-    }
+    if (isNaN(newQuantity)) newQuantity = 1;
+    if (newQuantity < 1) newQuantity = 1;
+    if (newQuantity > 999) newQuantity = 999;
+
+    item.quantity = newQuantity;
+    e.target.value = newQuantity;
+    saveBasket();
+    updateBasketDisplay();
 }
 
 function removeItem(e) {
@@ -333,12 +391,32 @@ function removeItem(e) {
 
 function saveBasket() {
     localStorage.setItem('basket', JSON.stringify(basket));
+    updateBasketIndicator();
 }
 
 function clearBasket() {
     basket = [];
     saveBasket();
     updateBasketDisplay();
+}
+
+// Обновление индикатора корзины (зеленый кружок)
+function updateBasketIndicator() {
+    const totalItems = basket.reduce((total, item) => total + item.quantity, 0);
+    const basketIndicator = document.querySelector('.basket-indicator');
+    
+    if (basketIndicator) {
+        basketIndicator.style.display = totalItems > 0 ? 'block' : 'none';
+    } else {
+        // Создаем индикатор, если его нет
+        const basketLink = document.querySelector('a[href="basket.html"]');
+        if (basketLink) {
+            const indicator = document.createElement('span');
+            indicator.className = 'basket-indicator';
+            indicator.style.display = totalItems > 0 ? 'block' : 'none';
+            basketLink.appendChild(indicator);
+        }
+    }
 }
 
 // Инициализация при загрузке страницы
@@ -351,6 +429,14 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             handleFormSubmit(form);
+        });
+    }
+
+    // Ограничение ввода для телефона (только цифры)
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^\d+]/g, '');
         });
     }
 
@@ -369,3 +455,4 @@ document.addEventListener('DOMContentLoaded', function () {
     initNightMode();
     initLiveGeocoding();
 });
+
