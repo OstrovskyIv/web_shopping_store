@@ -1,0 +1,424 @@
+/* Основные стили */
+.account-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Стили для гостевого вида */
+.guest-view {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-prompt i {
+    font-size: 4rem;
+    color: #723308;
+    margin-bottom: 20px;
+}
+
+.login-prompt h2 {
+    font-size: 2.2rem;
+    color: #5a2806;
+    margin-bottom: 15px;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.login-prompt p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.auth-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-login {
+    background-color: #723308;
+    color: white;
+    border: 2px solid #723308;
+}
+
+.btn-login:hover {
+    background-color: #5a2806;
+    border-color: #5a2806;
+}
+
+.btn-register {
+    background-color: transparent;
+    color: #723308;
+    border: 2px solid #723308;
+}
+
+.btn-register:hover {
+    background-color: rgba(114, 51, 8, 0.1);
+}
+
+/* Стили для авторизованного пользователя */
+.profile-section {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 50px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-picture {
+    flex: 0 0 250px;
+    text-align: center;
+}
+
+.profile-picture img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #723308;
+    margin-bottom: 20px;
+}
+
+.btn-avatar {
+    background-color: #723308;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.btn-avatar:hover {
+    background-color: #5a2806;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 2rem;
+    color: #5a2806;
+    margin-bottom: 25px;
+    font-family: 'MedievalSharp', cursive;
+    border-bottom: 2px solid #a08060;
+    padding-bottom: 10px;
+}
+
+.profile-details {
+    margin-bottom: 25px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.detail-label {
+    width: 150px;
+    color: #5a2806;
+    font-weight: 600;
+}
+
+.detail-label i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.detail-value {
+    flex: 1;
+    color: #333;
+    margin-right: 15px;
+}
+
+.btn-show, .btn-change {
+    background: none;
+    border: none;
+    color: #723308;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.btn-show:hover, .btn-change:hover {
+    color: #5a2806;
+}
+
+.btn-edit-profile {
+    background-color: #723308;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-edit-profile:hover {
+    background-color: #5a2806;
+}
+
+.btn-edit-profile i {
+    margin-right: 8px;
+}
+
+/* Стили для секций заказов и экскурсий */
+.section-title {
+    font-size: 2rem;
+    color: #5a2806;
+    margin-bottom: 25px;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.section-title i {
+    margin-right: 15px;
+}
+
+.orders-tabs, .excursions-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 8px 20px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    background-color: #723308;
+    color: white;
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #e0e0e0;
+}
+
+.empty-orders, .empty-excursions {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.empty-orders i, .empty-excursions i {
+    font-size: 3rem;
+    color: #723308;
+    margin-bottom: 20px;
+}
+
+.empty-orders p, .empty-excursions p {
+    font-size: 1.3rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.btn-shop {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #723308;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-shop:hover {
+    background-color: #5a2806;
+}
+
+/* Стили для списка заказов */
+.order-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.order-id {
+    font-weight: bold;
+    color: #5a2806;
+    font-size: 1.2rem;
+}
+
+.order-date {
+    color: #666;
+}
+
+.order-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.status-active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-completed {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.order-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.order-total {
+    font-weight: bold;
+    color: #723308;
+}
+
+.order-details-btn {
+    background: none;
+    border: none;
+    color: #723308;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: underline;
+    padding: 0;
+}
+
+/* Адаптация */
+@media (max-width: 768px) {
+    .profile-section {
+        flex-direction: column;
+    }
+    
+    .profile-picture {
+        flex: 1;
+        margin-bottom: 20px;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .detail-label {
+        width: auto;
+        margin-bottom: 5px;
+    }
+}
+
+/* Ночной режим */
+.night-mode .guest-view,
+.night-mode .profile-section,
+.night-mode .empty-orders,
+.night-mode .empty-excursions,
+.night-mode .order-card {
+    background-color: #2a1e10;
+    color: #f5e8d0;
+}
+
+.night-mode .login-prompt h2,
+.night-mode .profile-name,
+.night-mode .section-title,
+.night-mode .order-id {
+    color: #d4a017;
+}
+
+.night-mode .login-prompt p,
+.night-mode .detail-value,
+.night-mode .empty-orders p,
+.night-mode .empty-excursions p,
+.night-mode .order-date {
+    color: #d4b483;
+}
+
+.night-mode .btn-login,
+.night-mode .btn-avatar,
+.night-mode .btn-edit-profile,
+.night-mode .btn-shop,
+.night-mode .tab-btn.active {
+    background-color: #d4a017;
+    color: #2a1e10;
+}
+
+.night-mode .btn-login:hover,
+.night-mode .btn-avatar:hover,
+.night-mode .btn-edit-profile:hover,
+.night-mode .btn-shop:hover {
+    background-color: #c19215;
+}
+
+.night-mode .btn-register {
+    color: #d4a017;
+    border-color: #d4a017;
+}
+
+.night-mode .btn-register:hover {
+    background-color: rgba(212, 160, 23, 0.1);
+}
+
+.night-mode .profile-picture img {
+    border-color: #d4a017;
+}
+
+.night-mode .detail-label {
+    color: #d4a017;
+}
+
+.night-mode .tab-btn {
+    background-color: #3a2e20;
+    color: #f5e8d0;
+}
+
+.night-mode .tab-btn:hover:not(.active) {
+    background-color: #4a3e30;
+}
+
+.night-mode .order-header {
+    border-bottom-color: #5c3a21;
+}
+
+.night-mode .order-total {
+    color: #d4a017;
+}
+
+.night-mode .order-details-btn {
+    color: #d4a017;
+}
