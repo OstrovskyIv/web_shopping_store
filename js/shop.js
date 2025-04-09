@@ -189,3 +189,154 @@ function showToast(message) {
       toast.remove();
   }, 3000);
 }
+
+// Модальное окно для отзывов
+function showReviewModal(productName, currentRating) {
+    const modal = document.createElement('div');
+    modal.className = 'review-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-review">&times;</span>
+            <h2>Оставить отзыв: ${productName}</h2>
+            
+            <div class="your-rating">
+                <h3>Ваша оценка:</h3>
+                <div class="rating-stars">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+            </div>
+            
+            <div class="review-form">
+                <textarea placeholder="Ваш отзыв..." rows="5"></textarea>
+                <button class="submit-review">Отправить отзыв</button>
+            </div>
+            
+            <div class="other-reviews">
+                <h3>Другие отзывы:</h3>
+                <div class="reviews-list">
+                    <div class="review">
+                        <div class="review-author">Иван Иванов</div>
+                        <div class="review-rating">★★★★★</div>
+                        <div class="review-text">Отличный товар, всем рекомендую!</div>
+                        <div class="review-date">01.01.2023</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Обработчики событий
+    modal.querySelector('.close-review').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    // Инициализация звезд
+    const stars = modal.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            stars.forEach((s, idx) => {
+                s.classList.toggle('active', idx < rating);
+            });
+        });
+    });
+    
+    // Отправка отзыва
+    modal.querySelector('.submit-review').addEventListener('click', () => {
+        const text = modal.querySelector('textarea').value;
+        if (!text) {
+            alert('Пожалуйста, напишите отзыв');
+            return;
+        }
+        alert('Отзыв отправлен! Спасибо!');
+        modal.remove();
+    });
+}
+
+// В обработчике клика по звездам добавьте:
+star.addEventListener('click', function() {
+    const productCard = this.closest('.product-card');
+    const productName = productCard.querySelector('h3').textContent;
+    showReviewModal(productName, newRating);
+});
+
+document.querySelectorAll('.book-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const card = this.closest('.excursion-card');
+        const name = card.querySelector('h3').textContent;
+        const image = card.querySelector('.product-image img').src;
+        const price = card.querySelector('.price').textContent;
+        
+        showExcursionModal(name, image, price);
+    });
+});
+
+function showExcursionModal(name, image, price) {
+    const modal = document.getElementById('excursionModal');
+    document.getElementById('excursionModalTitle').textContent = name;
+    document.getElementById('excursionModalImage').src = image;
+    document.getElementById('excursionModalPrice').textContent = `Цена: ${price}`;
+    
+    // Заполняем места остановок (пример)
+    const stopsList = document.getElementById('excursionStops');
+    stopsList.innerHTML = `
+        <li>Главная площадь</li>
+        <li>Исторический музей</li>
+        <li>Старый город</li>
+        <li>Смотровая площадка</li>
+    `;
+    
+    // Заполняем отзывы (пример)
+    const reviewsList = document.getElementById('excursionReviews');
+    reviewsList.innerHTML = `
+        <div class="review">
+            <div class="review-author">Анна</div>
+            <div class="review-rating">★★★★★</div>
+            <div class="review-text">Отличная экскурсия, гид очень знающий!</div>
+            <div class="review-date">15.05.2023</div>
+        </div>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+function closeExcursionModal() {
+    document.getElementById('excursionModal').style.display = 'none';
+}
+
+// В basket.js в handleFormSubmit после успешного оформления:
+const order = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString(),
+    items: basket,
+    total: totalPrice,
+    status: 'В обработке'
+};
+const orders = JSON.parse(localStorage.getItem('orders')) || [];
+orders.push(order);
+localStorage.setItem('orders', JSON.stringify(orders));
+
+// В shop.js для экскурсий:
+document.querySelector('.book-excursion-btn').addEventListener('click', function() {
+    const excursion = {
+        id: Date.now(),
+        name: document.getElementById('excursionModalTitle').textContent,
+        date: 'Выберите дату', // Можно добавить выбор даты
+        guide: document.getElementById('excursionGuides').selectedOptions[0].text,
+        status: 'Забронировано'
+    };
+    
+    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+    excursions.push(excursion);
+    localStorage.setItem('excursions', JSON.stringify(excursions));
+    
+    alert('Экскурсия забронирована!');
+    closeExcursionModal();
+});
+
