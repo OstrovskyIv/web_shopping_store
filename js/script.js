@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", function() {
     // Если уже был показан - сразу скрываем
     preloader.classList.add("hide");
   }
+  
+  // Инициализируем контакты (дневной режим по умолчанию)
+  initializeContacts();
+  
+  // Инициализируем закрытие модальных окон
+  initModalCloseHandlers();
+  initExhibitsAnimation(); // Добавьте эту строку
+  
 });
 
 function startPreloaderAnimation() {
@@ -32,10 +40,173 @@ function startPreloaderAnimation() {
   updatePercent();
 }
 
-// Очищаем флаг только при закрытии вкладки (не при переходах)
-window.addEventListener('unload', function() {
-  // Не очищаем sessionStorage, чтобы прелоадер не показывался при переходах
-});
+// Инициализация обработчиков закрытия модальных окон
+function initModalCloseHandlers() {
+  const closeButton = document.querySelector(".close");
+  if (closeButton) {
+    closeButton.addEventListener("click", closeModal);
+  }
+  
+  // Закрытие при клике вне модального окна
+  window.addEventListener('click', function(event) {
+    const modal = document.getElementById("modal");
+    if (event.target === modal) {
+      closeModal();
+    }
+    
+    const regModal = document.getElementById("registrationModal");
+    if (event.target === regModal) {
+      closeRegistrationModal();
+    }
+    
+    const loginModal = document.getElementById("loginModal");
+    if (event.target === loginModal) {
+      closeLoginModal();
+    }
+  });
+}
+
+function initExhibitsAnimation() {
+  const discoveryBtn = document.getElementById('discoveryBtn');
+  const animationSphere = document.querySelector('.animation-sphere');
+  const animationPath = document.querySelector('.discovery-animation');
+  const exhibitsWrapper = document.querySelector('.exhibits-wrapper');
+  const exhibits = document.querySelectorAll('.exhibit');
+  const section = document.querySelector('.exhibits-section');
+  const sectionTitle = document.querySelector('.section-title');
+  
+  if (!discoveryBtn) return;
+
+  const MOVE_DURATION = 300;
+  const STOP_DURATION = 200;
+  
+  let isOpen = false;
+  let animationId = null;
+  let currentStop = 0;
+  let positions = [];
+
+  function calculatePositions() {
+    const result = [];
+    const btnBottom = discoveryBtn.getBoundingClientRect().bottom + window.scrollY;
+    
+    result.push({
+      y: btnBottom + 30,
+      pause: false
+    });
+    
+    exhibits.forEach((exhibit, i) => {
+      const rect = exhibit.getBoundingClientRect();
+      
+      result.push({
+        y: rect.top + window.scrollY - 50,
+        pause: true,
+        showIndex: i
+      });
+      
+      if (i < exhibits.length - 1) {
+        result.push({
+          y: rect.bottom + window.scrollY + 30,
+          pause: false
+        });
+      }
+    });
+    
+    result.push({
+      y: exhibits[exhibits.length-1].getBoundingClientRect().bottom + window.scrollY + 100,
+      pause: true
+    });
+    
+    return result;
+  }
+
+  function resetAnimation() {
+    clearTimeout(animationId);
+    
+    animationSphere.style.transition = 'none';
+    animationSphere.style.top = '0';
+    animationSphere.style.opacity = '0';
+    animationPath.style.height = '0';
+    
+    exhibits.forEach(ex => ex.classList.remove('visible'));
+    section.classList.remove('expanded');
+    exhibitsWrapper.classList.remove('visible');
+    
+    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
+    discoveryBtn.disabled = false;
+    
+    isOpen = false;
+    currentStop = 0;
+  }
+
+  function toggleAnimation() {
+    if (isOpen) {
+      resetAnimation();
+      return;
+    }
+    
+    isOpen = true;
+    positions = calculatePositions();
+    const pathHeight = positions[positions.length-1].y - positions[0].y;
+    
+    animationPath.style.height = `${pathHeight}px`;
+    section.classList.add('expanded');
+    exhibitsWrapper.classList.add('visible');
+    discoveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    discoveryBtn.disabled = true;
+    
+    setTimeout(() => {
+      animationSphere.style.opacity = '1';
+      animationSphere.style.top = '0';
+      
+      setTimeout(() => {
+        animationSphere.style.transition = `top ${MOVE_DURATION}ms linear`;
+        animate();
+      }, 10);
+    }, 100);
+  }
+
+  function animate() {
+    if (currentStop >= positions.length) {
+      finishAnimation();
+      return;
+    }
+    
+    const pos = positions[currentStop];
+    animationSphere.style.top = `${pos.y - positions[0].y}px`;
+    
+    if (pos.showIndex !== undefined) {
+      setTimeout(() => {
+        exhibits[pos.showIndex].classList.add('visible');
+      }, MOVE_DURATION/2);
+    }
+    
+    currentStop++;
+    const delay = pos.pause ? MOVE_DURATION + STOP_DURATION : MOVE_DURATION;
+    animationId = setTimeout(animate, delay);
+  }
+
+  function finishAnimation() {
+    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
+    discoveryBtn.disabled = false;
+  }
+
+  setTimeout(() => {
+    if (sectionTitle) sectionTitle.classList.add('visible');
+  }, 500);
+
+  discoveryBtn.addEventListener('click', toggleAnimation);
+
+  window.addEventListener('resize', () => {
+    if (isOpen) {
+      positions = calculatePositions();
+      animationPath.style.height = `${positions[positions.length-1].y - positions[0].y}px`;
+      
+      if (currentStop > 0) {
+        animationSphere.style.top = `${positions[currentStop-1].y - positions[0].y}px`;
+      }
+    }
+  });
+}
 
 const dayEmployees = [
   {
@@ -96,7 +267,6 @@ const dayEmployees = [
   }
 ];
 
-// Данные для ночного режима (сотрудники Билла)
 const nightEmployees = [
   {
     name: "Билл Шифр",
@@ -180,25 +350,74 @@ const nightEmployees = [
   }
 ];
 
-// Функция для обновления контактов
+// Инициализация контактов (по умолчанию дневной режим)
+function initializeContacts() {
+  updateContacts(false); // false означает dayEmployees
+}
+
+// Обновление контактов в зависимости от режима
 function updateContacts(isNightMode) {
-  const employees = isNightMode ? nightEmployees : dayEmployees; // Выбираем данные
+  const employees = isNightMode ? nightEmployees : dayEmployees;
   const employeeButtons = document.querySelectorAll('.employee .contact-button');
 
   employeeButtons.forEach((button, index) => {
-    const employee = employees[index];
-    button.onclick = () => {
-      showContact(
-        employee.name,
-        employee.email,
-        employee.image,
-        employee.description
-      );
-    };
+    if (employees[index]) {
+      const employee = employees[index];
+      const employeeInfo = button.closest('.employee-info');
+      
+      if (employeeInfo) {
+        const nameElement = employeeInfo.querySelector('h3');
+        const descriptionElement = employeeInfo.querySelector('.description');
+        
+        // Обновляем информацию в карточке
+        if (nameElement) nameElement.textContent = employee.fullName || employee.name;
+        if (descriptionElement) descriptionElement.textContent = employee.blockText;
+        
+        // Обновляем обработчик для модального окна
+        button.onclick = () => {
+          showContact(
+            employee.name,
+            employee.email,
+            employee.image,
+            employee.description
+          );
+        };
+      }
+    }
   });
 }
 
-// Функция для включения ночного режима
+// Функции для работы с модальными окнами
+function showContact(name, email, imageSrc, description) {
+  const modal = document.getElementById("modal");
+  const modalContent = modal.querySelector('.modal-content');
+  const modalText = document.getElementById("modal-text");
+
+  modalText.innerHTML = `
+    <h2>${name}</h2>
+    <img src="${imageSrc}" alt="${name}" class="modal-contact-image">
+    <p class="modal-contact-description">${description}</p>
+    <hr class="modal-divider">
+    <p class="modal-contact-email">Пишите на: <a href="mailto:${email}">${email}</a></p>
+  `;
+
+  modal.style.display = "block";
+  setTimeout(() => {
+    modalContent.classList.add('show');
+  }, 10);
+}
+
+function closeModal() {
+  const modal = document.getElementById("modal");
+  const modalContent = modal.querySelector('.modal-content');
+  
+  modalContent.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300);
+}
+
+// Функции для ночного/дневного режима
 function setNightMode() {
   document.body.classList.add("night-mode");
   const nightButton = document.getElementById('nightButton');
@@ -226,27 +445,16 @@ function setNightMode() {
 
   setTimeout(() => {
     overlay.style.opacity = 0;
-
-    // Телепортация в начало страницы
     window.scrollTo({ top: 0, behavior: 'auto' });
 
-    // Показать ночные элементы карты
-    document.querySelectorAll('.night-only').forEach(el => {
-      el.style.display = 'block';
-    });
-    document.querySelectorAll('.map-notes.night-only').forEach(el => {
-      el.style.display = 'flex';
-    });
-    
-    // Скрыть дневные элементы карты
-    document.querySelectorAll('.day-only').forEach(el => {
-      el.style.display = 'none';
-    });
+    // Показать/скрыть элементы для ночного режима
+    document.querySelectorAll('.night-only').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.map-notes.night-only').forEach(el => el.style.display = 'flex');
+    document.querySelectorAll('.day-only').forEach(el => el.style.display = 'none');
 
-    // Остальной существующий код...
+    // Обновление стилей
     logo.src = "pictures/nightImageLogo.png";
     logo.alt = "Ночной логотип Хижины чудес";
-
     document.body.style.backgroundColor = "black";
     document.body.style.color = "white";
 
@@ -255,55 +463,41 @@ function setNightMode() {
     header.style.color = "black";
 
     const navLinks = document.querySelectorAll("nav ul li a");
-    navLinks.forEach(link => {
-      link.style.color = "black";
-    });
+    navLinks.forEach(link => link.style.color = "black");
 
     const main = document.querySelector("main");
     main.style.backgroundColor = "black";
 
     const employeeTexts = document.querySelectorAll(".employee-info h3, .employee-info .description");
-    employeeTexts.forEach(text => {
-      text.style.color = "black";
+    employeeTexts.forEach(text => text.style.color = "black");
+
+    const sections = [
+      ".registration-section",
+      ".product-section",
+      ".map"
+    ].forEach(selector => {
+      const section = document.querySelector(selector);
+      if (section) {
+        section.style.backgroundColor = "black";
+        section.style.color = "white";
+      }
     });
 
-    const registrationSection = document.querySelector(".registration-section");
-    registrationSection.style.backgroundColor = "black";
-    registrationSection.style.color = "white";
-
-    const productSection = document.querySelector(".product-section");
-    productSection.style.backgroundColor = "black";
-    productSection.style.color = "white";
-
-    const mapSection = document.querySelector(".map");
-    mapSection.style.backgroundColor = "black";
-    mapSection.style.color = "white";
-
-    // Изменение текста и цвета в секции регистрации
+    // Обновление текста
     const discountText = document.getElementById("discount-text");
     const uncleStoryText = document.getElementById("uncle-story-text");
-
     if (discountText && uncleStoryText) {
       discountText.textContent = "Давай заключим сделку, гений!";
       discountText.style.color = "white";
-
       uncleStoryText.textContent = "В подарок — знания о вселенной!";
       uncleStoryText.style.color = "white";
     }
 
-    const newImage = document.createElement("img");
-    newImage.src = "pictures/famBill.png";
-    newImage.alt = "Ночное изображение";
-    newImage.style.maxWidth = "1440px";
-    newImage.style.width = "100%";
-    newImage.style.height = "auto";
-    newImage.style.objectFit = "contain";
-
+    // Обновление изображения
     const leftContainer = document.querySelector(".leftSharck");
-    leftContainer.innerHTML = "";
-    leftContainer.appendChild(newImage);
+    leftContainer.innerHTML = `<img src="pictures/famBill.png" alt="Ночное изображение" style="max-width: 1440px; width: 100%; height: auto; object-fit: contain;">`;
 
-    // Обновляем текст для ночного режима
+    // Обновление основного текста
     const mainText = document.getElementById("mainText");
     mainText.innerHTML = `
       <p><strong>Ты попал в мир, где правила пишутся заново, а логика теряет смысл.</strong></p>
@@ -320,6 +514,7 @@ function setNightMode() {
     backSharckImage.src = "pictures/nigtBackHous.png";
     backSharckImage.alt = "Ночное фоновое изображение Хижины чудес";
 
+    // Обновление сотрудников
     const employeeContainer = document.querySelector('.employee-container');
     employeeContainer.innerHTML = '';
   
@@ -333,11 +528,14 @@ function setNightMode() {
         <div class="employee-info">
           <h3>${employee.fullName || employee.name}</h3>
           <p class="description">${employee.blockText}</p>
-          <button class="contact-button" onclick="showContact('${employee.name}', '${employee.email}', '${employee.image}', '${employee.description}')">Контакты</button>
+          <button class="contact-button">Контакты</button>
         </div>
       `;
       employeeContainer.appendChild(employeeDiv);
     });
+
+    // Обновление обработчиков для новых кнопок
+    updateContacts(true);
 
     const employeeSectionTitle = document.querySelector(".employee-section h2");
     if (employeeSectionTitle) {
@@ -352,7 +550,6 @@ function setNightMode() {
   }, 2000);
 }
 
-// Функция для включения дневного режима
 function setDayMode() {
   document.body.classList.remove("night-mode");
   const dayButton = document.querySelector('.buttons button[onclick="setDayMode()"]');
@@ -380,27 +577,16 @@ function setDayMode() {
 
   setTimeout(() => {
     overlay.style.opacity = 0;
-
-    // Телепортация в начало страницы
     window.scrollTo({ top: 0, behavior: 'auto' });
 
-    // Показать дневные элементы карты
-    document.querySelectorAll('.day-only').forEach(el => {
-      el.style.display = 'block';
-    });
-    document.querySelectorAll('.map-notes.day-only').forEach(el => {
-      el.style.display = 'flex';
-    });
-    
-    // Скрыть ночные элементы карты
-    document.querySelectorAll('.night-only').forEach(el => {
-      el.style.display = 'none';
-    });
+    // Показать/скрыть элементы для дневного режима
+    document.querySelectorAll('.day-only').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.map-notes.day-only').forEach(el => el.style.display = 'flex');
+    document.querySelectorAll('.night-only').forEach(el => el.style.display = 'none');
 
-    // Остальной существующий код...
+    // Обновление стилей
     logo.src = "pictures/LoGo.png";
     logo.alt = "Логотип Хижины чудес";
-
     document.body.style.backgroundColor = "#d4b08c";
     document.body.style.color = "black";
 
@@ -409,47 +595,41 @@ function setDayMode() {
     header.style.color = "white";
 
     const navLinks = document.querySelectorAll("nav ul li a");
-    navLinks.forEach(link => {
-      link.style.color = "white";
-    });
+    navLinks.forEach(link => link.style.color = "white");
 
     const main = document.querySelector("main");
     main.style.backgroundColor = "transparent";
 
     const employeeTexts = document.querySelectorAll(".employee-info h3, .employee-info .description");
-    employeeTexts.forEach(text => {
-      text.style.color = "";
+    employeeTexts.forEach(text => text.style.color = "");
+
+    const sections = [
+      ".registration-section",
+      ".product-section",
+      ".map"
+    ].forEach(selector => {
+      const section = document.querySelector(selector);
+      if (section) {
+        section.style.backgroundColor = selector === ".map" ? "transparent" : "#f9f9f9";
+        section.style.color = "#333";
+      }
     });
 
-    const registrationSection = document.querySelector(".registration-section");
-    registrationSection.style.backgroundColor = "#f9f9f9";
-    registrationSection.style.color = "#333";
-
-    const productSection = document.querySelector(".product-section");
-    productSection.style.backgroundColor = "#f9f9f9";
-    productSection.style.color = "#333";
-
-    const mapSection = document.querySelector(".map");
-    mapSection.style.backgroundColor = "transparent";
-    mapSection.style.color = "#333";
-
-    // Возвращение текста и цвета в секции регистрации
+    // Обновление текста
     const discountText = document.getElementById("discount-text");
     const uncleStoryText = document.getElementById("uncle-story-text");
-
     if (discountText && uncleStoryText) {
       discountText.textContent = "Получи скидку в 0% за регистрацию!";
       discountText.style.color = "";
-
       uncleStoryText.textContent = "А также историю от Дяди Стэна!";
       uncleStoryText.style.color = "";
     }
 
+    // Обновление изображения
     const leftContainer = document.querySelector(".leftSharck");
-    leftContainer.innerHTML = `
-      <img src="pictures/famPains.png" alt="Семья Пайнс" />
-    `;
+    leftContainer.innerHTML = `<img src="pictures/famPains.png" alt="Семья Пайнс" />`;
 
+    // Обновление основного текста
     const mainText = document.getElementById("mainText");
     mainText.innerHTML = `
       <p><strong>Добро пожаловать в Хижину чудес — место, где реальность переплетается с тайнами, а каждый предмет хранит свою историю.</strong></p>
@@ -464,6 +644,7 @@ function setDayMode() {
     backSharckImage.src = "pictures/backSharck.png";
     backSharckImage.alt = "Фоновое изображение Хижины чудес";
 
+    // Обновление сотрудников
     const employeeContainer = document.querySelector('.employee-container');
     employeeContainer.innerHTML = '';
   
@@ -477,11 +658,14 @@ function setDayMode() {
         <div class="employee-info">
           <h3>${employee.fullName}</h3>
           <p class="description">${employee.blockText}</p>
-          <button class="contact-button" onclick="showContact('${employee.name}', '${employee.email}', '${employee.image}', '${employee.description}')">Контакты</button>
+          <button class="contact-button">Контакты</button>
         </div>
       `;
       employeeContainer.appendChild(employeeDiv);
     });
+
+    // Обновление обработчиков для новых кнопок
+    updateContacts(false);
 
     const employeeSectionTitle = document.querySelector(".employee-section h2");
     if (employeeSectionTitle) {
@@ -496,53 +680,58 @@ function setDayMode() {
   }, 2000);
 }
 
-// Функция для отображения контакта в модальном окне
-function showContact(name, email, imageSrc, description) {
-  const modal = document.getElementById("modal");
-  const modalText = document.getElementById("modal-text");
-
-  modalText.innerHTML = `
-    <h2>${name}</h2>
-    <img src="${imageSrc}" alt="${name}" style="width: 150px; height: 150px; border-radius: 50%; margin: 20px auto; display: block;">
-    <p>${description}</p> <!-- Используем description для полного текста -->
-    <hr style="margin: 20px 0;">
-    <p>Пишите на: ${email}</p>
-  `;
-
-  modal.style.display = "block";
-}
-
-// Функция для закрытия модального окна
-function closeModal() {
-  const modal = document.getElementById("modal");
-  modal.style.display = "none";
-}
-
 // Обработчики событий для кнопок ночного и дневного режима
-const nightButton = document.getElementById('nightButton');
-const dayButton = document.querySelector('.buttons button[onclick="setDayMode()"]');
+document.addEventListener("DOMContentLoaded", function() {
+  const nightButton = document.getElementById('nightButton');
+  const dayButton = document.querySelector('.buttons button[onclick="setDayMode()"]');
+  
+  if (nightButton) nightButton.addEventListener('click', setNightMode);
+  if (dayButton) dayButton.addEventListener('click', setDayMode);
+});
 
-nightButton.addEventListener('click', setNightMode);
-dayButton.addEventListener('click', setDayMode);
+// Функции для работы с корзиной
+function updateBasketCounter() {
+  const basket = JSON.parse(localStorage.getItem('basket')) || [];
+  const totalItems = basket.reduce((sum, item) => sum + item.quantity, 0);
+  const basketLinks = document.querySelectorAll('nav ul li a[href="basket.html"]');
+  
+  basketLinks.forEach(link => {
+    let counter = link.querySelector('.basket-counter');
+    
+    if (!counter) {
+      counter = document.createElement('span');
+      counter.className = 'basket-counter';
+      link.appendChild(counter);
+    }
+    
+    counter.textContent = totalItems;
+    counter.style.display = totalItems > 0 ? 'inline-block' : 'none';
+  });
+}
 
-// Остальные функции (регистрация, вход, карусель и т.д.)
+// Функции для регистрации и входа
 function register() {
   const modal = document.getElementById("registrationModal");
   modal.style.display = "block";
+  setTimeout(() => {
+    modal.querySelector('.modal-content').classList.add('show');
+  }, 10);
 }
 
 function closeRegistrationModal() {
   const modal = document.getElementById("registrationModal");
-  modal.style.display = "none";
+  modal.querySelector('.modal-content').classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300);
 }
 
-document.getElementById("registrationForm").addEventListener("submit", function(event) {
+document.getElementById("registrationForm")?.addEventListener("submit", function(event) {
   event.preventDefault();
   const username = document.getElementById("username").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  // Здесь можно добавить логику для отправки данных на сервер
   alert(`Регистрация успешна!\nИмя пользователя: ${username}\nEmail: ${email}`);
   closeRegistrationModal();
 });
@@ -550,14 +739,20 @@ document.getElementById("registrationForm").addEventListener("submit", function(
 function login() {
   const modal = document.getElementById("loginModal");
   modal.style.display = "block";
+  setTimeout(() => {
+    modal.querySelector('.modal-content').classList.add('show');
+  }, 10);
 }
 
 function closeLoginModal() {
   const modal = document.getElementById("loginModal");
-  modal.style.display = "none";
+  modal.querySelector('.modal-content').classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300);
 }
 
-document.getElementById("loginForm").addEventListener("submit", function(event) {
+document.getElementById("loginForm")?.addEventListener("submit", function(event) {
   event.preventDefault();
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
@@ -565,6 +760,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
   closeLoginModal();
 });
 
+// Карусель товаров
 let currentIndex = 0;
 
 function moveCarousel(direction) {
@@ -584,42 +780,35 @@ function moveCarousel(direction) {
   carouselContainer.style.transform = `translateX(${offset}%)`;
 }
 
+// Прокрутка наверх с учетом режима
 function scrollToTopWithMode() {
-  const isNightMode = document.body.style.backgroundColor === "black"; // Проверяем, включён ли ночной режим
+  const isNightMode = document.body.classList.contains('night-mode');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // Плавная прокрутка вверх
-
-  // Если ночной режим включён
   if (isNightMode) {
     document.body.style.backgroundColor = "black";
     document.body.style.color = "white";
 
     const header = document.querySelector("header");
-    header.style.backgroundColor = "#ff4444"; // Жёлтый цвет шапки в ночном режиме
-    header.style.color = "black"; // Цвет текста в шапке
+    header.style.backgroundColor = "#ff4444";
+    header.style.color = "black";
 
     const navLinks = document.querySelectorAll("nav ul li a");
-    navLinks.forEach(link => {
-      link.style.color = "black"; // Цвет текста ссылок
-    });
+    navLinks.forEach(link => link.style.color = "black");
 
     const logo = document.querySelector(".logo img");
     logo.src = "pictures/nightImageLogo.png";
     logo.alt = "Ночной логотип Хижины чудес";
-  } 
-  // Если дневной режим
-  else {
+  } else {
     document.body.style.backgroundColor = "#d4b08c";
     document.body.style.color = "black";
 
     const header = document.querySelector("header");
-    header.style.backgroundColor = "#2a2929"; // Исходный цвет шапки
-    header.style.color = "white"; // Исходный цвет текста
+    header.style.backgroundColor = "#2a2929";
+    header.style.color = "white";
 
     const navLinks = document.querySelectorAll("nav ul li a");
-    navLinks.forEach(link => {
-      link.style.color = "white"; // Исходный цвет текста ссылок
-    });
+    navLinks.forEach(link => link.style.color = "white");
 
     const logo = document.querySelector(".logo img");
     logo.src = "pictures/LoGo.png";
@@ -627,335 +816,54 @@ function scrollToTopWithMode() {
   }
 }
 
-function updateContacts(isNightMode) {
-  const employees = isNightMode ? nightEmployees : dayEmployees;
-  const employeeButtons = document.querySelectorAll('.employee .contact-button');
-
-  employeeButtons.forEach((button, index) => {
-    const employee = employees[index];
-    const employeeInfo = button.closest('.employee-info');
-    const descriptionElement = employeeInfo.querySelector('.description');
-
-    // Устанавливаем текст в блоке сотрудника
-    descriptionElement.textContent = employee.blockText;
-
-    // Устанавливаем обработчик для модального окна
-    button.onclick = () => {
-      showContact(
-        employee.name,
-        employee.email,
-        employee.image,
-        employee.description // Используем description для модального окна
-      );
-    };
-  });
-}
-
-
-document.querySelector('.employee:nth-child(1) .contact-button').onclick = () => {
-  showContact(
-    "Стэнли",
-    "stanley@mysteryhut.com",
-    "pictures/StanFace.png",
-    "Стэнли — хитрый и жадный, но в душе добряк."
-  );
-};
-
-document.querySelector('.employee:nth-child(2) .contact-button').onclick = () => {
-  showContact(
-    "Венди",
-    "wendy@mysteryhut.com",
-    "pictures/wendyFace.png",
-    "Венди — крутая, саркастичная, но всегда готовая помочь."
-  );
-};
-
-document.querySelector('.employee:nth-child(3) .contact-button').onclick = () => {
-  showContact(
-    "Зус",
-    "soos@mysteryhut.com",
-    "pictures/zooseFace.png",
-    "Зус — добрый, наивный и преданный друг."
-  );
-};
-
-document.querySelector('.employee:nth-child(4) .contact-button').onclick = () => {
-  showContact(
-    "Диппер",
-    "dipper@mysteryhut.com",
-    "pictures/DipperFace.png",
-    "Диппер — зануда, так что лучше ничего у него не спрашивайте."
-  );
-};
-
-document.querySelector('.employee:nth-child(5) .contact-button').onclick = () => {
-  showContact(
-    "Мэйбл",
-    "mabel@mysteryhut.com",
-    "pictures/MabelFace.png",
-    "Мэйбл — энергичная, весёлая и немного хаотичная."
-  );
-};
-
-document.querySelector('.employee:nth-child(6) .contact-button').onclick = () => {
-  showContact(
-    "Стэнфорд",
-    "stanford@mysteryhut.com",
-    "pictures/StanfordFace.png",
-    "Стэнфорд — гениальный, но загадочный учёный."
-  );
-};
-
-document.querySelector('.employee:nth-child(7) .contact-button').onclick = () => {
-  showContact(
-    "Пухля",
-    "waddles@mysteryhut.com",
-    "pictures/Puhla.png",
-    "Пухля — милая, преданная и неожиданно умная свинка."
-  );
-};
-
-document.addEventListener("DOMContentLoaded", function() {
-  const closeButton = document.querySelector(".close");
-  if (closeButton) {
-    closeButton.addEventListener("click", closeModal);
-  }
-});
-
-// В конце script.js добавьте этот код
+// Обработчики для логотипа и ссылки "Главная"
 document.addEventListener("DOMContentLoaded", function() {
   const logoLink = document.querySelector('.logo a');
   const homeLink = document.querySelector('nav ul li a[href="index.html"]');
   
-  logoLink.addEventListener('click', function(e) {
-    if (document.body.classList.contains('night-mode')) {
-      e.preventDefault();
-      scrollToTopNightMode();
-    }
-  });
+  if (logoLink) {
+    logoLink.addEventListener('click', function(e) {
+      if (document.body.classList.contains('night-mode')) {
+        e.preventDefault();
+        scrollToTopNightMode();
+      }
+    });
+  }
   
-  homeLink.addEventListener('click', function(e) {
-    if (document.body.classList.contains('night-mode')) {
-      e.preventDefault();
-      scrollToTopNightMode();
-    }
-  });
+  if (homeLink) {
+    homeLink.addEventListener('click', function(e) {
+      if (document.body.classList.contains('night-mode')) {
+        e.preventDefault();
+        scrollToTopNightMode();
+      }
+    });
+  }
 });
 
 function scrollToTopNightMode() {
-  // Плавный скролл наверх с небольшой задержкой
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
   });
   
-  // Убедимся, что ночной режим остаётся активным
   document.body.classList.add('night-mode');
   
-  // Обновляем стили, если нужно
   const header = document.querySelector("header");
   header.style.backgroundColor = "#ff4444";
   header.style.color = "black";
   
   const navLinks = document.querySelectorAll("nav ul li a");
-  navLinks.forEach(link => {
-    link.style.color = "black";
-  });
+  navLinks.forEach(link => link.style.color = "black");
   
   const logo = document.querySelector(".logo img");
   logo.src = "pictures/nightImageLogo.png";
   logo.alt = "Ночной логотип Хижины чудес";
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Элементы
-  const discoveryBtn = document.getElementById('discoveryBtn');
-  const animationSphere = document.querySelector('.animation-sphere');
-  const animationPath = document.querySelector('.discovery-animation');
-  const exhibitsWrapper = document.querySelector('.exhibits-wrapper');
-  const exhibits = document.querySelectorAll('.exhibit');
-  const section = document.querySelector('.exhibits-section');
-  const sectionTitle = document.querySelector('.section-title');
-  
-  // Настройки анимации
-  const MOVE_DURATION = 300;
-  const STOP_DURATION = 200;
-  
-  // Состояние
-  let isOpen = false;
-  let animationId = null;
-  let currentStop = 0;
-  let positions = [];
-
-  // Рассчитываем позиции остановок
-  function calculatePositions() {
-    const result = [];
-    const btnBottom = discoveryBtn.getBoundingClientRect().bottom + window.scrollY;
-    
-    // 1. Стартовая позиция
-    result.push({
-      y: btnBottom + 30,
-      pause: false
-    });
-    
-    // 2. Позиции экспонатов
-    exhibits.forEach((exhibit, i) => {
-      const rect = exhibit.getBoundingClientRect();
-      
-      // Перед блоком
-      result.push({
-        y: rect.top + window.scrollY - 50,
-        pause: true,
-        showIndex: i
-      });
-      
-      // После блока (если не последний)
-      if (i < exhibits.length - 1) {
-        result.push({
-          y: rect.bottom + window.scrollY + 30,
-          pause: false
-        });
-      }
-    });
-    
-    // 3. Финишная позиция
-    result.push({
-      y: exhibits[exhibits.length-1].getBoundingClientRect().bottom + window.scrollY + 100,
-      pause: true
-    });
-    
-    return result;
-  }
-
-  // Сброс анимации
-  function resetAnimation() {
-    clearTimeout(animationId);
-    
-    // Сбрасываем стили
-    animationSphere.style.transition = 'none';
-    animationSphere.style.top = '0';
-    animationSphere.style.opacity = '0';
-    animationPath.style.height = '0';
-    
-    // Скрываем только экспонаты
-    exhibits.forEach(ex => ex.classList.remove('visible'));
-    section.classList.remove('expanded');
-    exhibitsWrapper.classList.remove('visible');
-    
-    // Кнопка
-    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
-    discoveryBtn.disabled = false;
-    
-    isOpen = false;
-    currentStop = 0;
-  }
-
-  // Запуск/остановка анимации
-  function toggleAnimation() {
-    if (isOpen) {
-      resetAnimation();
-      return;
-    }
-    
-    // Подготовка
-    isOpen = true;
-    positions = calculatePositions();
-    const pathHeight = positions[positions.length-1].y - positions[0].y;
-    
-    // Настройка элементов (письмо НЕ скрываем)
-    animationPath.style.height = `${pathHeight}px`;
-    section.classList.add('expanded');
-    exhibitsWrapper.classList.add('visible');
-    discoveryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    discoveryBtn.disabled = true;
-    
-    // Запуск анимации
-    setTimeout(() => {
-      animationSphere.style.opacity = '1';
-      animationSphere.style.top = '0';
-      
-      setTimeout(() => {
-        animationSphere.style.transition = `top ${MOVE_DURATION}ms linear`;
-        animate();
-      }, 10);
-    }, 100);
-  }
-
-  // Анимация движения
-  function animate() {
-    if (currentStop >= positions.length) {
-      finishAnimation();
-      return;
-    }
-    
-    const pos = positions[currentStop];
-    animationSphere.style.top = `${pos.y - positions[0].y}px`;
-    
-    // Показ экспоната
-    if (pos.showIndex !== undefined) {
-      setTimeout(() => {
-        exhibits[pos.showIndex].classList.add('visible');
-      }, MOVE_DURATION/2);
-    }
-    
-    currentStop++;
-    const delay = pos.pause ? MOVE_DURATION + STOP_DURATION : MOVE_DURATION;
-    animationId = setTimeout(animate, delay);
-  }
-
-  // Завершение
-  function finishAnimation() {
-    discoveryBtn.innerHTML = '<i class="fas fa-scroll"></i>';
-    discoveryBtn.disabled = false;
-  }
-
-  // Инициализация
-  setTimeout(() => {
-    sectionTitle.classList.add('visible');
-  }, 500);
-
-  // Клик по кнопке
-  discoveryBtn.addEventListener('click', toggleAnimation);
-
-  // Ресайз
-  window.addEventListener('resize', () => {
-    if (isOpen) {
-      positions = calculatePositions();
-      animationPath.style.height = `${positions[positions.length-1].y - positions[0].y}px`;
-      
-      if (currentStop > 0) {
-        animationSphere.style.top = `${positions[currentStop-1].y - positions[0].y}px`;
-      }
-    }
-  });
-});
-
-// Функция обновления счетчика корзины
-function updateBasketCounter() {
-  const basket = JSON.parse(localStorage.getItem('basket')) || [];
-  const totalItems = basket.reduce((sum, item) => sum + item.quantity, 0);
-  const basketLinks = document.querySelectorAll('nav ul li a[href="basket.html"]');
-  
-  basketLinks.forEach(link => {
-      let counter = link.querySelector('.basket-counter');
-      
-      if (!counter) {
-          counter = document.createElement('span');
-          counter.className = 'basket-counter';
-          link.appendChild(counter);
-      }
-      
-      counter.textContent = totalItems;
-      counter.style.display = totalItems > 0 ? 'inline-block' : 'none';
-  });
-}
-
-// Обновляем счетчик при загрузке страницы
+// Инициализация счетчика корзины
 document.addEventListener('DOMContentLoaded', updateBasketCounter);
-
-// Обновляем счетчик при изменениях в других вкладках
 window.addEventListener('storage', function(e) {
   if (e.key === 'basket') {
-      updateBasketCounter();
+    updateBasketCounter();
   }
 });
