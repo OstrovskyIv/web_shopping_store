@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
         phoneInput.addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^\d+]/g, '');
+            this.value = this.value.replace(/[^\d+]/g, '').slice(0, 16); 
         });
     }
 
@@ -456,3 +456,32 @@ document.addEventListener('DOMContentLoaded', function () {
     initLiveGeocoding();
 });
 
+// В basket.js в handleFormSubmit после успешного оформления:
+const order = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString(),
+    items: basket,
+    total: totalPrice,
+    status: 'В обработке'
+};
+const orders = JSON.parse(localStorage.getItem('orders')) || [];
+orders.push(order);
+localStorage.setItem('orders', JSON.stringify(orders));
+
+// В shop.js для экскурсий:
+document.querySelector('.book-excursion-btn').addEventListener('click', function() {
+    const excursion = {
+        id: Date.now(),
+        name: document.getElementById('excursionModalTitle').textContent,
+        date: 'Выберите дату', // Можно добавить выбор даты
+        guide: document.getElementById('excursionGuides').selectedOptions[0].text,
+        status: 'Забронировано'
+    };
+    
+    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+    excursions.push(excursion);
+    localStorage.setItem('excursions', JSON.stringify(excursions));
+    
+    alert('Экскурсия забронирована!');
+    closeExcursionModal();
+});
