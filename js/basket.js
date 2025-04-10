@@ -456,7 +456,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initLiveGeocoding();
 });
 
-// В basket.js в handleFormSubmit после успешного оформления:
 const order = {
     id: Date.now(),
     date: new Date().toLocaleDateString(),
