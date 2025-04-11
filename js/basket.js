@@ -398,23 +398,20 @@ function clearBasket() {
     basket = [];
     saveBasket();
     updateBasketDisplay();
+    updateBasketIndicator(); // Добавьте эту строку, если ее нет
 }
 
 // Обновление индикатора корзины (зеленый кружок)
 function updateBasketIndicator() {
     const totalItems = basket.reduce((total, item) => total + item.quantity, 0);
-    const basketIndicator = document.querySelector('.basket-indicator');
+    const basketCounter = document.querySelector('.basket-counter');
     
-    if (basketIndicator) {
-        basketIndicator.style.display = totalItems > 0 ? 'block' : 'none';
-    } else {
-        // Создаем индикатор, если его нет
-        const basketLink = document.querySelector('a[href="basket.html"]');
-        if (basketLink) {
-            const indicator = document.createElement('span');
-            indicator.className = 'basket-indicator';
-            indicator.style.display = totalItems > 0 ? 'block' : 'none';
-            basketLink.appendChild(indicator);
+    if (basketCounter) {
+        if (totalItems > 0) {
+            basketCounter.textContent = totalItems;
+            basketCounter.style.display = 'inline-block';
+        } else {
+            basketCounter.style.display = 'none';
         }
     }
 }
