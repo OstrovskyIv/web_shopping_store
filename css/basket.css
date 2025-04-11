@@ -351,6 +351,7 @@ body {
     position: relative;
     transform: translateY(-20px);
     animation: slideUp 0.3s forwards;
+    opacity: 1;
 }
 
 @keyframes slideUp {
@@ -378,7 +379,7 @@ body {
 .modal-note {
     font-style: italic;
     color: #666;
-    margin-top: 20px !important;
+    margin-top: 20px;
 }
 
 #closeModalBtn {
