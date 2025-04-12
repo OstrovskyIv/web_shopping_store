@@ -1,88 +1,30 @@
-/* Основные стили */
+/* Основные стили для страницы аккаунта */
 .account-container {
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
+    font-family: 'Arial', sans-serif;
 }
 
-/* Стили для гостевого вида */
-.guest-view {
-    text-align: center;
-    padding: 60px 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+/* Стили для профиля пользователя */
+.user-view {
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    margin-bottom: 40px;
 }
 
-.login-prompt i {
-    font-size: 4rem;
-    color: #723308;
-    margin-bottom: 20px;
-}
-
-.login-prompt h2 {
-    font-size: 2.2rem;
-    color: #5a2806;
-    margin-bottom: 15px;
-    font-family: 'MedievalSharp', cursive;
-}
-
-.login-prompt p {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 30px;
-}
-
-.auth-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.btn {
-    padding: 12px 30px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.btn-login {
-    background-color: #723308;
-    color: white;
-    border: 2px solid #723308;
-}
-
-.btn-login:hover {
-    background-color: #5a2806;
-    border-color: #5a2806;
-}
-
-.btn-register {
-    background-color: transparent;
-    color: #723308;
-    border: 2px solid #723308;
-}
-
-.btn-register:hover {
-    background-color: rgba(114, 51, 8, 0.1);
-}
-
-/* Стили для авторизованного пользователя */
 .profile-section {
     display: flex;
     gap: 40px;
     margin-bottom: 50px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .profile-picture {
     flex: 0 0 250px;
     text-align: center;
+    position: relative;
 }
 
 .profile-picture img {
@@ -91,22 +33,33 @@
     border-radius: 50%;
     object-fit: cover;
     border: 5px solid #723308;
-    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-picture:hover img {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn-avatar {
     background-color: #723308;
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 12px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
+    font-size: 1rem;
+    transition: all 0.3s;
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-avatar:hover {
     background-color: #5a2806;
+    transform: translateY(-2px);
 }
 
 .profile-info {
@@ -114,35 +67,57 @@
 }
 
 .profile-name {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: #5a2806;
     margin-bottom: 25px;
     font-family: 'MedievalSharp', cursive;
-    border-bottom: 2px solid #a08060;
+    position: relative;
     padding-bottom: 10px;
 }
 
+.profile-name::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, #723308, #a08060);
+}
+
 .profile-details {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .detail-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-size: 1.1rem;
+    padding: 12px 15px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.detail-item:hover {
+    background-color: rgba(114, 51, 8, 0.05);
+    transform: translateX(5px);
 }
 
 .detail-label {
     width: 150px;
     color: #5a2806;
     font-weight: 600;
+    display: flex;
+    align-items: center;
 }
 
 .detail-label i {
-    margin-right: 10px;
+    margin-right: 12px;
     width: 20px;
     text-align: center;
+    font-size: 1.2rem;
 }
 
 .detail-value {
@@ -157,112 +132,131 @@
     color: #723308;
     cursor: pointer;
     font-size: 0.9rem;
-    text-decoration: underline;
-    padding: 0;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn-show:hover, .btn-change:hover {
-    color: #5a2806;
+    background-color: rgba(114, 51, 8, 0.1);
+}
+
+.btn-show i, .btn-change i {
+    font-size: 0.8rem;
 }
 
 .btn-edit-profile {
     background-color: #723308;
     color: white;
     border: none;
-    padding: 12px 25px;
+    padding: 14px 30px;
     border-radius: 8px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(114, 51, 8, 0.3);
 }
 
 .btn-edit-profile:hover {
     background-color: #5a2806;
-}
-
-.btn-edit-profile i {
-    margin-right: 8px;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(114, 51, 8, 0.4);
 }
 
 /* Стили для секций заказов и экскурсий */
+.orders-section, .excursions-section {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
 .section-title {
     font-size: 2rem;
     color: #5a2806;
     margin-bottom: 25px;
     font-family: 'MedievalSharp', cursive;
+    display: flex;
+    align-items: center;
 }
 
 .section-title i {
     margin-right: 15px;
+    font-size: 1.8rem;
 }
 
-.orders-tabs, .excursions-tabs {
+.tabs-container {
+    margin-bottom: 25px;
+}
+
+.tabs-nav {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
 }
 
 .tab-btn {
-    padding: 8px 20px;
-    background-color: #f0f0f0;
+    padding: 10px 25px;
+    background-color: transparent;
     border: none;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     cursor: pointer;
     font-size: 1rem;
     transition: all 0.3s;
+    position: relative;
+    color: #666;
+    font-weight: 600;
 }
 
 .tab-btn.active {
+    color: #723308;
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 0;
+    width: 100%;
+    height: 3px;
     background-color: #723308;
-    color: white;
 }
 
 .tab-btn:hover:not(.active) {
-    background-color: #e0e0e0;
-}
-
-.empty-orders, .empty-excursions {
-    text-align: center;
-    padding: 40px 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.empty-orders i, .empty-excursions i {
-    font-size: 3rem;
-    color: #723308;
-    margin-bottom: 20px;
-}
-
-.empty-orders p, .empty-excursions p {
-    font-size: 1.3rem;
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.btn-shop {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #723308;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    transition: background-color 0.3s;
-}
-
-.btn-shop:hover {
-    background-color: #5a2806;
+    color: #5a2806;
+    background-color: rgba(114, 51, 8, 0.05);
 }
 
 /* Стили для списка заказов */
+.orders-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
 .order-card {
     background-color: white;
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    border-left: 4px solid #723308;
+    position: relative;
+    overflow: hidden;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .order-header {
@@ -277,39 +271,96 @@
 .order-id {
     font-weight: bold;
     color: #5a2806;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .order-date {
     color: #666;
+    font-size: 0.9rem;
 }
 
 .order-status {
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.status-active {
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-processing {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-completed {
     background-color: #d4edda;
     color: #155724;
 }
 
-.status-completed {
-    background-color: #e2e3e5;
-    color: #383d41;
+.status-cancelled {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.order-items {
+    margin: 15px 0;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.order-item:last-child {
+    margin-bottom: 0;
+}
+
+.item-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 15px;
+    border: 1px solid #eee;
+}
+
+.item-name {
+    flex: 1;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.item-quantity {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: right;
 }
 
 .order-summary {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
 }
 
 .order-total {
     font-weight: bold;
     color: #723308;
+    font-size: 1.2rem;
 }
 
 .order-details-btn {
@@ -317,20 +368,80 @@
     border: none;
     color: #723308;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
     text-decoration: underline;
     padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
 }
 
-/* Адаптация */
-@media (max-width: 768px) {
+.order-details-btn:hover {
+    color: #5a2806;
+    text-decoration: none;
+}
+
+/* Стили для пустых состояний */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    grid-column: 1 / -1;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #723308;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.empty-state p {
+    font-size: 1.3rem;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.btn-shop {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #723308;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(114, 51, 8, 0.3);
+}
+
+.btn-shop:hover {
+    background-color: #5a2806;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(114, 51, 8, 0.4);
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 992px) {
     .profile-section {
         flex-direction: column;
     }
     
     .profile-picture {
-        flex: 1;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .orders-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .account-container {
+        padding: 0 15px;
+    }
+    
+    .user-view, .orders-section, .excursions-section {
+        padding: 25px;
     }
     
     .detail-item {
@@ -342,83 +453,125 @@
         width: auto;
         margin-bottom: 5px;
     }
+    
+    .detail-value {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
 }
 
 /* Ночной режим */
-.night-mode .guest-view,
-.night-mode .profile-section,
-.night-mode .empty-orders,
-.night-mode .empty-excursions,
-.night-mode .order-card {
-    background-color: #2a1e10;
+.night-mode .user-view,
+.night-mode .orders-section,
+.night-mode .excursions-section {
+    background-color: rgba(34, 28, 20, 0.9);
     color: #f5e8d0;
 }
 
-.night-mode .login-prompt h2,
 .night-mode .profile-name,
-.night-mode .section-title,
-.night-mode .order-id {
+.night-mode .section-title {
     color: #d4a017;
 }
 
-.night-mode .login-prompt p,
-.night-mode .detail-value,
-.night-mode .empty-orders p,
-.night-mode .empty-excursions p,
-.night-mode .order-date {
-    color: #d4b483;
+.night-mode .profile-name::after {
+    background: linear-gradient(to right, #d4a017, #a08060);
 }
 
-.night-mode .btn-login,
-.night-mode .btn-avatar,
-.night-mode .btn-edit-profile,
-.night-mode .btn-shop,
-.night-mode .tab-btn.active {
-    background-color: #d4a017;
-    color: #2a1e10;
+.night-mode .detail-item {
+    background-color: rgba(46, 40, 32, 0.7);
+    color: #f5e8d0;
 }
 
-.night-mode .btn-login:hover,
-.night-mode .btn-avatar:hover,
-.night-mode .btn-edit-profile:hover,
-.night-mode .btn-shop:hover {
-    background-color: #c19215;
-}
-
-.night-mode .btn-register {
-    color: #d4a017;
-    border-color: #d4a017;
-}
-
-.night-mode .btn-register:hover {
+.night-mode .detail-item:hover {
     background-color: rgba(212, 160, 23, 0.1);
-}
-
-.night-mode .profile-picture img {
-    border-color: #d4a017;
 }
 
 .night-mode .detail-label {
     color: #d4a017;
 }
 
+.night-mode .detail-value {
+    color: #d4b483;
+}
+
+.night-mode .btn-show,
+.night-mode .btn-change,
+.night-mode .order-details-btn {
+    color: #d4a017;
+}
+
+.night-mode .btn-show:hover,
+.night-mode .btn-change:hover {
+    background-color: rgba(212, 160, 23, 0.2);
+}
+
+.night-mode .btn-avatar,
+.night-mode .btn-edit-profile,
+.night-mode .btn-shop {
+    background-color: #d4a017;
+    color: #2a1e10;
+}
+
+.night-mode .btn-avatar:hover,
+.night-mode .btn-edit-profile:hover,
+.night-mode .btn-shop:hover {
+    background-color: #c19215;
+}
+
+.night-mode .profile-picture img {
+    border-color: #d4a017;
+}
+
 .night-mode .tab-btn {
-    background-color: #3a2e20;
-    color: #f5e8d0;
+    color: #d4b483;
+}
+
+.night-mode .tab-btn.active {
+    color: #d4a017;
+}
+
+.night-mode .tab-btn.active::after {
+    background-color: #d4a017;
 }
 
 .night-mode .tab-btn:hover:not(.active) {
-    background-color: #4a3e30;
+    color: #d4a017;
+    background-color: rgba(212, 160, 23, 0.1);
 }
 
-.night-mode .order-header {
-    border-bottom-color: #5c3a21;
+.night-mode .order-card {
+    background-color: #2a1e10;
+    border-left-color: #d4a017;
+}
+
+.night-mode .order-id {
+    color: #d4a017;
+}
+
+.night-mode .order-date {
+    color: #a08060;
+}
+
+.night-mode .order-item {
+    background-color: rgba(46, 40, 32, 0.7);
+}
+
+.night-mode .item-name {
+    color: #f5e8d0;
+}
+
+.night-mode .item-quantity {
+    color: #d4b483;
 }
 
 .night-mode .order-total {
     color: #d4a017;
 }
 
-.night-mode .order-details-btn {
+.night-mode .empty-state i {
     color: #d4a017;
+}
+
+.night-mode .empty-state p {
+    color: #d4b483;
 }
