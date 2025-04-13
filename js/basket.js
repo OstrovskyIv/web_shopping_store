@@ -59,7 +59,7 @@ function searchOnMap(country, city, address) {
     });
 }
 
-// Создание анимированной метки (исправленная версия)
+// Создание анимированной метки
 function createAnimatedPlacemark(coords, balloonText) {
     return new ymaps.Placemark(coords, {
         balloonContent: balloonText,
@@ -157,7 +157,7 @@ function showSuccessMessage(country, city, address) {
     });
 }
 
-// Обработка отправки формы (исправленная версия)
+// Обработка отправки формы
 function handleFormSubmit(form) {
     if (basket.length === 0) {
         const basketSection = document.querySelector('.basket-section');
@@ -258,12 +258,16 @@ function handleFormSubmit(form) {
     }
 }
 
-// Функции для работы с корзиной
+// Функции для работы с корзиной (ИСПРАВЛЕННЫЕ)
 function updateBasketDisplay() {
     const basketItemsContainer = document.getElementById('basketItems');
     const totalQuantityElement = document.getElementById('totalQuantity');
     const totalPriceElement = document.getElementById('totalPrice');
     const checkoutBtn = document.getElementById('checkoutBtn');
+
+    // Рассчитываем суммы по всей корзине
+    const totalQuantity = basket.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = basket.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     if (basket.length === 0) {
         basketItemsContainer.innerHTML = `
@@ -280,33 +284,26 @@ function updateBasketDisplay() {
         return;
     }
 
-    let totalQuantity = 0;
-    let totalPrice = 0;
     const showAll = basketItemsContainer.classList.contains('show-all');
     const itemsToShow = showAll ? basket : basket.slice(0, 5);
 
-    basketItemsContainer.innerHTML = itemsToShow.map(item => {
-        totalQuantity += item.quantity;
-        totalPrice += item.price * item.quantity;
-
-        return `
-            <div class="basket-item" data-id="${item.id}">
-                <img src="${item.image}" alt="${item.name}" class="basket-item-image">
-                <div class="basket-item-details">
-                    <h3 class="basket-item-title">${item.name}</h3>
-                    <p class="basket-item-price">${item.price.toFixed(2)} $</p>
-                </div>
-                <div class="basket-item-actions">
-                    <div class="quantity-control">
-                        <button class="quantity-btn minus-btn">-</button>
-                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="999">
-                        <button class="quantity-btn plus-btn">+</button>
-                    </div>
-                    <button class="remove-item-btn">✕</button>
-                </div>
+    basketItemsContainer.innerHTML = itemsToShow.map(item => `
+        <div class="basket-item" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.name}" class="basket-item-image">
+            <div class="basket-item-details">
+                <h3 class="basket-item-title">${item.name}</h3>
+                <p class="basket-item-price">${item.price.toFixed(2)} $</p>
             </div>
-        `;
-    }).join('');
+            <div class="basket-item-actions">
+                <div class="quantity-control">
+                    <button class="quantity-btn minus-btn">-</button>
+                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="999">
+                    <button class="quantity-btn plus-btn">+</button>
+                </div>
+                <button class="remove-item-btn">✕</button>
+            </div>
+        </div>
+    `).join('');
 
     if (basket.length > 5 && !showAll) {
         basketItemsContainer.innerHTML += `
@@ -350,6 +347,7 @@ function updateBasketDisplay() {
     updateBasketIndicator();
 }
 
+// Остальные функции корзины
 function decreaseQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
     const itemId = itemElement.dataset.id;
