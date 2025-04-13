@@ -339,4 +339,3 @@ document.querySelector('.book-excursion-btn').addEventListener('click', function
     alert('Экскурсия забронирована!');
     closeExcursionModal();
 });
-

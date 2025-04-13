@@ -258,7 +258,6 @@ function handleFormSubmit(form) {
     }
 }
 
-// Функции для работы с корзиной (ИСПРАВЛЕННЫЕ)
 function updateBasketDisplay() {
     const basketItemsContainer = document.getElementById('basketItems');
     const totalQuantityElement = document.getElementById('totalQuantity');
@@ -283,7 +282,7 @@ function updateBasketDisplay() {
         updateBasketIndicator();
         return;
     }
-
+  
     const showAll = basketItemsContainer.classList.contains('show-all');
     const itemsToShow = showAll ? basket : basket.slice(0, 5);
 
@@ -320,18 +319,30 @@ function updateBasketDisplay() {
     totalPriceElement.textContent = `${totalPrice.toFixed(2)} $`;
     checkoutBtn.disabled = false;
 
+    // Удаляем старые обработчики перед добавлением новых
+    document.querySelectorAll('.minus-btn').forEach(btn => {
+        btn.removeEventListener('click', decreaseQuantity);
+    });
+    document.querySelectorAll('.plus-btn').forEach(btn => {
+        btn.removeEventListener('click', increaseQuantity);
+    });
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.removeEventListener('change', updateQuantity);
+    });
+    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+        btn.removeEventListener('click', removeItem);
+    });
+
+    // Добавляем новые обработчики
     document.querySelectorAll('.minus-btn').forEach(btn => {
         btn.addEventListener('click', decreaseQuantity);
     });
-
     document.querySelectorAll('.plus-btn').forEach(btn => {
         btn.addEventListener('click', increaseQuantity);
     });
-
     document.querySelectorAll('.quantity-input').forEach(input => {
         input.addEventListener('change', updateQuantity);
     });
-
     document.querySelectorAll('.remove-item-btn').forEach(btn => {
         btn.addEventListener('click', removeItem);
     });
@@ -392,9 +403,15 @@ function removeItem(e) {
     const itemElement = e.target.closest('.basket-item');
     const itemId = itemElement.dataset.id;
     
-    basket = basket.filter(item => item.id !== itemId);
-    saveBasket();
-    updateBasketDisplay();
+    // Анимация удаления
+    itemElement.style.opacity = '0';
+    itemElement.style.transform = 'translateX(-100px)';
+    
+    setTimeout(() => {
+        basket = basket.filter(item => item.id !== itemId);
+        saveBasket();
+        updateBasketDisplay();
+    }, 300);
 }
 
 function saveBasket() {
