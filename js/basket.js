@@ -3,7 +3,7 @@ let basket = JSON.parse(localStorage.getItem('basket')) || [];
 let map;
 let currentPlacemark;
 
-// Функция для дебаунса (задержки выполнения)
+// Функция для дебаунса
 function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -59,19 +59,14 @@ function searchOnMap(country, city, address) {
     });
 }
 
-// Создание анимированной метки
+// Создание анимированной метки (исправленная версия)
 function createAnimatedPlacemark(coords, balloonText) {
     return new ymaps.Placemark(coords, {
         balloonContent: balloonText,
         hintContent: 'Выбранная точка'
     }, {
-        iconLayout: 'default#imageWithContent',
-        iconImageHref: 'https://yastatic.net/s3/mapsapi-icons/v1.0/placemark-blue.svg',
-        iconImageSize: [40, 40],
-        iconImageOffset: [-20, -40],
-        iconContentOffset: [0, 0],
-        iconContentLayout: null,
-        openBalloonOnClick: true
+        preset: 'islands#blueDotIcon',
+        iconColor: '#1e98ff'
     });
 }
 
@@ -162,20 +157,11 @@ function showSuccessMessage(country, city, address) {
     });
 }
 
-// Ночной режим
-function initNightMode() {
-    if (document.body.classList.contains('night-mode')) {
-        document.body.style.backgroundColor = '#111';
-    }
-}
-
-// Обработка отправки формы
+// Обработка отправки формы (исправленная версия)
 function handleFormSubmit(form) {
     if (basket.length === 0) {
         const basketSection = document.querySelector('.basket-section');
-        // Прокрутка к корзине с анимацией
         basketSection.scrollIntoView({ behavior: 'smooth' });
-        // Подсветка корзины
         basketSection.style.border = '2px solid red';
         basketSection.style.animation = 'shake 0.5s';
         setTimeout(() => {
@@ -197,8 +183,6 @@ function handleFormSubmit(form) {
     ];
 
     let isValid = true;
-
-    // Проверка обязательных полей
     inputs.forEach(input => {
         if (!input.value.trim()) {
             input.classList.add('error');
@@ -208,7 +192,6 @@ function handleFormSubmit(form) {
         }
     });
 
-    // Проверка email
     const email = document.getElementById('email').value;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         document.getElementById('email').classList.add('error');
@@ -216,9 +199,40 @@ function handleFormSubmit(form) {
         alert('Пожалуйста, введите корректный email адрес!');
     }
 
-    if (!isValid) {
-        return;
-    }
+    if (!isValid) return;
+
+    const order = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }),
+        items: basket.map(item => ({
+            id: item.id,
+            name: item.name,
+            image: item.image,
+            price: parseFloat(item.price),
+            quantity: parseInt(item.quantity)
+        })),
+        total: parseFloat(basket.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)),
+        status: 'В обработке',
+        customer: {
+            name: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value
+        },
+        address: {
+            country: document.getElementById('country').value,
+            city: document.getElementById('city').value,
+            address: document.getElementById('address').value,
+            zip: document.getElementById('zip').value
+        }
+    };
+
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    orders.push(order);
+    localStorage.setItem('orders', JSON.stringify(orders));
 
     if (typeof ymaps !== 'undefined') {
         const country = document.getElementById('country').value;
@@ -260,7 +274,7 @@ function updateBasketDisplay() {
             </div>
         `;
         totalQuantityElement.textContent = '0';
-        totalPriceElement.textContent = '0.00 $.';
+        totalPriceElement.textContent = '0.00 $';
         checkoutBtn.disabled = true;
         updateBasketIndicator();
         return;
@@ -280,7 +294,7 @@ function updateBasketDisplay() {
                 <img src="${item.image}" alt="${item.name}" class="basket-item-image">
                 <div class="basket-item-details">
                     <h3 class="basket-item-title">${item.name}</h3>
-                    <p class="basket-item-price">${item.price.toFixed(2)} $.</p>
+                    <p class="basket-item-price">${item.price.toFixed(2)} $</p>
                 </div>
                 <div class="basket-item-actions">
                     <div class="quantity-control">
@@ -294,7 +308,6 @@ function updateBasketDisplay() {
         `;
     }).join('');
 
-    // Добавляем кнопку "Показать еще" если товаров больше 5
     if (basket.length > 5 && !showAll) {
         basketItemsContainer.innerHTML += `
             <div class="show-more-container">
@@ -307,10 +320,9 @@ function updateBasketDisplay() {
     }
 
     totalQuantityElement.textContent = totalQuantity;
-    totalPriceElement.textContent = `${totalPrice.toFixed(2)} $.`;
+    totalPriceElement.textContent = `${totalPrice.toFixed(2)} $`;
     checkoutBtn.disabled = false;
 
-    // Обработчики событий
     document.querySelectorAll('.minus-btn').forEach(btn => {
         btn.addEventListener('click', decreaseQuantity);
     });
@@ -327,7 +339,6 @@ function updateBasketDisplay() {
         btn.addEventListener('click', removeItem);
     });
 
-    // Обработчик кнопки "Показать еще"
     const showMoreBtn = document.getElementById('showMoreBtn');
     if (showMoreBtn) {
         showMoreBtn.addEventListener('click', function() {
@@ -336,7 +347,6 @@ function updateBasketDisplay() {
         });
     }
 
-    // Обновляем индикатор корзины
     updateBasketIndicator();
 }
 
@@ -398,10 +408,8 @@ function clearBasket() {
     basket = [];
     saveBasket();
     updateBasketDisplay();
-    updateBasketIndicator(); // Добавьте эту строку, если ее нет
 }
 
-// Обновление индикатора корзины (зеленый кружок)
 function updateBasketIndicator() {
     const totalItems = basket.reduce((total, item) => total + item.quantity, 0);
     const basketCounter = document.querySelector('.basket-counter');
@@ -429,7 +437,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Ограничение ввода для телефона (только цифры)
     const phoneInput = document.getElementById('phone');
     if (phoneInput) {
         phoneInput.addEventListener('input', function(e) {
@@ -437,47 +444,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Обработчик для кнопки "Оформить заказ" в корзине
     const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            // Прокрутка к форме заказа
             document.querySelector('.delivery-form-container').scrollIntoView({
                 behavior: 'smooth'
             });
         });
     }
 
-    initNightMode();
     initLiveGeocoding();
-});
-
-const order = {
-    id: Date.now(),
-    date: new Date().toLocaleDateString(),
-    items: basket,
-    total: totalPrice,
-    status: 'В обработке'
-};
-const orders = JSON.parse(localStorage.getItem('orders')) || [];
-orders.push(order);
-localStorage.setItem('orders', JSON.stringify(orders));
-
-// В shop.js для экскурсий:
-document.querySelector('.book-excursion-btn').addEventListener('click', function() {
-    const excursion = {
-        id: Date.now(),
-        name: document.getElementById('excursionModalTitle').textContent,
-        date: 'Выберите дату', // Можно добавить выбор даты
-        guide: document.getElementById('excursionGuides').selectedOptions[0].text,
-        status: 'Забронировано'
-    };
-    
-    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
-    excursions.push(excursion);
-    localStorage.setItem('excursions', JSON.stringify(excursions));
-    
-    alert('Экскурсия забронирована!');
-    closeExcursionModal();
 });
