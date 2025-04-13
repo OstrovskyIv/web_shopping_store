@@ -1,91 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Загружаем данные пользователя сразу (без проверки авторизации)
-    loadUserData();
-    loadOrders();
-    loadExcursions();
-    
-    // Загрузка/изменение аватарки
-    const avatarUpload = document.getElementById('avatarUpload');
-    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
-    const userAvatar = document.getElementById('userAvatar');
-    
-    changeAvatarBtn.addEventListener('click', function() {
-        avatarUpload.click();
-    });
-    
-    avatarUpload.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                userAvatar.src = event.target.result;
-                // Сохраняем в localStorage
-                localStorage.setItem('userAvatar', event.target.result);
+// Очистка некорректных данных заказов
+function cleanUpOrdersData() {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const cleanedOrders = orders.map(order => {
+        if (typeof order.total === 'object') {
+            return {
+                ...order,
+                total: parseFloat(order.items?.reduce((sum, item) => 
+                    sum + (item.price * item.quantity), 0) || 0)
             };
-            reader.readAsDataURL(file);
         }
-    });
+        return order;
+    }).filter(order => order.items && order.items.length > 0);
     
-    // Проверяем сохраненную аватарку
-    const savedAvatar = localStorage.getItem('userAvatar');
-    if (savedAvatar) {
-        userAvatar.src = savedAvatar;
-    }
-    
-    // Кнопки "Показать" для данных
-    document.querySelectorAll('.btn-show').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const field = this.getAttribute('data-field');
-            const valueElement = document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`);
-            
-            if (this.textContent === 'Показать') {
-                // Тестовые данные
-                const fullValue = {
-                    'email': 'ivanov@gmail.com',
-                    'phone': '+375 29 123 45 67'
-                }[field];
-                
-                valueElement.textContent = fullValue;
-                this.textContent = 'Скрыть';
-            } else {
-                // Маскируем данные
-                const maskedValue = {
-                    'email': 'iva*****@gmail.com',
-                    'phone': '+375 ** *** ** 67'
-                }[field];
-                
-                valueElement.textContent = maskedValue;
-                this.textContent = 'Показать';
-            }
-        });
-    });
-    
-    // Кнопки табов
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const tab = this.getAttribute('data-tab');
-            const tabContainer = this.closest('.orders-tabs') || this.closest('.excursions-tabs');
-            
-            // Убираем активный класс у всех кнопок в контейнере
-            tabContainer.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            
-            // Добавляем активный класс текущей кнопке
-            this.classList.add('active');
-            
-            // Фильтрация заказов/экскурсий
-            if (tabContainer.classList.contains('orders-tabs')) {
-                filterOrders(tab);
-            } else {
-                filterExcursions(tab);
-            }
-        });
-    });
-});
+    localStorage.setItem('orders', JSON.stringify(cleanedOrders));
+}
 
+// Загрузка данных пользователя
 function loadUserData() {
-    // Тестовые данные пользователя
     const userData = {
         name: 'Иван Иванов',
         email: 'ivanov@gmail.com',
@@ -97,21 +28,10 @@ function loadUserData() {
     document.getElementById('userPhone').textContent = '+375 ** *** ** 67';
 }
 
+// Загрузка заказов (исправленная версия)
 function loadOrders() {
-    // Тестовые данные заказов (можно заменить на свои)
-    const orders = [
-        {
-            id: '1001',
-            date: '15.04.2023',
-            status: 'В обработке',
-            items: [
-                { name: 'Книга "Тайны Хижины"', quantity: 1, image: 'pictures/book.jpg' },
-                { name: 'Футболка Gravity Falls', quantity: 2, image: 'pictures/t-shirt.jpg' }
-            ],
-            total: '45.99'
-        }
-    ];
-    
+    cleanUpOrdersData();
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
     const ordersList = document.getElementById('ordersList');
     
     if (orders.length === 0) {
@@ -125,7 +45,12 @@ function loadOrders() {
         return;
     }
     
-    ordersList.innerHTML = orders.map(order => `
+    ordersList.innerHTML = orders.map(order => {
+        const total = typeof order.total === 'number' ? 
+            order.total.toFixed(2) : 
+            parseFloat(order.total || 0).toFixed(2);
+            
+        return `
         <div class="order-card" data-status="${order.status === 'В обработке' ? 'active' : 'completed'}">
             <div class="order-header">
                 <span class="order-id">Заказ #${order.id}</span>
@@ -140,29 +65,80 @@ function loadOrders() {
                         <img src="${item.image}" alt="${item.name}" class="item-image">
                         <span class="item-name">${item.name}</span>
                         <span class="item-quantity">${item.quantity} шт.</span>
+                        <span class="item-price">${item.price.toFixed(2)} $</span>
                     </div>
                 `).join('')}
                 ${order.items.length > 3 ? `<div class="more-items">+${order.items.length - 3} еще</div>` : ''}
             </div>
             <div class="order-summary">
-                <span class="order-total">Итого: ${order.total} $.</span>
-                <button class="order-details-btn">Подробнее</button>
+                <span class="order-total">Итого: ${total} $</span>
+                <button class="order-details-btn" data-order-id="${order.id}">Подробнее</button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
+
+    // Обработчики для кнопок "Подробнее"
+    document.querySelectorAll('.order-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const orderId = parseInt(this.getAttribute('data-order-id'));
+            const order = orders.find(o => o.id === orderId);
+            if (order) showOrderDetails(order);
+        });
+    });
 }
 
-function loadExcursions() {
-    // Тестовые данные экскурсий (можно заменить на свои)
-    const excursions = [
-        {
-            name: 'Тур по тайным местам',
-            date: '20.05.2023',
-            status: 'Забронировано',
-            guide: 'Диппер Пайнс'
-        }
-    ];
+// Показ деталей заказа
+function showOrderDetails(order) {
+    const modal = document.createElement('div');
+    modal.className = 'order-modal';
     
+    const total = typeof order.total === 'number' ? 
+        order.total.toFixed(2) : 
+        parseFloat(order.total || 0).toFixed(2);
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Детали заказа #${order.id}</h2>
+            <div class="order-info">
+                <p><strong>Дата:</strong> ${order.date}</p>
+                <p><strong>Статус:</strong> ${order.status}</p>
+                <p><strong>Итого:</strong> ${total} $</p>
+            </div>
+            <div class="order-items-details">
+                <h3>Товары:</h3>
+                ${order.items.map(item => `
+                    <div class="order-item-detail">
+                        <img src="${item.image}" alt="${item.name}" class="item-image">
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <p>Цена: ${item.price.toFixed(2)} $</p>
+                            <p>Количество: ${item.quantity}</p>
+                            <p>Сумма: ${(item.price * item.quantity).toFixed(2)} $</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// Загрузка экскурсий
+function loadExcursions() {
+    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
     const excursionsList = document.getElementById('excursionsList');
     
     if (excursions.length === 0) {
@@ -191,11 +167,12 @@ function loadExcursions() {
                     ${exc.status}
                 </div>
             </div>
-            <button class="excursion-details-btn">Подробнее</button>
+            <button class="excursion-details-btn" data-excursion-id="${exc.id}">Подробнее</button>
         </div>
     `).join('');
 }
 
+// Фильтрация заказов
 function filterOrders(filter) {
     const orderCards = document.querySelectorAll('.order-card');
     
@@ -208,6 +185,7 @@ function filterOrders(filter) {
     });
 }
 
+// Фильтрация экскурсий
 function filterExcursions(filter) {
     const excursionCards = document.querySelectorAll('.excursion-card');
     
@@ -219,3 +197,84 @@ function filterExcursions(filter) {
         }
     });
 }
+
+// Инициализация страницы
+document.addEventListener('DOMContentLoaded', function() {
+    cleanUpOrdersData();
+    loadUserData();
+    loadOrders();
+    loadExcursions();
+
+    // Загрузка/изменение аватарки
+    const avatarUpload = document.getElementById('avatarUpload');
+    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+    const userAvatar = document.getElementById('userAvatar');
+    
+    changeAvatarBtn.addEventListener('click', function() {
+        avatarUpload.click();
+    });
+    
+    avatarUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                userAvatar.src = event.target.result;
+                localStorage.setItem('userAvatar', event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Проверяем сохраненную аватарку
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+        userAvatar.src = savedAvatar;
+    }
+    
+    // Кнопки "Показать" для данных
+    document.querySelectorAll('.btn-show').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const field = this.getAttribute('data-field');
+            const valueElement = document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            
+            if (this.textContent === 'Показать') {
+                const fullValue = {
+                    'email': 'ivanov@gmail.com',
+                    'phone': '+375 29 123 45 67'
+                }[field];
+                
+                valueElement.textContent = fullValue;
+                this.textContent = 'Скрыть';
+            } else {
+                const maskedValue = {
+                    'email': 'iva*****@gmail.com',
+                    'phone': '+375 ** *** ** 67'
+                }[field];
+                
+                valueElement.textContent = maskedValue;
+                this.textContent = 'Показать';
+            }
+        });
+    });
+    
+    // Кнопки табов
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tab = this.getAttribute('data-tab');
+            const tabContainer = this.closest('.orders-tabs') || this.closest('.excursions-tabs');
+            
+            tabContainer.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            
+            this.classList.add('active');
+            
+            if (tabContainer.classList.contains('orders-tabs')) {
+                filterOrders(tab);
+            } else {
+                filterExcursions(tab);
+            }
+        });
+    });
+});
