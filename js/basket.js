@@ -359,23 +359,42 @@ function updateBasketDisplay() {
 }
 
 // Остальные функции корзины
+// Уменьшение количества
 function decreaseQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
+    if (!itemElement) return;
+    
     const itemId = itemElement.dataset.id;
     const item = basket.find(item => item.id === itemId);
+    
+    if (!item) {
+        console.error('Item not found:', itemId);
+        return;
+    }
 
     if (item.quantity > 1) {
         item.quantity--;
         saveBasket();
         updateBasketDisplay();
+    } else {
+        // Если количество 1 - удаляем полностью
+        removeItem(e);
     }
 }
 
+// Увеличение количества (исправленная версия)
 function increaseQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
+    if (!itemElement) return;
+    
     const itemId = itemElement.dataset.id;
     const item = basket.find(item => item.id === itemId);
     
+    if (!item) {
+        console.error('Item not found:', itemId);
+        return;
+    }
+
     if (item.quantity < 999) {
         item.quantity++;
         saveBasket();
@@ -383,27 +402,36 @@ function increaseQuantity(e) {
     }
 }
 
+// Обновление количества (исправленная версия)
 function updateQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
+    if (!itemElement) return;
+    
     const itemId = itemElement.dataset.id;
     const item = basket.find(item => item.id === itemId);
-    let newQuantity = parseInt(e.target.value);
+    
+    if (!item) {
+        console.error('Item not found:', itemId);
+        return;
+    }
 
-    if (isNaN(newQuantity)) newQuantity = 1;
-    if (newQuantity < 1) newQuantity = 1;
-    if (newQuantity > 999) newQuantity = 999;
-
+    let newQuantity = parseInt(e.target.value) || 1;
+    newQuantity = Math.max(1, Math.min(999, newQuantity));
+    
     item.quantity = newQuantity;
-    e.target.value = newQuantity;
     saveBasket();
     updateBasketDisplay();
 }
 
+// Удаление товара (исправленная версия)
 function removeItem(e) {
     const itemElement = e.target.closest('.basket-item');
+    if (!itemElement) return;
+    
     const itemId = itemElement.dataset.id;
     
     // Анимация удаления
+    itemElement.style.transition = 'all 0.3s ease';
     itemElement.style.opacity = '0';
     itemElement.style.transform = 'translateX(-100px)';
     
@@ -411,6 +439,9 @@ function removeItem(e) {
         basket = basket.filter(item => item.id !== itemId);
         saveBasket();
         updateBasketDisplay();
+        
+        // Полное удаление элемента из DOM
+        itemElement.remove();
     }, 300);
 }
 
@@ -471,3 +502,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     initLiveGeocoding();
 });
+
