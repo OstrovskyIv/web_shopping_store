@@ -107,25 +107,70 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Функции для работы с корзиной
 function generateProductId(productName) {
-  return productName.toLowerCase().replace(/\s+/g, '-');
+    return productName.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-zа-яё0-9-]/g, '') // Добавлена поддержка кириллицы
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        + '-' + Date.now().toString(36); // Добавление временной метки
 }
 
 function addToBasket(product) {
-  let basket = JSON.parse(localStorage.getItem('basket')) || [];
-  const existingItemIndex = basket.findIndex(item => item.id === product.id);
-  
-  if (existingItemIndex !== -1) {
-      // Товар уже есть - увеличиваем количество
-      basket[existingItemIndex].quantity += 1;
-      showToast(`Количество "${product.name}" увеличено до ${basket[existingItemIndex].quantity}`);
-  } else {
-      // Новый товар - добавляем
-      basket.push(product);
-      showToast(`"${product.name}" добавлен в корзину!`);
-  }
-  
-  localStorage.setItem('basket', JSON.stringify(basket));
-  updateBasketCounter();
+    // Получаем текущую корзину из localStorage
+    let basket = JSON.parse(localStorage.getItem('basket')) || [];
+    
+    // Проверка валидности объекта товара
+    if (!product || !product.name || typeof product.price !== 'number') {
+        console.error('Invalid product object:', product);
+        showToast('Ошибка добавления товара');
+        return;
+    }
+
+    // Генерация уникального ID с временной меткой
+    const generateProductId = (name) => {
+        return `${name.toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-zа-яё0-9-]/g, '')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '')}-${Date.now().toString(36)}`;
+    };
+
+    // Создаем объект товара с обязательными полями
+    const basketItem = {
+        id: product.id || generateProductId(product.name),
+        name: product.name,
+        image: product.image || 'images/default-product.png',
+        price: parseFloat(product.price.toFixed(2)),
+        quantity: Math.min(Math.max(1, product.quantity || 1), 999)
+    };
+
+    // Поиск существующего товара
+    const existingIndex = basket.findIndex(item => 
+        item.id === basketItem.id && 
+        item.price === basketItem.price
+    );
+
+    if (existingIndex > -1) {
+        // Обновление количества
+        basket[existingIndex].quantity = Math.min(
+            basket[existingIndex].quantity + (product.quantity || 1),
+            999
+        );
+        showToast(`Количество "${product.name}" обновлено: ${basket[existingIndex].quantity}`);
+    } else {
+        // Добавление нового товара
+        basket.push(basketItem);
+        showToast(`"${product.name}" добавлен в корзину!`);
+    }
+
+    // Сохраняем обновленную корзину
+    localStorage.setItem('basket', JSON.stringify(basket));
+    updateBasketCounter();
+    
+    // Обновляем связанные вкладки
+    if (window.location.pathname.includes('basket.html')) {
+        updateBasketDisplay();
+    }
 }
 
 // Функция обновления счетчика корзины
@@ -339,3 +384,4 @@ document.querySelector('.book-excursion-btn').addEventListener('click', function
     alert('Экскурсия забронирована!');
     closeExcursionModal();
 });
+
