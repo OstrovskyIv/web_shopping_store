@@ -4,6 +4,10 @@ body {
   font-family: Arial, sans-serif; 
 }
 
+a {
+  color: white;
+}
+
 header {
   display: flex;
   justify-content: center;
@@ -317,7 +321,7 @@ h1 {
   width: 50%;
   border-radius: 10px;
   text-align: center;
-  color: white;
+  color: rgb(255, 255, 255);
   position: relative;
   z-index: 1002;
 }
@@ -1658,7 +1662,7 @@ nav ul li a .basket-counter {
 .modal-content {
   transition: opacity 0.3s ease, transform 0.3s ease;
   transform: translateY(-20px);
-  opacity: 0;
+  opacity: 1;
 }
 
 .modal-content.show {
