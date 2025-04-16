@@ -598,5 +598,5 @@ nav ul li a .basket-counter {
     left: 0;
     width: var(--fill-percent);
     overflow: hidden;
-    color: gold;
+    color: rgb(189, 164, 25);
 }
