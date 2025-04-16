@@ -27,7 +27,6 @@
     </header>
 
     <main class="account-container">
-        <!-- Блок для авторизованных пользователей -->
         <div id="userView" class="user-view">
             <div class="profile-section">
                 <div class="profile-picture">
@@ -50,36 +49,54 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-label"><i class="fas fa-phone"></i> Телефон:</span>
-                            <span class="detail-value" id="userPhone">+375 ** *** ** 45</span>
+                            <span class="detail-value" id="userPhone">+375 ** *** ** 67</span>
                             <button class="btn-show" data-field="phone">Показать</button>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label"><i class="fas fa-key"></i> Пароль:</span>
-                            <span class="detail-value">••••••••</span>
-                            <button class="btn-show" data-field="password">Показать</button>
+                            <span class="detail-label"><i class="fas fa-shopping-bag"></i> Заказов:</span>
+                            <span class="detail-value" id="orderCount">0</span>
                         </div>
                     </div>
-                    <button class="btn-edit-profile">
-                        <i class="fas fa-edit"></i> Редактировать профиль
-                    </button>
+                    <div class="profile-actions">
+                        <button class="btn-details">
+                            <i class="fas fa-info-circle"></i> Подробнее
+                        </button>
+                        <button class="btn-edit-profile">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                    </div>
+                    <div class="full-details" id="fullDetails" style="display: none;">
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-home"></i> Адрес:</span>
+                            <span class="detail-value" id="userAddress">Не указан</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-birthday-cake"></i> Дата рождения:</span>
+                            <span class="detail-value" id="userBirthday">Не указана</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-user"></i> О себе:</span>
+                            <span class="detail-value" id="userAbout">Не указано</span>
+                        </div>
+                    </div>
                 </div>
             </div>
     
-            <!-- Секция заказов -->
             <section class="orders-section">
                 <h2 class="section-title">
                     <i class="fas fa-shopping-bag"></i> Мои заказы
                 </h2>
                 
-                <div class="orders-tabs">
-                    <button class="tab-btn active" data-tab="all">Все заказы</button>
-                    <button class="tab-btn" data-tab="active">Активные</button>
-                    <button class="tab-btn" data-tab="completed">Завершенные</button>
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="all">Все заказы</button>
+                        <button class="tab-btn" data-tab="active">Активные</button>
+                        <button class="tab-btn" data-tab="completed">Завершенные</button>
+                    </div>
                 </div>
                 
                 <div class="orders-list" id="ordersList">
-                    <!-- Заказы будут загружаться через JS -->
-                    <div class="empty-orders">
+                    <div class="empty-state">
                         <i class="fas fa-box-open"></i>
                         <p>У вас пока нет заказов</p>
                         <a href="shop.html" class="btn-shop">Перейти в магазин</a>
@@ -87,20 +104,20 @@
                 </div>
             </section>
     
-            <!-- Секция экскурсий -->
             <section class="excursions-section">
                 <h2 class="section-title">
                     <i class="fas fa-map-marked-alt"></i> Мои экскурсии
                 </h2>
                 
-                <div class="excursions-tabs">
-                    <button class="tab-btn active" data-tab="upcoming">Предстоящие</button>
-                    <button class="tab-btn" data-tab="past">Прошедшие</button>
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="upcoming">Предстоящие</button>
+                        <button class="tab-btn" data-tab="past">Прошедшие</button>
+                    </div>
                 </div>
                 
                 <div class="excursions-list" id="excursionsList">
-                    <!-- Экскурсии будут загружаться через JS -->
-                    <div class="empty-excursions">
+                    <div class="empty-state">
                         <i class="fas fa-binoculars"></i>
                         <p>У вас нет активных экскурсий</p>
                         <a href="shop.html#excursions" class="btn-shop">Посмотреть экскурсии</a>
@@ -110,7 +127,6 @@
         </div>
     </main>
 
-    <!-- Футер (как на других страницах) -->
     <footer class="footer">
         <p>&copy; Сайт создан для фанатов Gravity Falls и не связан с Disney</p>
         <div class="social-icons">
