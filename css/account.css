@@ -85,7 +85,11 @@
 }
 
 .profile-details {
-    margin-bottom: 30px;
+    max-width: 600px;  /* Фиксированная ширина для ограничения */
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 10px;
 }
 
 .detail-item {
@@ -183,33 +187,59 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Стили для модального окна редактирования */
+.total-spent {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    font-size: 1.1rem;
+    color: #5a2806;
+    font-weight: 600;
+    padding: 12px 15px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+}
+
+.total-spent i {
+    margin-right: 10px;
+    color: #723308;
+}
+
+/* Стили для модального окна редактирования профиля */
 .edit-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(5px);
 }
 
 .edit-modal .modal-content {
-    background: white;
+    background: linear-gradient(135deg, #f9f5f0 0%, #f0e6d9 100%);
     padding: 30px;
-    border-radius: 15px;
+    border-radius: 20px;
     width: 100%;
     max-width: 500px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    animation: modalOpen 0.3s ease;
+    box-shadow: 0 20px 40px rgba(114, 51, 8, 0.3);
+    border: 1px solid #d4b78f;
+    animation: modalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes modalOpen {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+.edit-modal .modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(90deg, #723308, #a08060);
 }
 
 .edit-modal h2 {
@@ -217,10 +247,25 @@
     margin-bottom: 25px;
     text-align: center;
     font-family: 'MedievalSharp', cursive;
+    font-size: 1.8rem;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.edit-modal h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #723308, #a08060);
 }
 
 .edit-modal .form-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .edit-modal label {
@@ -228,23 +273,28 @@
     margin-bottom: 8px;
     color: #5a2806;
     font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
 }
 
 .edit-modal input,
 .edit-modal textarea {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    padding: 14px 15px;
+    border: 1px solid #d4b78f;
+    border-radius: 10px;
     font-size: 1rem;
     transition: all 0.3s;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .edit-modal input:focus,
 .edit-modal textarea:focus {
     border-color: #723308;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(114, 51, 8, 0.1);
+    box-shadow: 0 0 0 3px rgba(114, 51, 8, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    background-color: white;
 }
 
 .edit-modal textarea {
@@ -252,53 +302,77 @@
     resize: vertical;
 }
 
-.edit-modal .form-actions {
+.char-counter {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #a08060;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.error-message {
+    color: #c23b3b;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
+    font-weight: 500;
+}
+
+.form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
     margin-top: 30px;
 }
 
-.edit-modal .btn-save,
-.edit-modal .btn-cancel {
+.btn-save,
+.btn-cancel {
     padding: 12px 25px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s;
     border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.edit-modal .btn-save {
-    background-color: #723308;
+.btn-save {
+    background: linear-gradient(135deg, #723308 0%, #5a2806 100%);
     color: white;
+    box-shadow: 0 4px 10px rgba(114, 51, 8, 0.3);
 }
 
-.edit-modal .btn-save:hover {
-    background-color: #5a2806;
+.btn-save:hover {
+    background: linear-gradient(135deg, #5a2806 0%, #723308 100%);
     transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(114, 51, 8, 0.4);
 }
 
-.edit-modal .btn-cancel {
-    background-color: #ddd;
-    color: #333;
+.btn-cancel {
+    background: linear-gradient(135deg, #f1f1f1 0%, #e0e0e0 100%);
+    color: #555;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.edit-modal .btn-cancel:hover {
-    background-color: #ccc;
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #e0e0e0 0%, #f1f1f1 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-modal:hover {
-    color: #723308;
+@keyframes modalOpen {
+    from { 
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* Стили для модального окна деталей заказа */
@@ -351,6 +425,10 @@
     color: #5a2806;
 }
 
+.order-info-text {
+    color: #333;
+}
+
 .items-table {
     width: 100%;
     border-collapse: collapse;
@@ -367,6 +445,7 @@
 .items-table td {
     padding: 12px;
     border-bottom: 1px solid #eee;
+    color: #333;
 }
 
 .items-table tr:nth-child(even) {
@@ -378,7 +457,9 @@
 }
 
 .item-image-cell {
-    width: 80px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .item-image-table {
@@ -389,11 +470,36 @@
     border: 1px solid #ddd;
 }
 
+.item-name-text {
+    color: #333;
+    font-weight: 500;
+}
+
+.item-price-text, 
+.item-quantity-text, 
+.item-total-text {
+    color: #333;
+}
+
 .rating-stars {
     color: #ffc107;
 }
 
-/* Остальные стили (секции заказов, экскурсий и т.д.) */
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+    color: #333;
+}
+
+.close-modal:hover {
+    color: #723308;
+}
+
+/* Секции заказов и экскурсий */
 .orders-section, .excursions-section {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
@@ -656,76 +762,65 @@
     box-shadow: 0 6px 15px rgba(114, 51, 8, 0.4);
 }
 
-
-/* Стили для текста в модальном окне заказа */
-.order-info-text,
-.item-name-text,
-.item-price-text,
-.item-quantity-text,
-.item-total-text {
-    color: #000000 !important;
+/* Стили для кнопок Показать/Скрыть */
+.btn-show {
+    background: none;
+    border: none;
+    color: #723308;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s;
+    margin-left: 10px;
 }
 
-/* Стили для ячеек таблицы */
-.items-table td {
-    color: #000000;
-    vertical-align: middle;
+.btn-show:hover {
+    background-color: rgba(114, 51, 8, 0.1);
 }
 
-.item-name-cell {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.btn-show.btn-hide {
+    color: #c23b3b;
 }
 
-/* Стили для счетчика символов */
-.char-counter {
-    text-align: right;
-    font-size: 0.8rem;
-    color: #000000;
-    margin-top: 5px;
+/* Стили для текста "О себе" */
+#userAbout {
+    white-space: pre-wrap;       
+    word-wrap: break-word;       
+    overflow-wrap: break-word;  
+    word-break: break-word;      
+    max-width: 100%;            
+    display: inline-block;      
+    line-height: 1.5;           
+    hyphens: auto;               
+    text-align: justify;        
+    overflow: hidden;            
+    padding: 8px;                
+    box-sizing: border-box;      
 }
 
-/* Стили для сообщений об ошибке */
-.error-message {
-    color: #dc3545;
-    font-size: 0.8rem;
-    margin-top: 5px;
+/* Для всех полей ввода в модальном окне */
+.edit-modal .form-group input,
+.edit-modal .form-group textarea {
+    width: calc(100% - 30px); /* 15px слева + 15px справа */
+    margin: 0 15px; /* Равные отступы по бокам */
+    box-sizing: border-box;
+}
+
+/* Для текстовых меток */
+.edit-modal .form-group label {
+    margin-left: 15px;
     display: block;
+    margin-bottom: 8px;
 }
 
-/* Ограничение ширины для модального окна */
-.order-modal .modal-content {
-    max-width: 800px;
-    width: 90%;
+/* Контейнер формы */
+.edit-modal .modal-content {
+    padding: 20px 15px; /* Горизонтальные отступы */
 }
 
-/* Улучшенные стили для таблицы */
-.items-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.items-table th, 
-.items-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.items-table th {
-    background-color: #723308;
-    color: white;
-    position: sticky;
-    top: 0;
-}
-
-.items-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.items-table tr:hover {
-    background-color: #f1f1f1;
+/* Для текстового поля "О себе" */
+.edit-modal textarea {
+    resize: vertical;
+    min-height: 100px;
 }
