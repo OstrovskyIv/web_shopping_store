@@ -6,7 +6,6 @@
     font-family: 'Arial', sans-serif;
 }
 
-/* Стили для профиля пользователя */
 .user-view {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
@@ -126,51 +125,275 @@
     margin-right: 15px;
 }
 
-.btn-show, .btn-change {
-    background: none;
-    border: none;
-    color: #723308;
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-details, .btn-edit-profile {
+    flex: 1;
+    padding: 14px 0;
+    border-radius: 8px;
+    font-size: 1.1rem;
     cursor: pointer;
-    font-size: 0.9rem;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 5px;
     transition: all 0.3s;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(114, 51, 8, 0.3);
 }
 
-.btn-show:hover, .btn-change:hover {
-    background-color: rgba(114, 51, 8, 0.1);
-}
-
-.btn-show i, .btn-change i {
-    font-size: 0.8rem;
+.btn-details {
+    background-color: #a08060;
+    color: white;
+    border: none;
 }
 
 .btn-edit-profile {
     background-color: #723308;
     color: white;
     border: none;
-    padding: 14px 30px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 10px rgba(114, 51, 8, 0.3);
 }
 
-.btn-edit-profile:hover {
-    background-color: #5a2806;
+.btn-details:hover, .btn-edit-profile:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(114, 51, 8, 0.4);
 }
 
-/* Стили для секций заказов и экскурсий */
+.btn-details:hover {
+    background-color: #8a6d4f;
+}
+
+.btn-edit-profile:hover {
+    background-color: #5a2806;
+}
+
+.full-details {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Стили для модального окна редактирования */
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.edit-modal .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalOpen 0.3s ease;
+}
+
+@keyframes modalOpen {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.edit-modal h2 {
+    color: #5a2806;
+    margin-bottom: 25px;
+    text-align: center;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.edit-modal .form-group {
+    margin-bottom: 20px;
+}
+
+.edit-modal label {
+    display: block;
+    margin-bottom: 8px;
+    color: #5a2806;
+    font-weight: 600;
+}
+
+.edit-modal input,
+.edit-modal textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.edit-modal input:focus,
+.edit-modal textarea:focus {
+    border-color: #723308;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(114, 51, 8, 0.1);
+}
+
+.edit-modal textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.edit-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.edit-modal .btn-save,
+.edit-modal .btn-cancel {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+}
+
+.edit-modal .btn-save {
+    background-color: #723308;
+    color: white;
+}
+
+.edit-modal .btn-save:hover {
+    background-color: #5a2806;
+    transform: translateY(-2px);
+}
+
+.edit-modal .btn-cancel {
+    background-color: #ddd;
+    color: #333;
+}
+
+.edit-modal .btn-cancel:hover {
+    background-color: #ccc;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #723308;
+}
+
+/* Стили для модального окна деталей заказа */
+.order-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.order-modal .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalOpen 0.3s ease;
+}
+
+.order-modal h2 {
+    color: #5a2806;
+    margin-bottom: 20px;
+    font-family: 'MedievalSharp', cursive;
+    text-align: center;
+}
+
+.order-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.order-info-item {
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 8px;
+}
+
+.order-info-item strong {
+    color: #5a2806;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.items-table th {
+    background: #723308;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.items-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.items-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.items-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.item-image-cell {
+    width: 80px;
+}
+
+.item-image-table {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.rating-stars {
+    color: #ffc107;
+}
+
+/* Остальные стили (секции заказов, экскурсий и т.д.) */
 .orders-section, .excursions-section {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
@@ -236,7 +459,6 @@
     background-color: rgba(114, 51, 8, 0.05);
 }
 
-/* Стили для списка заказов */
 .orders-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -250,8 +472,6 @@
     box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
     transition: all 0.3s;
     border-left: 4px solid #723308;
-    position: relative;
-    overflow: hidden;
 }
 
 .order-card:hover {
@@ -363,26 +583,42 @@
     font-size: 1.2rem;
 }
 
-.order-details-btn {
-    background: none;
-    border: none;
-    color: #723308;
-    cursor: pointer;
+.order-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.order-details-btn, .order-cancel-btn {
+    padding: 8px 15px;
+    border-radius: 5px;
     font-size: 0.95rem;
-    text-decoration: underline;
-    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     gap: 5px;
-    transition: all 0.2s;
+    border: none;
 }
 
-.order-details-btn:hover {
-    color: #5a2806;
+.order-details-btn {
+    background: #d4edda;
+    color: #155724;
     text-decoration: none;
 }
 
-/* Стили для пустых состояний */
+.order-details-btn:hover {
+    background: #c3e6cb;
+}
+
+.order-cancel-btn {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.order-cancel-btn:hover {
+    background: #f5c6cb;
+}
+
 .empty-state {
     text-align: center;
     padding: 50px 20px;
@@ -420,192 +656,76 @@
     box-shadow: 0 6px 15px rgba(114, 51, 8, 0.4);
 }
 
-/* Стили для кнопок в заказе */
-.order-buttons {
+
+/* Стили для текста в модальном окне заказа */
+.order-info-text,
+.item-name-text,
+.item-price-text,
+.item-quantity-text,
+.item-total-text {
+    color: #000000 !important;
+}
+
+/* Стили для ячеек таблицы */
+.items-table td {
+    color: #000000;
+    vertical-align: middle;
+}
+
+.item-name-cell {
     display: flex;
+    align-items: center;
     gap: 10px;
-    margin-top: 10px;
 }
 
-.order-cancel-btn {
-    background: #f8d7da;
-    color: #721c24;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.order-cancel-btn:hover {
-    background: #f5c6cb;
-    transform: translateY(-1px);
-}
-
-.order-cancel-btn i {
+/* Стили для счетчика символов */
+.char-counter {
+    text-align: right;
     font-size: 0.8rem;
+    color: #000000;
+    margin-top: 5px;
 }
 
-/* Улучшение стиля кнопки "Подробнее" */
-.order-details-btn {
-    background: #d4edda;
-    color: #155724;
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none ;
+/* Стили для сообщений об ошибке */
+.error-message {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
 }
 
-.order-details-btn:hover {
-    background: #c3e6cb;
-}
-
-/* Стили для модального окна */
-.order-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: none; /* По умолчанию скрыто */
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 600px;
+/* Ограничение ширины для модального окна */
+.order-modal .modal-content {
+    max-width: 800px;
     width: 90%;
-    position: relative;
-    animation: modalOpen 0.3s ease;
 }
 
-@keyframes modalOpen {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close-modal:hover {
-    color: #723308;
-}
-
-/* Стили для модалок редактирования */
-.edit-modal, .password-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.edit-modal .modal-content, .password-modal .modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    width: 400px;
-    animation: slideIn 0.3s;
-}
-
-.edit-modal form, .password-modal form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.edit-modal .btn-save, .password-modal .btn-save {
-    background: #723308;
-    color: white;
-}
-
-.edit-modal .btn-cancel, .password-modal .btn-cancel {
-    background: #ccc;
-}
-
-.modal-content {
-    background-color: #ffffff;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-    border-radius: 10px;
-    text-align: center;
-    color: rgb(0, 0, 0);
-    position: relative;
-    z-index: 1002;
-}
-
-.order-items-details {
-    margin-top: 20px;
-    background: #f8f8f8;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.order-info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.order-info-item {
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
+/* Улучшенные стили для таблицы */
 .items-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.items-table th, 
+.items-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 .items-table th {
-    background: #723308;
+    background-color: #723308;
     color: white;
-    padding: 12px;
-    text-align: left;
+    position: sticky;
+    top: 0;
 }
 
-.items-table td {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+.items-table tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
 .items-table tr:hover {
-    background-color: #f5f5f5;
-}
-
-.badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-}
-
-.payment-badge {
-    background: #d4edda;
-    color: #155724;
+    background-color: #f1f1f1;
 }
