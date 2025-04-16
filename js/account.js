@@ -28,7 +28,7 @@ function loadUserData() {
     document.getElementById('userPhone').textContent = '+375 ** *** ** 67';
 }
 
-// Загрузка заказов (исправленная версия)
+// Загрузка заказов
 function loadOrders() {
     cleanUpOrdersData();
     const orders = JSON.parse(localStorage.getItem('orders')) || [];
@@ -55,7 +55,7 @@ function loadOrders() {
             <div class="order-header">
                 <span class="order-id">Заказ #${order.id}</span>
                 <span class="order-date">${order.date}</span>
-                <span class="order-status ${order.status === 'В обработке' ? 'status-active' : 'status-completed'}">
+                <span class="order-status ${getStatusClass(order.status)}">
                     ${order.status}
                 </span>
             </div>
@@ -72,13 +72,17 @@ function loadOrders() {
             </div>
             <div class="order-summary">
                 <span class="order-total">Итого: ${total} $</span>
-                <button class="order-details-btn" data-order-id="${order.id}">Подробнее</button>
+                <div class="order-buttons">
+                    <button class="order-details-btn" data-order-id="${order.id}">Подробнее</button>
+                    ${order.status === 'В обработке' ? 
+                    `<button class="order-cancel-btn" data-order-id="${order.id}">Отказаться</button>` : ''}
+                </div>
             </div>
         </div>
         `;
     }).join('');
 
-    // Обработчики для кнопок "Подробнее"
+    // Обработчик кнопки "Подробнее"
     document.querySelectorAll('.order-details-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const orderId = parseInt(this.getAttribute('data-order-id'));
@@ -86,17 +90,32 @@ function loadOrders() {
             if (order) showOrderDetails(order);
         });
     });
+
+    // Обработчик кнопки "Отказаться" (без подтверждения)
+    document.querySelectorAll('.order-cancel-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const orderId = parseInt(this.getAttribute('data-order-id'));
+            const updatedOrders = orders.filter(o => o.id !== orderId);
+            localStorage.setItem('orders', JSON.stringify(updatedOrders));
+            loadOrders(); // Мгновенное обновление списка
+        });
+    });
 }
 
-// Показ деталей заказа
+// Определение класса статуса
+function getStatusClass(status) {
+    switch(status) {
+        case 'В обработке': return 'status-processing';
+        case 'Завершен': return 'status-completed';
+        case 'Отменен': return 'status-cancelled';
+        default: return 'status-pending';
+    }
+}
+
+// Отображение деталей заказа
 function showOrderDetails(order) {
     const modal = document.createElement('div');
     modal.className = 'order-modal';
-    
-    const total = typeof order.total === 'number' ? 
-        order.total.toFixed(2) : 
-        parseFloat(order.total || 0).toFixed(2);
-    
     modal.innerHTML = `
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -104,7 +123,7 @@ function showOrderDetails(order) {
             <div class="order-info">
                 <p><strong>Дата:</strong> ${order.date}</p>
                 <p><strong>Статус:</strong> ${order.status}</p>
-                <p><strong>Итого:</strong> ${total} $</p>
+                <p><strong>Итого:</strong> ${order.total.toFixed(2)} $</p>
             </div>
             <div class="order-items-details">
                 <h3>Товары:</h3>
@@ -124,13 +143,17 @@ function showOrderDetails(order) {
     `;
     
     document.body.appendChild(modal);
-    
+    modal.style.display = 'flex';
+
+    // Закрытие модального окна
     modal.querySelector('.close-modal').addEventListener('click', () => {
+        modal.style.display = 'none';
         modal.remove();
     });
     
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
+            modal.style.display = 'none';
             modal.remove();
         }
     });
@@ -174,107 +197,170 @@ function loadExcursions() {
 
 // Фильтрация заказов
 function filterOrders(filter) {
-    const orderCards = document.querySelectorAll('.order-card');
-    
-    orderCards.forEach(card => {
-        if (filter === 'all' || card.getAttribute('data-status') === filter) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
+    document.querySelectorAll('.order-card').forEach(card => {
+        card.style.display = (filter === 'all' || card.getAttribute('data-status') === filter) 
+            ? 'block' 
+            : 'none';
     });
 }
 
 // Фильтрация экскурсий
 function filterExcursions(filter) {
-    const excursionCards = document.querySelectorAll('.excursion-card');
-    
-    excursionCards.forEach(card => {
-        if (filter === 'upcoming' || card.getAttribute('data-status') === filter) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
+    document.querySelectorAll('.excursion-card').forEach(card => {
+        card.style.display = (filter === 'upcoming' || card.getAttribute('data-status') === filter)
+            ? 'flex'
+            : 'none';
     });
 }
 
 // Инициализация страницы
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     cleanUpOrdersData();
     loadUserData();
     loadOrders();
     loadExcursions();
 
-    // Загрузка/изменение аватарки
+    // Работа с аватаркой
     const avatarUpload = document.getElementById('avatarUpload');
-    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
     const userAvatar = document.getElementById('userAvatar');
-    
-    changeAvatarBtn.addEventListener('click', function() {
-        avatarUpload.click();
-    });
-    
-    avatarUpload.addEventListener('change', function(e) {
+    document.getElementById('changeAvatarBtn').addEventListener('click', () => avatarUpload.click());
+    avatarUpload.addEventListener('change', e => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = event => {
                 userAvatar.src = event.target.result;
                 localStorage.setItem('userAvatar', event.target.result);
             };
             reader.readAsDataURL(file);
         }
     });
-    
-    // Проверяем сохраненную аватарку
-    const savedAvatar = localStorage.getItem('userAvatar');
-    if (savedAvatar) {
-        userAvatar.src = savedAvatar;
-    }
-    
-    // Кнопки "Показать" для данных
+    if (localStorage.getItem('userAvatar')) userAvatar.src = localStorage.getItem('userAvatar');
+
+    // Кнопки "Показать/Скрыть"
     document.querySelectorAll('.btn-show').forEach(btn => {
         btn.addEventListener('click', function() {
-            const field = this.getAttribute('data-field');
-            const valueElement = document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`);
-            
-            if (this.textContent === 'Показать') {
-                const fullValue = {
-                    'email': 'ivanov@gmail.com',
-                    'phone': '+375 29 123 45 67'
-                }[field];
-                
-                valueElement.textContent = fullValue;
-                this.textContent = 'Скрыть';
-            } else {
-                const maskedValue = {
-                    'email': 'iva*****@gmail.com',
-                    'phone': '+375 ** *** ** 67'
-                }[field];
-                
-                valueElement.textContent = maskedValue;
-                this.textContent = 'Показать';
-            }
+            const field = this.dataset.field;
+            const element = document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`);
+            const values = {
+                email: ['iva*****@gmail.com', 'ivanov@gmail.com'],
+                phone: ['+375 ** *** ** 67', '+375 29 123 45 67']
+            };
+            element.textContent = this.textContent === 'Показать' ? values[field][1] : values[field][0];
+            this.textContent = this.textContent === 'Показать' ? 'Скрыть' : 'Показать';
         });
     });
-    
-    // Кнопки табов
+
+    // Переключение табов
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const tab = this.getAttribute('data-tab');
-            const tabContainer = this.closest('.orders-tabs') || this.closest('.excursions-tabs');
-            
-            tabContainer.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            
+            const tabContainer = this.closest('.orders-tabs, .excursions-tabs');
+            tabContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            if (tabContainer.classList.contains('orders-tabs')) {
-                filterOrders(tab);
-            } else {
-                filterExcursions(tab);
-            }
+            const filter = this.dataset.tab;
+            tabContainer.classList.contains('orders-tabs') 
+                ? filterOrders(filter) 
+                : filterExcursions(filter);
+        });
+    });
+});
+
+// Редактирование профиля
+document.querySelector('.btn-edit-profile').addEventListener('click', function() {
+    const editModal = document.createElement('div');
+    editModal.className = 'edit-modal';
+    editModal.innerHTML = `
+        <div class="modal-content">
+            <h2>Редактирование профиля</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label>Имя:</label>
+                    <input type="text" id="editName" value="Иван Иванов">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="editEmail" value="ivanov@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Телефон:</label>
+                    <input type="tel" id="editPhone" value="+375291234567">
+                </div>
+                <div class="form-group">
+                    <label>Новый пароль:</label>
+                    <input type="password" id="newPassword" placeholder="Введите новый пароль">
+                </div>
+                <div class="form-group">
+                    <label>Повторите пароль:</label>
+                    <input type="password" id="confirmPassword" placeholder="Повторите пароль">
+                </div>
+                <button type="submit" class="btn-save">Сохранить</button>
+                <button type="button" class="btn-cancel">Отмена</button>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(editModal);
+    
+    // Обработчики
+    editModal.querySelector('.btn-cancel').addEventListener('click', () => {
+        editModal.remove();
+    });
+    
+    editModal.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newName = document.getElementById('editName').value;
+        const newEmail = document.getElementById('editEmail').value;
+        const newPhone = document.getElementById('editPhone').value;
+        
+        // Обновляем данные
+        document.querySelector('.profile-name').textContent = newName;
+        document.getElementById('userEmail').textContent = newEmail.replace(/(?<=.).(?=.*@)/g, '*');
+        document.getElementById('userPhone').textContent = newPhone.replace(/(?<=\+375)\d{2}(?=\d{3}\d{2}\d{2})/g, '**');
+        
+        editModal.remove();
+    });
+});
+
+// Изменение пароля
+document.querySelectorAll('.btn-change').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const passwordModal = document.createElement('div');
+        passwordModal.className = 'password-modal';
+        passwordModal.innerHTML = `
+            <div class="modal-content">
+                <h2>Изменение пароля</h2>
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label>Текущий пароль:</label>
+                        <input type="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Новый пароль:</label>
+                        <input type="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Повторите пароль:</label>
+                        <input type="password" required>
+                    </div>
+                    <button type="submit" class="btn-save">Изменить</button>
+                    <button type="button" class="btn-cancel">Отмена</button>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(passwordModal);
+        
+        // Обработчики
+        passwordModal.querySelector('.btn-cancel').addEventListener('click', () => {
+            passwordModal.remove();
+        });
+        
+        passwordModal.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Здесь должна быть логика проверки и сохранения пароля
+            alert('Пароль успешно изменен!');
+            passwordModal.remove();
         });
     });
 });
