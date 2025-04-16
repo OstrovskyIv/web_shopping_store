@@ -2,43 +2,17 @@
 function cleanUpOrdersData() {
     const orders = JSON.parse(localStorage.getItem('orders')) || [];
     const cleanedOrders = orders.map(order => {
-        if (typeof order.total === 'object') {
+        if (typeof order.total === 'object' || isNaN(order.total)) {
             return {
                 ...order,
                 total: parseFloat(order.items?.reduce((sum, item) => 
-                    sum + (item.price * item.quantity), 0) || 0)
+                    sum + (item.price * item.quantity), 0) || 0).toFixed(2)
             };
         }
         return order;
     }).filter(order => order.items && order.items.length > 0);
     
     localStorage.setItem('orders', JSON.stringify(cleanedOrders));
-}
-
-// Загрузка данных пользователя
-function loadUserData() {
-    const defaultUserData = {
-        name: 'Иван Иванов',
-        email: 'ivanov@gmail.com',
-        phone: '+375 29 123 45 67',
-        address: '',
-        birthday: '',
-        about: ''
-    };
-    
-    const savedUserData = JSON.parse(localStorage.getItem('userData')) || {};
-    const userData = {...defaultUserData, ...savedUserData};
-    
-    document.querySelector('.profile-name').textContent = userData.name;
-    document.getElementById('userEmail').textContent = userData.email.replace(/(?<=.).(?=.*@)/g, '*');
-    document.getElementById('userPhone').textContent = userData.phone.replace(/(?<=\+375)\d{2}(?=\d{3}\d{2}\d{2})/g, '**');
-    document.getElementById('userAddress').textContent = userData.address || 'Не указан';
-    document.getElementById('userBirthday').textContent = userData.birthday || 'Не указана';
-    document.getElementById('userAbout').textContent = userData.about || 'Не указано';
-    
-    // Обновляем счетчик заказов
-    const orders = JSON.parse(localStorage.getItem('orders')) || [];
-    document.getElementById('orderCount').textContent = orders.length;
 }
 
 // Валидация email
@@ -49,8 +23,70 @@ function validateEmail(email) {
 
 // Валидация телефона
 function validatePhone(phone) {
-    const re = /^\+?\d{7,15}$/;
+    const re = /^\+?[0-9\s\-()]{7,20}$/;
     return re.test(phone);
+}
+
+// Загрузка данных пользователя
+function loadUserData() {
+    const defaultUserData = {
+        name: 'Иван Иванов',
+        email: 'ivanov@gmail.com',
+        phone: '+375 (XX) XXX-XX-XX',
+        address: '',
+        birthday: '',
+        about: ''
+    };
+    
+    const savedUserData = JSON.parse(localStorage.getItem('userData')) || {};
+    const userData = {...defaultUserData, ...savedUserData};
+    
+    document.querySelector('.profile-name').textContent = userData.name;
+    
+    // Маскировка данных
+    const maskEmail = (email) => {
+        const [name, domain] = email.split('@');
+        return name.length > 3 
+            ? `${name[0]}${'*'.repeat(name.length-2)}${name.slice(-1)}@${domain}`
+            : `${'*'.repeat(name.length)}@${domain}`;
+    };
+
+    const maskPhone = (phone) => {
+        const numbers = phone.replace(/\D/g, '').slice(-9);
+        return phone.replace(/\d(?=\d{4})/g, '*');
+    };
+
+    const maskedEmail = maskEmail(userData.email);
+    const maskedPhone = maskPhone(userData.phone);
+
+    document.getElementById('userEmail').textContent = maskedEmail;
+    document.getElementById('userPhone').textContent = maskedPhone;
+    document.getElementById('userAddress').textContent = userData.address || 'Не указан';
+    document.getElementById('userBirthday').textContent = userData.birthday || 'Не указана';
+    document.getElementById('userAbout').textContent = userData.about || 'Не указано';
+    
+    localStorage.setItem('userEmailMasked', maskedEmail);
+    localStorage.setItem('userPhoneMasked', maskedPhone);
+    localStorage.setItem('userEmailFull', userData.email);
+    localStorage.setItem('userPhoneFull', userData.phone);
+    
+    // Обновление статистики
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const totalSpent = orders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    
+    let totalSpentElement = document.getElementById('totalSpent');
+    if (!totalSpentElement) {
+        totalSpentElement = document.createElement('div');
+        totalSpentElement.id = 'totalSpent';
+        totalSpentElement.className = 'total-spent';
+        document.querySelector('.profile-details').appendChild(totalSpentElement);
+    }
+    totalSpentElement.innerHTML = `
+        <i class="fas fa-coins"></i>
+        Сумма выкупа: ${totalSpent.toFixed(2)} $
+    `;
+    
+    document.getElementById('orderCount').textContent = orders.length;
 }
 
 // Загрузка заказов
@@ -58,9 +94,6 @@ function loadOrders() {
     cleanUpOrdersData();
     const orders = JSON.parse(localStorage.getItem('orders')) || [];
     const ordersList = document.getElementById('ordersList');
-    
-    // Обновляем счетчик заказов
-    document.getElementById('orderCount').textContent = orders.length;
     
     if (orders.length === 0) {
         ordersList.innerHTML = `
@@ -73,12 +106,7 @@ function loadOrders() {
         return;
     }
     
-    ordersList.innerHTML = orders.map(order => {
-        const total = typeof order.total === 'number' ? 
-            order.total.toFixed(2) : 
-            parseFloat(order.total || 0).toFixed(2);
-            
-        return `
+    ordersList.innerHTML = orders.map(order => `
         <div class="order-card" data-status="${order.status === 'В обработке' ? 'active' : 'completed'}">
             <div class="order-header">
                 <span class="order-id">Заказ #${order.id}</span>
@@ -96,10 +124,10 @@ function loadOrders() {
                         <span class="item-price">${item.price.toFixed(2)} $</span>
                     </div>
                 `).join('')}
-                ${order.items.length > 3 ? `<div class="more-items">+${order.items.length - 3} еще</div>` : ''}
+                ${order.items.length > 3 ? `<div class="more-items">+${order.items.length-3} еще</div>` : ''}
             </div>
             <div class="order-summary">
-                <span class="order-total">Итого: ${total} $</span>
+                <span class="order-total">Итого: ${parseFloat(order.total).toFixed(2)} $</span>
                 <div class="order-buttons">
                     <button class="order-details-btn" data-order-id="${order.id}">Подробнее</button>
                     ${order.status === 'В обработке' ? 
@@ -107,22 +135,19 @@ function loadOrders() {
                 </div>
             </div>
         </div>
-        `;
-    }).join('');
+    `).join('');
 
-    // Обработчик кнопки "Подробнее"
     document.querySelectorAll('.order-details-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const orderId = parseInt(this.getAttribute('data-order-id'));
+            const orderId = parseInt(this.dataset.orderId);
             const order = orders.find(o => o.id === orderId);
             if (order) showOrderDetails(order);
         });
     });
 
-    // Обработчик кнопки "Отказаться"
     document.querySelectorAll('.order-cancel-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const orderId = parseInt(this.getAttribute('data-order-id'));
+            const orderId = parseInt(this.dataset.orderId);
             const updatedOrders = orders.filter(o => o.id !== orderId);
             localStorage.setItem('orders', JSON.stringify(updatedOrders));
             loadOrders();
@@ -148,22 +173,26 @@ function showOrderDetails(order) {
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2>Детали заказа #${order.id}</h2>
-            
             <div class="order-info-grid">
                 <div class="order-info-item">
-                    <strong>Дата:</strong> <span class="order-info-text">${order.date}</span>
+                    <strong>Дата:</strong> 
+                    <span class="order-info-text">${order.date}</span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Статус:</strong> <span class="order-status ${getStatusClass(order.status)}">${order.status}</span>
+                    <strong>Статус:</strong> 
+                    <span class="order-status ${getStatusClass(order.status)}">${order.status}</span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Способ оплаты:</strong> <span class="order-info-text">${order.paymentMethod || 'Не указан'}</span>
+                    <strong>Способ оплаты:</strong> 
+                    <span class="order-info-text">
+                        ${order.paymentMethodText || 'Не указан'}
+                    </span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Итого:</strong> <span class="order-info-text">${order.total.toFixed(2)} $</span>
+                    <strong>Итого:</strong> 
+                    <span class="order-info-text">${parseFloat(order.total).toFixed(2)} $</span>
                 </div>
             </div>
-            
             <h3>Товары в заказе:</h3>
             <table class="items-table">
                 <thead>
@@ -198,7 +227,6 @@ function showOrderDetails(order) {
     document.body.appendChild(modal);
     modal.style.display = 'flex';
 
-    // Закрытие модального окна
     modal.querySelector('.close-modal').addEventListener('click', () => {
         modal.style.display = 'none';
         modal.remove();
@@ -270,7 +298,7 @@ function filterExcursions(filter) {
 document.querySelector('.btn-edit-profile').addEventListener('click', function() {
     const savedUserData = JSON.parse(localStorage.getItem('userData')) || {};
     const currentEmail = savedUserData.email || 'ivanov@gmail.com';
-    const currentPhone = savedUserData.phone || '+375 29 123 45 67';
+    const currentPhone = savedUserData.phone || '+375 (XX) XXX-XX-XX';
 
     const editModal = document.createElement('div');
     editModal.className = 'edit-modal';
@@ -301,7 +329,7 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
                     <input type="date" id="editBirthday" value="${savedUserData.birthday || ''}">
                 </div>
                 <div class="form-group">
-                    <label>О себе (макс. 500 символов):</label>
+                    <label>О себе:</label>
                     <textarea id="editAbout" rows="3" placeholder="Расскажите о себе" maxlength="500">${savedUserData.about || ''}</textarea>
                     <div class="char-counter"><span id="charCount">${(savedUserData.about || '').length}</span>/500</div>
                 </div>
@@ -315,19 +343,16 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
     
     document.body.appendChild(editModal);
     
-    // Счетчик символов для "О себе"
     const textarea = editModal.querySelector('#editAbout');
     const charCount = editModal.querySelector('#charCount');
     textarea.addEventListener('input', () => {
         charCount.textContent = textarea.value.length;
     });
 
-    // Обработчик отмены
     editModal.querySelector('.btn-cancel').addEventListener('click', () => {
         editModal.remove();
     });
     
-    // Обработчик сохранения
     editModal.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -338,7 +363,6 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
         const newBirthday = document.getElementById('editBirthday').value;
         const newAbout = document.getElementById('editAbout').value;
         
-        // Валидация email
         if (!validateEmail(newEmail)) {
             document.getElementById('emailError').textContent = 'Введите корректный email';
             return;
@@ -346,7 +370,6 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
             document.getElementById('emailError').textContent = '';
         }
         
-        // Валидация телефона
         if (!validatePhone(newPhone)) {
             document.getElementById('phoneError').textContent = 'Введите корректный номер телефона';
             return;
@@ -354,7 +377,6 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
             document.getElementById('phoneError').textContent = '';
         }
         
-        // Сохраняем данные
         const userData = {
             name: newName,
             email: newEmail,
@@ -365,22 +387,7 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
         };
         localStorage.setItem('userData', JSON.stringify(userData));
         
-        // Обновляем данные на странице
         loadUserData();
-        
-        // Обновляем значения для кнопок "Показать"
-        const emailValue = newEmail.replace(/(?<=.).(?=.*@)/g, '*');
-        const phoneValue = newPhone.replace(/(?<=\+375)\d{2}(?=\d{3}\d{2}\d{2})/g, '**');
-        
-        document.getElementById('userEmail').textContent = emailValue;
-        document.getElementById('userPhone').textContent = phoneValue;
-        
-        // Обновляем значения для кнопок "Показать" в localStorage
-        localStorage.setItem('userEmailValue', emailValue);
-        localStorage.setItem('userPhoneValue', phoneValue);
-        localStorage.setItem('userEmailFull', newEmail);
-        localStorage.setItem('userPhoneFull', newPhone);
-        
         editModal.remove();
     });
 });
@@ -399,6 +406,14 @@ document.querySelector('.btn-details').addEventListener('click', function() {
 
 // Инициализация страницы
 document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('userData')) {
+        localStorage.setItem('userData', JSON.stringify({
+            name: 'Иван Иванов',
+            email: 'ivanov@gmail.com',
+            phone: '+375 (XX) XXX-XX-XX'
+        }));
+    }
+    
     cleanUpOrdersData();
     loadUserData();
     loadOrders();
@@ -410,31 +425,41 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('changeAvatarBtn').addEventListener('click', () => avatarUpload.click());
     avatarUpload.addEventListener('change', e => {
         const file = e.target.files[0];
-        if (file) {
+        if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = event => {
-                userAvatar.src = event.target.result;
-                localStorage.setItem('userAvatar', event.target.result);
+            reader.onload = e => {
+                userAvatar.src = e.target.result;
+                localStorage.setItem('userAvatar', e.target.result);
             };
             reader.readAsDataURL(file);
         }
     });
-    if (localStorage.getItem('userAvatar')) userAvatar.src = localStorage.getItem('userAvatar');
+    if (localStorage.getItem('userAvatar')) {
+        userAvatar.src = localStorage.getItem('userAvatar');
+    }
 
     // Кнопки "Показать/Скрыть"
     document.querySelectorAll('.btn-show').forEach(btn => {
         btn.addEventListener('click', function() {
             const field = this.dataset.field;
             const element = document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`);
-            
-            const hiddenValue = localStorage.getItem(`user${field.charAt(0).toUpperCase() + field.slice(1)}Value`) || 
-                (field === 'email' ? 'iva*****@gmail.com' : '+375 ** *** ** 67');
-                
-            const fullValue = localStorage.getItem(`user${field.charAt(0).toUpperCase() + field.slice(1)}Full`) || 
-                (field === 'email' ? 'ivanov@gmail.com' : '+375 29 123 45 67');
-            
-            element.textContent = this.textContent === 'Показать' ? fullValue : hiddenValue;
-            this.textContent = this.textContent === 'Показать' ? 'Скрыть' : 'Показать';
+            const masked = localStorage.getItem(`user${field.charAt(0).toUpperCase() + field.slice(1)}Masked`);
+            const full = localStorage.getItem(`user${field.charAt(0).toUpperCase() + field.slice(1)}Full`);
+
+            if (!full || full === 'undefined') {
+                this.style.display = 'none';
+                return;
+            }
+
+            if (element.textContent === masked) {
+                element.textContent = full;
+                this.textContent = 'Скрыть';
+                this.classList.add('btn-hide');
+            } else {
+                element.textContent = masked;
+                this.textContent = 'Показать';
+                this.classList.remove('btn-hide');
+            }
         });
     });
 
@@ -454,3 +479,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+showOrderDetails 
