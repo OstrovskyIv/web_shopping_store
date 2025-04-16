@@ -201,6 +201,10 @@ function handleFormSubmit(form) {
 
     if (!isValid) return;
 
+    // Получаем выбранный способ оплаты
+    const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+    const paymentMethodText = document.querySelector('input[name="payment"]:checked').nextElementSibling.textContent;
+
     const order = {
         id: Date.now(),
         date: new Date().toLocaleDateString('ru-RU', {
@@ -217,6 +221,8 @@ function handleFormSubmit(form) {
         })),
         total: parseFloat(basket.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)),
         status: 'В обработке',
+        paymentMethod: paymentMethod, // сохраняем значение (card/cash/online)
+        paymentMethodText: paymentMethodText, // сохраняем текст для отображения
         customer: {
             name: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`,
             email: document.getElementById('email').value,
@@ -227,7 +233,8 @@ function handleFormSubmit(form) {
             city: document.getElementById('city').value,
             address: document.getElementById('address').value,
             zip: document.getElementById('zip').value
-        }
+        },
+        comment: document.getElementById('comment').value || ''
     };
 
     const orders = JSON.parse(localStorage.getItem('orders')) || [];
@@ -358,7 +365,6 @@ function updateBasketDisplay() {
     updateBasketIndicator();
 }
 
-// Остальные функции корзины
 // Уменьшение количества
 function decreaseQuantity(e) {
     const itemElement = e.target.closest('.basket-item');
@@ -502,4 +508,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
     initLiveGeocoding();
 });
-
