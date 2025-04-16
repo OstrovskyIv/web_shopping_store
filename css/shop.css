@@ -571,3 +571,32 @@ nav ul li a .basket-counter {
     color: #2a1e10;
 }
 
+/* Стили для рейтинга */
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star {
+    position: relative;
+    color: #ccc;
+    font-size: 1.2em;
+}
+
+.star.full {
+    color: gold;
+}
+
+.star.partial {
+    color: #ccc;
+}
+
+.star.partial::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    width: var(--fill-percent);
+    overflow: hidden;
+    color: gold;
+}
