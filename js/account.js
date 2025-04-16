@@ -17,15 +17,40 @@ function cleanUpOrdersData() {
 
 // Загрузка данных пользователя
 function loadUserData() {
-    const userData = {
+    const defaultUserData = {
         name: 'Иван Иванов',
         email: 'ivanov@gmail.com',
-        phone: '+375 29 123 45 67'
+        phone: '+375 29 123 45 67',
+        address: '',
+        birthday: '',
+        about: ''
     };
     
+    const savedUserData = JSON.parse(localStorage.getItem('userData')) || {};
+    const userData = {...defaultUserData, ...savedUserData};
+    
     document.querySelector('.profile-name').textContent = userData.name;
-    document.getElementById('userEmail').textContent = 'iva*****@gmail.com';
-    document.getElementById('userPhone').textContent = '+375 ** *** ** 67';
+    document.getElementById('userEmail').textContent = userData.email.replace(/(?<=.).(?=.*@)/g, '*');
+    document.getElementById('userPhone').textContent = userData.phone.replace(/(?<=\+375)\d{2}(?=\d{3}\d{2}\d{2})/g, '**');
+    document.getElementById('userAddress').textContent = userData.address || 'Не указан';
+    document.getElementById('userBirthday').textContent = userData.birthday || 'Не указана';
+    document.getElementById('userAbout').textContent = userData.about || 'Не указано';
+    
+    // Обновляем счетчик заказов
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    document.getElementById('orderCount').textContent = orders.length;
+}
+
+// Валидация email
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+// Валидация телефона
+function validatePhone(phone) {
+    const re = /^\+?\d{7,15}$/;
+    return re.test(phone);
 }
 
 // Загрузка заказов
@@ -34,9 +59,12 @@ function loadOrders() {
     const orders = JSON.parse(localStorage.getItem('orders')) || [];
     const ordersList = document.getElementById('ordersList');
     
+    // Обновляем счетчик заказов
+    document.getElementById('orderCount').textContent = orders.length;
+    
     if (orders.length === 0) {
         ordersList.innerHTML = `
-            <div class="empty-orders">
+            <div class="empty-state">
                 <i class="fas fa-box-open"></i>
                 <p>У вас пока нет заказов</p>
                 <a href="shop.html" class="btn-shop">Перейти в магазин</a>
@@ -91,13 +119,13 @@ function loadOrders() {
         });
     });
 
-    // Обработчик кнопки "Отказаться" (без подтверждения)
+    // Обработчик кнопки "Отказаться"
     document.querySelectorAll('.order-cancel-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const orderId = parseInt(this.getAttribute('data-order-id'));
             const updatedOrders = orders.filter(o => o.id !== orderId);
             localStorage.setItem('orders', JSON.stringify(updatedOrders));
-            loadOrders(); // Мгновенное обновление списка
+            loadOrders();
         });
     });
 }
@@ -120,25 +148,50 @@ function showOrderDetails(order) {
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2>Детали заказа #${order.id}</h2>
-            <div class="order-info">
-                <p><strong>Дата:</strong> ${order.date}</p>
-                <p><strong>Статус:</strong> ${order.status}</p>
-                <p><strong>Итого:</strong> ${order.total.toFixed(2)} $</p>
+            
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <strong>Дата:</strong> <span class="order-info-text">${order.date}</span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Статус:</strong> <span class="order-status ${getStatusClass(order.status)}">${order.status}</span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Способ оплаты:</strong> <span class="order-info-text">${order.paymentMethod || 'Не указан'}</span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Итого:</strong> <span class="order-info-text">${order.total.toFixed(2)} $</span>
+                </div>
             </div>
-            <div class="order-items-details">
-                <h3>Товары:</h3>
-                ${order.items.map(item => `
-                    <div class="order-item-detail">
-                        <img src="${item.image}" alt="${item.name}" class="item-image">
-                        <div class="item-info">
-                            <h4>${item.name}</h4>
-                            <p>Цена: ${item.price.toFixed(2)} $</p>
-                            <p>Количество: ${item.quantity}</p>
-                            <p>Сумма: ${(item.price * item.quantity).toFixed(2)} $</p>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
+            
+            <h3>Товары в заказе:</h3>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Цена</th>
+                        <th>Количество</th>
+                        <th>Сумма</th>
+                        <th>Оценка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${order.items.map(item => `
+                        <tr>
+                            <td class="item-name-cell">
+                                <img src="${item.image}" alt="${item.name}" class="item-image-table">
+                                <span class="item-name-text">${item.name}</span>
+                            </td>
+                            <td class="item-price-text">${item.price.toFixed(2)} $</td>
+                            <td class="item-quantity-text">${item.quantity}</td>
+                            <td class="item-total-text">${(item.price * item.quantity).toFixed(2)} $</td>
+                            <td class="rating-stars">
+                                ${item.rating ? '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating) : 'Не оценено'}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
         </div>
     `;
     
@@ -166,7 +219,7 @@ function loadExcursions() {
     
     if (excursions.length === 0) {
         excursionsList.innerHTML = `
-            <div class="empty-excursions">
+            <div class="empty-state">
                 <i class="fas fa-binoculars"></i>
                 <p>У вас нет активных экскурсий</p>
                 <a href="shop.html#excursions" class="btn-shop">Посмотреть экскурсии</a>
@@ -213,6 +266,137 @@ function filterExcursions(filter) {
     });
 }
 
+// Редактирование профиля
+document.querySelector('.btn-edit-profile').addEventListener('click', function() {
+    const savedUserData = JSON.parse(localStorage.getItem('userData')) || {};
+    const currentEmail = savedUserData.email || 'ivanov@gmail.com';
+    const currentPhone = savedUserData.phone || '+375 29 123 45 67';
+
+    const editModal = document.createElement('div');
+    editModal.className = 'edit-modal';
+    editModal.innerHTML = `
+        <div class="modal-content">
+            <h2>Редактирование профиля</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label>Имя:</label>
+                    <input type="text" id="editName" value="${savedUserData.name || 'Иван Иванов'}" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="editEmail" value="${currentEmail}" required>
+                    <small class="error-message" id="emailError"></small>
+                </div>
+                <div class="form-group">
+                    <label>Телефон:</label>
+                    <input type="tel" id="editPhone" value="${currentPhone}" required maxlength="16">
+                    <small class="error-message" id="phoneError"></small>
+                </div>
+                <div class="form-group">
+                    <label>Адрес:</label>
+                    <input type="text" id="editAddress" value="${savedUserData.address || ''}" placeholder="Введите ваш адрес">
+                </div>
+                <div class="form-group">
+                    <label>Дата рождения:</label>
+                    <input type="date" id="editBirthday" value="${savedUserData.birthday || ''}">
+                </div>
+                <div class="form-group">
+                    <label>О себе (макс. 500 символов):</label>
+                    <textarea id="editAbout" rows="3" placeholder="Расскажите о себе" maxlength="500">${savedUserData.about || ''}</textarea>
+                    <div class="char-counter"><span id="charCount">${(savedUserData.about || '').length}</span>/500</div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">Сохранить</button>
+                    <button type="button" class="btn-cancel">Отмена</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(editModal);
+    
+    // Счетчик символов для "О себе"
+    const textarea = editModal.querySelector('#editAbout');
+    const charCount = editModal.querySelector('#charCount');
+    textarea.addEventListener('input', () => {
+        charCount.textContent = textarea.value.length;
+    });
+
+    // Обработчик отмены
+    editModal.querySelector('.btn-cancel').addEventListener('click', () => {
+        editModal.remove();
+    });
+    
+    // Обработчик сохранения
+    editModal.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const newName = document.getElementById('editName').value;
+        const newEmail = document.getElementById('editEmail').value;
+        const newPhone = document.getElementById('editPhone').value;
+        const newAddress = document.getElementById('editAddress').value;
+        const newBirthday = document.getElementById('editBirthday').value;
+        const newAbout = document.getElementById('editAbout').value;
+        
+        // Валидация email
+        if (!validateEmail(newEmail)) {
+            document.getElementById('emailError').textContent = 'Введите корректный email';
+            return;
+        } else {
+            document.getElementById('emailError').textContent = '';
+        }
+        
+        // Валидация телефона
+        if (!validatePhone(newPhone)) {
+            document.getElementById('phoneError').textContent = 'Введите корректный номер телефона';
+            return;
+        } else {
+            document.getElementById('phoneError').textContent = '';
+        }
+        
+        // Сохраняем данные
+        const userData = {
+            name: newName,
+            email: newEmail,
+            phone: newPhone,
+            address: newAddress,
+            birthday: newBirthday,
+            about: newAbout
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
+        // Обновляем данные на странице
+        loadUserData();
+        
+        // Обновляем значения для кнопок "Показать"
+        const emailValue = newEmail.replace(/(?<=.).(?=.*@)/g, '*');
+        const phoneValue = newPhone.replace(/(?<=\+375)\d{2}(?=\d{3}\d{2}\d{2})/g, '**');
+        
+        document.getElementById('userEmail').textContent = emailValue;
+        document.getElementById('userPhone').textContent = phoneValue;
+        
+        // Обновляем значения для кнопок "Показать" в localStorage
+        localStorage.setItem('userEmailValue', emailValue);
+        localStorage.setItem('userPhoneValue', phoneValue);
+        localStorage.setItem('userEmailFull', newEmail);
+        localStorage.setItem('userPhoneFull', newPhone);
+        
+        editModal.remove();
+    });
+});
+
+// Показать/скрыть подробную информацию
+document.querySelector('.btn-details').addEventListener('click', function() {
+    const fullDetails = document.getElementById('fullDetails');
+    if (fullDetails.style.display === 'none') {
+        fullDetails.style.display = 'block';
+        this.innerHTML = '<i class="fas fa-eye-slash"></i> Скрыть';
+    } else {
+        fullDetails.style.display = 'none';
+        this.innerHTML = '<i class="fas fa-info-circle"></i> Подробнее';
+    }
+});
+
 // Инициализация страницы
 document.addEventListener('DOMContentLoaded', () => {
     cleanUpOrdersData();
@@ -242,11 +426,14 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', function() {
             const field = this.dataset.field;
             const element = document.getElementById(`user${field.charAt(0).toUpperCase() + field.slice(1)}`);
-            const values = {
-                email: ['iva*****@gmail.com', 'ivanov@gmail.com'],
-                phone: ['+375 ** *** ** 67', '+375 29 123 45 67']
-            };
-            element.textContent = this.textContent === 'Показать' ? values[field][1] : values[field][0];
+            
+            const hiddenValue = localStorage.getItem(`user${field.charAt(0).toUpperCase() + field.slice(1)}Value`) || 
+                (field === 'email' ? 'iva*****@gmail.com' : '+375 ** *** ** 67');
+                
+            const fullValue = localStorage.getItem(`user${field.charAt(0).toUpperCase() + field.slice(1)}Full`) || 
+                (field === 'email' ? 'ivanov@gmail.com' : '+375 29 123 45 67');
+            
+            element.textContent = this.textContent === 'Показать' ? fullValue : hiddenValue;
             this.textContent = this.textContent === 'Показать' ? 'Скрыть' : 'Показать';
         });
     });
@@ -254,113 +441,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Переключение табов
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            const tabContainer = this.closest('.orders-tabs, .excursions-tabs');
+            const tabContainer = this.closest('.tabs-container');
             tabContainer.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
             const filter = this.dataset.tab;
-            tabContainer.classList.contains('orders-tabs') 
-                ? filterOrders(filter) 
-                : filterExcursions(filter);
-        });
-    });
-});
-
-// Редактирование профиля
-document.querySelector('.btn-edit-profile').addEventListener('click', function() {
-    const editModal = document.createElement('div');
-    editModal.className = 'edit-modal';
-    editModal.innerHTML = `
-        <div class="modal-content">
-            <h2>Редактирование профиля</h2>
-            <form id="editProfileForm">
-                <div class="form-group">
-                    <label>Имя:</label>
-                    <input type="text" id="editName" value="Иван Иванов">
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="editEmail" value="ivanov@gmail.com">
-                </div>
-                <div class="form-group">
-                    <label>Телефон:</label>
-                    <input type="tel" id="editPhone" value="+375291234567">
-                </div>
-                <div class="form-group">
-                    <label>Новый пароль:</label>
-                    <input type="password" id="newPassword" placeholder="Введите новый пароль">
-                </div>
-                <div class="form-group">
-                    <label>Повторите пароль:</label>
-                    <input type="password" id="confirmPassword" placeholder="Повторите пароль">
-                </div>
-                <button type="submit" class="btn-save">Сохранить</button>
-                <button type="button" class="btn-cancel">Отмена</button>
-            </form>
-        </div>
-    `;
-    
-    document.body.appendChild(editModal);
-    
-    // Обработчики
-    editModal.querySelector('.btn-cancel').addEventListener('click', () => {
-        editModal.remove();
-    });
-    
-    editModal.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const newName = document.getElementById('editName').value;
-        const newEmail = document.getElementById('editEmail').value;
-        const newPhone = document.getElementById('editPhone').value;
-        
-        // Обновляем данные
-        document.querySelector('.profile-name').textContent = newName;
-        document.getElementById('userEmail').textContent = newEmail.replace(/(?<=.).(?=.*@)/g, '*');
-        document.getElementById('userPhone').textContent = newPhone.replace(/(?<=\+375)\d{2}(?=\d{3}\d{2}\d{2})/g, '**');
-        
-        editModal.remove();
-    });
-});
-
-// Изменение пароля
-document.querySelectorAll('.btn-change').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const passwordModal = document.createElement('div');
-        passwordModal.className = 'password-modal';
-        passwordModal.innerHTML = `
-            <div class="modal-content">
-                <h2>Изменение пароля</h2>
-                <form id="changePasswordForm">
-                    <div class="form-group">
-                        <label>Текущий пароль:</label>
-                        <input type="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Новый пароль:</label>
-                        <input type="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Повторите пароль:</label>
-                        <input type="password" required>
-                    </div>
-                    <button type="submit" class="btn-save">Изменить</button>
-                    <button type="button" class="btn-cancel">Отмена</button>
-                </form>
-            </div>
-        `;
-        
-        document.body.appendChild(passwordModal);
-        
-        // Обработчики
-        passwordModal.querySelector('.btn-cancel').addEventListener('click', () => {
-            passwordModal.remove();
-        });
-        
-        passwordModal.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Здесь должна быть логика проверки и сохранения пароля
-            alert('Пароль успешно изменен!');
-            passwordModal.remove();
+            if (tabContainer.parentElement.classList.contains('orders-section')) {
+                filterOrders(filter);
+            } else {
+                filterExcursions(filter);
+            }
         });
     });
 });
