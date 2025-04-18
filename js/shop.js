@@ -327,3 +327,110 @@ function showExcursionModal(name, image, price) {
 function closeExcursionModal() {
     document.getElementById('excursionModal').style.display = 'none';
 }
+
+// Получаем список сотрудников из localStorage (должны быть сохранены на index.html)
+function getStaff() {
+    return JSON.parse(localStorage.getItem('staff')) || [
+        {name: "Стэнли Пайнс", experience: "27 лет"},
+        {name: "Венди Кордрой", experience: "3 года"},
+        {name: "Зус Рамирес", experience: "7 лет"},
+        {name: "Диппер Пайнс", experience: "2 года"}
+    ];
+}
+
+// Показ деталей экскурсии
+document.querySelectorAll('.excursion-details-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const card = this.closest('.excursion-card');
+        const photos = JSON.parse(card.dataset.photos);
+        const locations = JSON.parse(card.dataset.locations);
+        const price = card.dataset.price;
+        
+        showExcursionDetails(photos, locations, price);
+    });
+});
+
+function showExcursionDetails(photos, locations, price) {
+    const modal = document.getElementById('excursionDetailsModal');
+    const carousel = modal.querySelector('.excursion-carousel');
+    const locationsList = modal.querySelector('.locations-list');
+    
+    // Заполняем карусель
+    carousel.innerHTML = photos.map(img => `
+        <img src="${img}" alt="Фото экскурсии">
+    `).join('');
+    
+    // Заполняем места посещения
+    locationsList.innerHTML = `
+        <h3>Маршрут:</h3>
+        <ul>${locations.map(loc => `<li>${loc}</li>`).join('')}</ul>
+    `;
+    
+    // Заполняем список гидов
+    const guides = modal.querySelector('.guides-selection');
+    guides.innerHTML = `
+        <h3>Доступные гиды:</h3>
+        ${getStaff().map((guide, index) => `
+            <div class="guide-item">
+                <input type="radio" name="guide" id="guide${index}" required>
+                <label for="guide${index}">${guide.name} (опыт: ${guide.experience})</label>
+            </div>
+        `).join('')}
+    `;
+    
+    modal.style.display = 'block';
+}
+
+// Обработка оформления заказа
+document.querySelectorAll('.book-excursion-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        showBookingForm();
+    });
+});
+
+function showBookingForm() {
+    const modal = document.getElementById('bookingModal');
+    const guidesList = modal.querySelector('.guides-list');
+    
+    guidesList.innerHTML = `
+        <h3>Выберите гида:</h3>
+        ${getStaff().map((guide, index) => `
+            <div class="guide-item">
+                <input type="radio" name="guide" id="bguide${index}" required>
+                <label for="bguide${index}">${guide.name}</label>
+            </div>
+        `).join('')}
+    `;
+    
+    modal.style.display = 'block';
+}
+
+// Сохранение экскурсии
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const excursion = {
+        id: Date.now(),
+        date: this.querySelector('input[type="date"]').value,
+        time: this.querySelector('input[type="time"]').value,
+        guide: this.querySelector('input[name="guide"]:checked').nextElementSibling.textContent,
+        payment: this.querySelector('#paymentMethod').value,
+        status: 'Забронировано'
+    };
+    
+    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+    excursions.push(excursion);
+    localStorage.setItem('excursions', JSON.stringify(excursions));
+    
+    alert('Экскурсия успешно забронирована!');
+    closeModals();
+});
+
+function closeModals() {
+    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+}
+
+// Закрытие модальных окон
+document.querySelectorAll('.close').forEach(btn => {
+    btn.addEventListener('click', closeModals);
+});
