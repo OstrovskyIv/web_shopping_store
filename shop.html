@@ -814,55 +814,200 @@
     </div>
   </section>
   
-  <!-- Секция экскурсий -->
-  <section class="excursions-section">
-    <h2 class="section-title">Заказ экскурсии</h2>
-    <div class="excursions-container">
-      <!-- Экскурсия 1 -->
-      <div class="excursion-card">
-        <div class="product-image">
-          <img src="pictures/Puhla.png" alt="Тур по магическим местам">
-        </div>
-        <div class="product-info">
-          <h3>Тур по магическим местам</h3>
-          <p class="description">Посетите самые загадочные места нашего мира</p>
-          <p class="price">1000 $</p>
-          <button class="details-btn" data-name="Тур по магическим местам" data-image="pictures/Puhla.png" data-description="3-дневный тур по самым загадочным и магическим местам нашей планеты. Включает посещение древних храмов, мест силы и встречу с настоящими магами." data-price="15000">Подробнее</button>
-          <div class="rating">
-            <span class="star" data-rating="1">★</span>
-            <span class="star" data-rating="2">★</span>
-            <span class="star" data-rating="3">★</span>
-            <span class="star" data-rating="4">★</span>
-            <span class="star" data-rating="5">★</span>
-            <span class="rating-value">4.7</span>
+<!-- Секция экскурсий -->
+<section class="excursions-section ancient-scroll-theme">
+  <h2 class="section-title">Мистические туры</h2>
+
+  <div class="excursions-container">
+      <!-- Экскурсия по Хижине -->
+      <article class="product-card excursion-card"
+              data-id="hut-tour"
+              data-photos='["pictures/hut1.jpg","pictures/hut2.jpg","pictures/hut3.jpg"]'
+              data-locations='["Тайная комната","Зал артефактов","Библиотека заклинаний","Подземные лабиринты","Чердак странностей"]'
+              data-base-price="999"
+              data-duration="3 часа">
+          <div class="product-image-container">
+              <img src="pictures/backSharck.png" 
+                  alt="Интерьер Хижины Чудес" 
+                  class="product-image">
+              <div class="exclusive-badge">Только у нас!</div>
+              <div class="difficulty-badge">
+                  <i class="fas fa-skull"></i>
+                  Сложность: 2/5
+              </div>
           </div>
-          <button class="order-btn">Оформить</button>
-        </div>
-      </div>
-      
-      <!-- Экскурсия 2 -->
-      <div class="excursion-card">
-        <div class="product-image">
-          <img src="pictures/nightImage.jpg" alt="Ночное сафари">
-        </div>
-        <div class="product-info">
-          <h3>Ночное сафари</h3>
-          <p class="description">Встреча с мистическими существами</p>
-          <p class="price">1000 $</p>
-          <button class="details-btn" data-name="Ночное сафари" data-image="pictures/nightImage.jpg" data-description="Эксклюзивное ночное сафари по заповеднику мистических существ. Гарантирована встреча с единорогами, оборотнями и другими удивительными созданиями." data-price="12000">Подробнее</button>
-          <div class="rating">
-            <span class="star" data-rating="1">★</span>
-            <span class="star" data-rating="2">★</span>
-            <span class="star" data-rating="3">★</span>
-            <span class="star" data-rating="4">★</span>
-            <span class="star" data-rating="5">★</span>
-            <span class="rating-value">4.9</span>
+          
+          <div class="product-info">
+              <h3 class="product-title">Тайны Хижины Чудес</h3>
+              
+              <div class="excursion-meta">
+                  <div class="meta-item">
+                      <i class="fas fa-hat-wizard"></i>
+                      <span>Стэнли Пайнс</span>
+                  </div>
+                  <div class="meta-item">
+                      <i class="fas fa-clock"></i>
+                      <span>19:00 - 22:00</span>
+                  </div>
+              </div>
+
+              <p class="description">
+                  Эксклюзивный ночной тур по секретным комнатам и скрытым механизмам легендарной хижины
+              </p>
+
+              <div class="price-container">
+                  <span class="price-label">Цена за группу:</span>
+                  <p class="price">999 $</p>
+              </div>
+
+              <div class="actions-container">
+                  <button class="details-btn excursion-details-btn">
+                      <i class="fas fa-eye"></i>
+                      Заглянуть в тайны
+                  </button>
+                  <button class="order-btn book-excursion-btn">
+                      <i class="fas fa-key"></i>
+                      Открыть двери
+                  </button>
+              </div>
           </div>
-          <button class="order-btn">Оформить</button>
-        </div>
-      </div>
-    </div>
-  </section>
+      </article>
+
+      <!-- Тур по городу -->
+      <article class="product-card excursion-card"
+              data-id="city-tour"
+              data-photos='["pictures/city1.jpg","pictures/city2.jpg"]'
+              data-locations='["Закусочная "Слепой свиньи"","Памятник основателям","Секретный бункер","Логово гномов","Проклятый мост"]'
+              data-base-price="750"
+              data-duration="5 часов">
+          <div class="product-image-container">
+              <img src="pictures/backSharck.png" 
+                  alt="Улицы Гравити Фолз" 
+                  class="product-image">
+              <div class="exclusive-badge">Лучший выбор!</div>
+          </div>
+          
+          <div class="product-info">
+              <h3 class="product-title">Призраки Гравити Фолз</h3>
+              
+              <div class="excursion-meta">
+                  <div class="meta-item">
+                      <i class="fas fa-ghost"></i>
+                      <span>12+ локаций</span>
+                  </div>
+                  <div class="meta-item">
+                      <i class="fas fa-baby"></i>
+                      <span>Для всей семьи</span>
+                  </div>
+              </div>
+
+              <p class="description">
+                  Расследование городских легенд и встреча с местными... жителями
+              </p>
+
+              <div class="price-container">
+                  <span class="price-label">За человека:</span>
+                  <p class="price">75 $</p>
+              </div>
+
+              <div class="actions-container">
+                  <button class="details-btn excursion-details-btn">
+                      <i class="fas fa-map-marked-alt"></i>
+                      Маршрут
+                  </button>
+                  <button class="order-btn book-excursion-btn">
+                      <i class="fas fa-search"></i>
+                      Начать поиск
+                  </button>
+              </div>
+          </div>
+      </article>
+
+      <!-- Тур по лесу -->
+      <article class="product-card excursion-card"
+              data-id="forest-tour"
+              data-photos='["pictures/forest1.jpg","pictures/forest2.jpg"]'
+              data-locations='["Пещера времени","Древо желаний","Ручей оборотней","Поляна фей","Алтарь древних"]'
+              data-base-price="1500"
+              data-duration="7 часов">
+          <div class="product-image-container">
+              <img src="pictures/backSharck.png" 
+                  alt="Таинственный лес" 
+                  class="product-image">
+              <div class="exclusive-badge danger">Опасно!</div>
+              <div class="difficulty-badge">
+                  <i class="fas fa-hiking"></i>
+                  Сложность: 4/5
+              </div>
+          </div>
+          
+          <div class="product-info">
+              <h3 class="product-title">Лесные аномалии</h3>
+              
+              <div class="excursion-meta">
+                  <div class="meta-item">
+                      <i class="fas fa-campground"></i>
+                      <span>Снаряжение включено</span>
+                  </div>
+                  <div class="meta-item">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      <span>18+</span>
+                  </div>
+              </div>
+
+              <p class="description">
+                  Экстремальный поход по самым загадочным местам с ночёвкой у костра
+              </p>
+
+              <div class="price-container">
+                  <span class="price-label">Полный пакет:</span>
+                  <p class="price">1500 $</p>
+              </div>
+
+              <div class="actions-container">
+                  <button class="details-btn excursion-details-btn">
+                      <i class="fas fa-tree"></i>
+                      В глубь тайны
+                  </button>
+                  <button class="order-btn book-excursion-btn danger">
+                      <i class="fas fa-fire"></i>
+                      Испытать себя
+                  </button>
+              </div>
+          </div>
+      </article>
+  </div>
+</section>
+
+<!-- Модальное окно деталей экскурсии -->
+<div id="excursionDetailsModal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="excursion-carousel"></div>
+      <div class="locations-list"></div>
+      <div class="guides-selection"></div>
+      <button class="proceed-booking-btn">Перейти к оформлению</button>
+  </div>
+</div>
+
+<!-- Модальное окно оформления -->
+<div id="bookingModal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="bookingForm">
+          <input type="text" placeholder="Имя" required>
+          <input type="text" placeholder="Фамилия" required>
+          <input type="date" required>
+          <input type="time" required>
+          <select id="paymentMethod" required>
+              <option value="card">Карта</option>
+              <option value="cash">Наличные</option>
+          </select>
+          <div class="guides-list"></div>
+          <button type="submit">Подтвердить бронирование</button>
+      </form>
+  </div>
+</div>
           
 <!-- Модальное окно для деталей товара -->
 <div id="productModal" class="modal">
@@ -873,44 +1018,6 @@
       <p id="productModalDescription" class="modal-description"></p>
       <p id="productModalPrice" class="modal-price"></p>
       <button class="modal-order-btn">В корзину</button>
-  </div>
-</div>
-
-<!-- Модальное окно для экскурсий -->
-<div id="excursionModal" class="modal">
-  <div class="modal-content">
-      <span class="close" onclick="closeExcursionModal()">&times;</span>
-      <h2 id="excursionModalTitle"></h2>
-      
-      <div class="excursion-carousel">
-          <button class="carousel-prev">❮</button>
-          <img id="excursionModalImage" src="" alt="" class="carousel-image">
-          <button class="carousel-next">❯</button>
-      </div>
-      
-      <div class="excursion-price" id="excursionModalPrice"></div>
-      
-      <div class="excursion-stops">
-          <h3>Места остановок:</h3>
-          <ul id="excursionStops"></ul>
-      </div>
-      
-      <div class="excursion-guides">
-          <h3>Выберите экскурсовода:</h3>
-          <select id="excursionGuides">
-              <option value="1">Иван Иванов (опыт 5 лет)</option>
-              <option value="2">Мария Петрова (опыт 3 года)</option>
-              <option value="3">Алексей Сидоров (опыт 7 лет)</option>
-          </select>
-      </div>
-      
-      <div class="excursion-reviews">
-          <h3>Отзывы:</h3>
-          <div class="reviews-list" id="excursionReviews"></div>
-          <button class="add-review-btn">Добавить отзыв</button>
-      </div>
-      
-      <button class="book-excursion-btn">Забронировать экскурсию</button>
   </div>
 </div>
 
