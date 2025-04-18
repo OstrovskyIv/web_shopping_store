@@ -259,21 +259,113 @@ function loadExcursions() {
     excursionsList.innerHTML = excursions.map(exc => `
         <div class="excursion-card" data-status="${exc.status === 'Забронировано' ? 'upcoming' : 'past'}">
             <div class="excursion-header">
-                <h3 class="excursion-title">${exc.name}</h3>
-                <span class="excursion-date">${exc.date}</span>
+                <h3 class="excursion-title">${exc.name || 'undefined'}</h3>
+                <span class="excursion-date">${exc.date || '17.04.2025'} ${exc.time || '22:27'}</span>
             </div>
             <div class="excursion-details">
                 <div class="excursion-guide">
                     <i class="fas fa-user-tie"></i>
-                    <span>${exc.guide}</span>
+                    <span>${exc.guide || 'Не указан'}</span>
+                </div>
+                <div class="excursion-info">
+                    <span class="excursion-payment">
+                        <i class="fas fa-wallet"></i>
+                        ${exc.payment === 'card' ? 'Карта' : 'Наличные'}
+                    </span>
+                    <span class="excursion-price">
+                        <i class="fas fa-tag"></i>
+                        ${exc.price || '0'} $
+                    </span>
                 </div>
                 <div class="excursion-status ${exc.status === 'Забронировано' ? 'status-upcoming' : 'status-past'}">
-                    ${exc.status}
+                    ${exc.status || 'Забронировано'}
                 </div>
             </div>
-            <button class="excursion-details-btn" data-excursion-id="${exc.id}">Подробнее</button>
+            <button class="excursion-details-btn" data-excursion-id="${exc.id}">
+                <i class="fas fa-info-circle"></i> Подробнее
+            </button>
         </div>
     `).join('');
+
+    document.querySelectorAll('.excursion-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const excursionId = this.dataset.excursionId;
+            const excursion = excursions.find(e => e.id == excursionId);
+            
+            if(excursion) {
+                showExcursionDetailsModal(excursion);
+            }
+        });
+    });
+}
+
+// Отображение деталей экскурсии
+function showExcursionDetailsModal(excursion) {
+    const modal = document.createElement('div');
+    modal.className = 'order-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>${excursion.name || 'Экскурсия'}</h2>
+            
+            <div class="order-info-grid">
+                <div class="order-info-item">
+                    <strong>Дата и время:</strong> 
+                    <span class="order-info-text">${excursion.date || 'Не указана'} ${excursion.time || ''}</span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Статус:</strong> 
+                    <span class="order-status ${excursion.status === 'Забронировано' ? 'status-upcoming' : 'status-past'}">
+                        ${excursion.status || 'Забронировано'}
+                    </span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Гид:</strong> 
+                    <span class="order-info-text">${excursion.guide || 'Не указан'}</span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Способ оплаты:</strong> 
+                    <span class="order-info-text">
+                        ${excursion.payment === 'card' ? 'Карта' : 'Наличные'}
+                    </span>
+                </div>
+                <div class="order-info-item">
+                    <strong>Цена:</strong> 
+                    <span class="order-info-text">${excursion.price || '0'} $</span>
+                </div>
+            </div>
+            
+            <div class="excursion-actions">
+                <button class="btn-cancel-excursion" data-id="${excursion.id}">
+                    <i class="fas fa-times"></i> Отменить бронь
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+    
+    modal.querySelector('.close-modal').addEventListener('click', () => {
+        modal.style.display = 'none';
+        modal.remove();
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            modal.remove();
+        }
+    });
+
+    modal.querySelector('.btn-cancel-excursion').addEventListener('click', function() {
+        const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+        const updatedExcursions = excursions.filter(e => e.id != this.dataset.id);
+        localStorage.setItem('excursions', JSON.stringify(updatedExcursions));
+        loadExcursions();
+        modal.style.display = 'none';
+        modal.remove();
+    });
 }
 
 // Фильтрация заказов
@@ -288,7 +380,7 @@ function filterOrders(filter) {
 // Фильтрация экскурсий
 function filterExcursions(filter) {
     document.querySelectorAll('.excursion-card').forEach(card => {
-        card.style.display = (filter === 'upcoming' || card.getAttribute('data-status') === filter)
+        card.style.display = (filter === 'all' || card.getAttribute('data-status') === filter)
             ? 'flex'
             : 'none';
     });
@@ -479,5 +571,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-showOrderDetails 
