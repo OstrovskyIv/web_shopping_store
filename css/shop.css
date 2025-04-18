@@ -600,3 +600,55 @@ nav ul li a .basket-counter {
     overflow: hidden;
     color: rgb(189, 164, 25);
 }
+
+/* Стили для модальных окон экскурсий */
+#excursionDetailsModal .modal-content {
+    max-width: 800px;
+    background: #f5eee6;
+    padding: 30px;
+}
+
+.excursion-carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+.excursion-carousel img {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.locations-list ul {
+    padding-left: 20px;
+    margin: 15px 0;
+}
+
+.guide-item {
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+}
+
+#bookingForm {
+    display: grid;
+    gap: 15px;
+    padding: 20px;
+}
+
+#bookingForm input, #bookingForm select {
+    padding: 12px;
+    border: 1px solid #723308;
+    border-radius: 8px;
+}
+
+.proceed-booking-btn {
+    background: #723308;
+    color: white;
+    padding: 15px 30px;
+    margin-top: 20px;
+}
