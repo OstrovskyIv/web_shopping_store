@@ -824,3 +824,118 @@
     resize: vertical;
     min-height: 100px;
 }
+
+/* Стили для карточек экскурсий */
+.excursions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.excursion-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    border-left: 4px solid #a08060;
+    display: flex;
+    flex-direction: column;
+}
+
+.excursion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.excursion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.excursion-title {
+    font-weight: bold;
+    color: #5a2806;
+    font-size: 1.2rem;
+    margin: 0;
+    flex: 1;
+}
+
+.excursion-date {
+    color: #666;
+    font-size: 0.9rem;
+    margin-left: 15px;
+    white-space: nowrap;
+}
+
+.excursion-details {
+    margin: 15px 0;
+}
+
+.excursion-guide, .excursion-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.excursion-guide i, .excursion-info i {
+    margin-right: 10px;
+    color: #723308;
+    width: 20px;
+    text-align: center;
+}
+
+.excursion-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.status-upcoming {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-past {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.excursion-details-btn {
+    padding: 10px 15px;
+    background-color: #723308;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: auto;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.excursion-details-btn:hover {
+    background-color: #5a2806;
+}
+
+.excursion-payment {
+    margin-right: 15px;
+}
+
+.excursion-price {
+    font-weight: bold;
+    color: #5a2806;
+}
