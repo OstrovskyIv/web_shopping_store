@@ -1,5 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Инициализация рейтинга товаров с поддержкой дробных значений
+    // Инициализация рейтинга товаров
+    initRatings();
+    
+    // Инициализация обработчиков для кнопок товаров
+    initProductHandlers();
+    
+    // Инициализация обработчиков для экскурсий
+    initExcursionHandlers();
+    
+    // Инициализация счетчика корзины
+    updateBasketCounter();
+});
+
+// Инициализация рейтинга товаров
+function initRatings() {
     const ratingContainers = document.querySelectorAll(".rating");
     
     ratingContainers.forEach(container => {
@@ -48,7 +62,10 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
-  
+}
+
+// Инициализация обработчиков для товаров
+function initProductHandlers() {
     // Обработчики для кнопок "Заказать"
     const orderButtons = document.querySelectorAll(".order-btn");
     orderButtons.forEach(button => {
@@ -66,12 +83,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
-  
-    // Инициализация ночного режима
-    initNightMode();
-    
-    // Инициализация счетчика корзины
-    updateBasketCounter();
     
     // Обработчики для кнопок "Подробнее"
     const detailsButtons = document.querySelectorAll('.details-btn');
@@ -86,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
             showProductDetails(name, image, description, price);
         });
     });
-  
+    
     // Обработчик для кнопки "В корзину" в модальном окне
     const modalOrderBtn = document.querySelector('.modal-order-btn');
     if (modalOrderBtn) {
@@ -115,7 +126,259 @@ document.addEventListener("DOMContentLoaded", function() {
             closeProductModal();
         }
     });
-});
+}
+
+// Инициализация обработчиков для экскурсий
+function initExcursionHandlers() {
+    // Обработчик для кнопки "Подробнее" в экскурсиях
+    document.querySelectorAll('.excursion-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const card = this.closest('.excursion-card');
+            const excursionData = getExcursionData(card);
+            showExcursionDetailsModal(excursionData);
+        });
+    });
+    
+    // Обработчик для кнопки "Бронировать" в экскурсиях
+    document.querySelectorAll('.book-excursion-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const card = this.closest('.excursion-card');
+            const excursionData = getExcursionData(card);
+            showBookingModal(excursionData);
+        });
+    });
+}
+
+// Получение данных об экскурсии
+function getExcursionData(card) {
+    return {
+        id: card.dataset.id,
+        name: card.querySelector('.product-title').textContent,
+        photos: JSON.parse(card.dataset.photos || '[]'),
+        locations: JSON.parse(card.dataset.locations || '[]'),
+        price: parseFloat(card.dataset.basePrice || '0'),
+        duration: card.dataset.duration || 'Не указано',
+        description: card.querySelector('.description').textContent,
+        guide: card.querySelector('.meta-item span')?.textContent || 'Не указан',
+        time: card.querySelectorAll('.meta-item span')[1]?.textContent || 'Не указано'
+    };
+}
+
+// Показать модальное окно с деталями экскурсии
+function showExcursionDetailsModal(excursion) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="details-modal">
+            <div class="details-modal-content">
+                <div class="details-modal-header">
+                    <h2 class="details-modal-title">${excursion.name}</h2>
+                    <button class="close-modal-btn">&times;</button>
+                </div>
+                <div class="details-modal-body">
+                    <div class="excursion-carousel">
+                        ${excursion.photos.map(photo => `
+                            <img src="${photo}" alt="Фото экскурсии">
+                        `).join('')}
+                    </div>
+                    
+                    <div class="order-info-grid">
+                        <div class="order-info-item">
+                            <strong>Продолжительность:</strong> 
+                            <span class="order-info-text">${excursion.duration}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <strong>Гид:</strong> 
+                            <span class="order-info-text">${excursion.guide}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <strong>Время:</strong> 
+                            <span class="order-info-text">${excursion.time}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <strong>Цена:</strong> 
+                            <span class="order-info-text">${excursion.price} $</span>
+                        </div>
+                    </div>
+                    
+                    <p class="details-modal-description">${excursion.description}</p>
+                    
+                    <div class="locations-list">
+                        <h3>Маршрут:</h3>
+                        <ul>
+                            ${excursion.locations.map(location => `
+                                <li>${location}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="guides-selection">
+                        <h3>Доступные гиды:</h3>
+                        ${getStaff().map((guide, index) => `
+                            <div class="guide-item">
+                                <input type="radio" name="guide" id="guide${index}" ${index === 0 ? 'checked' : ''}>
+                                <label for="guide${index}">${guide.name} (опыт: ${guide.experience})</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="excursion-actions">
+                        <button class="btn-book-now" data-excursion-id="${excursion.id}">
+                            <i class="fas fa-calendar-check"></i> Забронировать сейчас
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Обработчик закрытия модального окна
+    modal.querySelector('.close-modal-btn').addEventListener('click', () => {
+        closeModal(modal);
+    });
+    
+    // Обработчик клика вне модального окна
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal(modal);
+        }
+    });
+    
+    // Обработчик кнопки "Забронировать сейчас"
+    modal.querySelector('.btn-book-now').addEventListener('click', () => {
+        closeModal(modal);
+        showBookingModal(excursion);
+    });
+}
+
+// Показать модальное окно бронирования
+function showBookingModal(excursion) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="booking-modal">
+            <div class="booking-modal-content">
+                <div class="booking-modal-header">
+                    <h2 class="booking-modal-title">Бронирование: ${excursion.name}</h2>
+                </div>
+                <form id="bookingForm">
+                    <div class="booking-form-group">
+                        <label for="bookingDate">Дата экскурсии:</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="booking-form-group">
+                        <label for="bookingTime">Время:</label>
+                        <input type="time" id="bookingTime" required value="${excursion.time.split(' - ')[0] || '19:00'}">
+                    </div>
+                    <div class="booking-form-group">
+                        <label for="bookingPeople">Количество человек:</label>
+                        <input type="number" id="bookingPeople" min="1" value="1" required>
+                    </div>
+                    <div class="booking-form-group">
+                        <label for="paymentMethod">Способ оплаты:</label>
+                        <select id="paymentMethod" required>
+                            <option value="card">Банковская карта</option>
+                            <option value="cash">Наличные</option>
+                        </select>
+                    </div>
+                    <div class="booking-form-group">
+                        <label>Итого к оплате:</label>
+                        <div id="totalPrice" class="total-price">${excursion.price} $</div>
+                    </div>
+                    <div class="booking-form-actions">
+                        <button type="submit" class="booking-submit-btn">Подтвердить бронь</button>
+                        <button type="button" class="booking-cancel-btn">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Обработчик изменения количества человек
+    modal.querySelector('#bookingPeople').addEventListener('input', function() {
+        const people = parseInt(this.value) || 1;
+        const total = excursion.price * people;
+        modal.querySelector('#totalPrice').textContent = `${total.toFixed(2)} $`;
+    });
+    
+    // Обработчик закрытия модального окна
+    modal.querySelector('.booking-cancel-btn').addEventListener('click', () => {
+        closeModal(modal);
+    });
+    
+    // Обработчик клика вне модального окна
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal(modal);
+        }
+    });
+    
+    // Обработчик формы бронирования
+    modal.querySelector('#bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const bookingData = {
+            id: Date.now(),
+            excursionId: excursion.id,
+            name: excursion.name,
+            date: this.querySelector('#bookingDate').value,
+            time: this.querySelector('#bookingTime').value,
+            people: parseInt(this.querySelector('#bookingPeople').value),
+            payment: this.querySelector('#paymentMethod').value,
+            price: parseFloat(excursion.price) * parseInt(this.querySelector('#bookingPeople').value),
+            status: 'Забронировано',
+            guide: getStaff()[0].name // Первый гид по умолчанию
+        };
+        
+        saveBooking(bookingData);
+        closeModal(modal);
+        showBookingSuccess(bookingData);
+    });
+}
+
+// Закрыть модальное окно
+function closeModal(modal) {
+    modal.classList.remove('active');
+    setTimeout(() => {
+        modal.remove();
+    }, 300);
+}
+
+// Сохранить бронирование в localStorage
+function saveBooking(bookingData) {
+    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+    excursions.push(bookingData);
+    localStorage.setItem('excursions', JSON.stringify(excursions));
+}
+
+// Показать уведомление об успешном бронировании
+function showBookingSuccess(booking) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Экскурсия "${booking.name}" успешно забронирована на ${booking.date}!</span>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
+
+// Получить список гидов
+function getStaff() {
+    return [
+        {name: "Стэнли Пайнс", experience: "27 лет"},
+        {name: "Венди Кордрой", experience: "3 года"},
+        {name: "Зус Рамирес", experience: "7 лет"},
+        {name: "Диппер Пайнс", experience: "2 года"}
+    ];
+}
 
 // Функция добавления товара в корзину
 function addToBasket(product) {
@@ -197,12 +460,6 @@ function closeProductModal() {
 }
 
 // Вспомогательные функции
-function initNightMode() {
-    if (document.body.classList.contains('night-mode')) {
-        document.body.style.backgroundColor = '#111';
-    }
-}
-
 function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast-notification';
@@ -213,224 +470,3 @@ function showToast(message) {
         toast.remove();
     }, 3000);
 }
-
-// Модальное окно для отзывов
-function showReviewModal(productName, currentRating) {
-    const modal = document.createElement('div');
-    modal.className = 'review-modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close-review">&times;</span>
-            <h2>Оставить отзыв: ${productName}</h2>
-            
-            <div class="your-rating">
-                <h3>Ваша оценка:</h3>
-                <div class="rating-stars">
-                    <span class="star" data-rating="1">★</span>
-                    <span class="star" data-rating="2">★</span>
-                    <span class="star" data-rating="3">★</span>
-                    <span class="star" data-rating="4">★</span>
-                    <span class="star" data-rating="5">★</span>
-                </div>
-            </div>
-            
-            <div class="review-form">
-                <textarea placeholder="Ваш отзыв..." rows="5"></textarea>
-                <button class="submit-review">Отправить отзыв</button>
-            </div>
-            
-            <div class="other-reviews">
-                <h3>Другие отзывы:</h3>
-                <div class="reviews-list">
-                    <div class="review">
-                        <div class="review-author">Иван Иванов</div>
-                        <div class="review-rating">★★★★★</div>
-                        <div class="review-text">Отличный товар, всем рекомендую!</div>
-                        <div class="review-date">01.01.2023</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Обработчики событий
-    modal.querySelector('.close-review').addEventListener('click', () => {
-        modal.remove();
-    });
-    
-    // Инициализация звезд
-    const stars = modal.querySelectorAll('.star');
-    stars.forEach(star => {
-        star.addEventListener('click', function() {
-            const rating = parseInt(this.getAttribute('data-rating'));
-            stars.forEach((s, idx) => {
-                s.classList.toggle('active', idx < rating);
-            });
-        });
-    });
-    
-    // Отправка отзыва
-    modal.querySelector('.submit-review').addEventListener('click', () => {
-        const text = modal.querySelector('textarea').value;
-        if (!text) {
-            alert('Пожалуйста, напишите отзыв');
-            return;
-        }
-        alert('Отзыв отправлен! Спасибо!');
-        modal.remove();
-    });
-}
-
-// Функции для экскурсий
-document.querySelectorAll('.book-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const card = this.closest('.excursion-card');
-        const name = card.querySelector('h3').textContent;
-        const image = card.querySelector('.product-image img').src;
-        const price = card.querySelector('.price').textContent;
-        
-        showExcursionModal(name, image, price);
-    });
-});
-
-function showExcursionModal(name, image, price) {
-    const modal = document.getElementById('excursionModal');
-    document.getElementById('excursionModalTitle').textContent = name;
-    document.getElementById('excursionModalImage').src = image;
-    document.getElementById('excursionModalPrice').textContent = `Цена: ${price}`;
-    
-    // Заполняем места остановок (пример)
-    const stopsList = document.getElementById('excursionStops');
-    stopsList.innerHTML = `
-        <li>Главная площадь</li>
-        <li>Исторический музей</li>
-        <li>Старый город</li>
-        <li>Смотровая площадка</li>
-    `;
-    
-    // Заполняем отзывы (пример)
-    const reviewsList = document.getElementById('excursionReviews');
-    reviewsList.innerHTML = `
-        <div class="review">
-            <div class="review-author">Анна</div>
-            <div class="review-rating">★★★★★</div>
-            <div class="review-text">Отличная экскурсия, гид очень знающий!</div>
-            <div class="review-date">15.05.2023</div>
-        </div>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-function closeExcursionModal() {
-    document.getElementById('excursionModal').style.display = 'none';
-}
-
-// Получаем список сотрудников из localStorage (должны быть сохранены на index.html)
-function getStaff() {
-    return JSON.parse(localStorage.getItem('staff')) || [
-        {name: "Стэнли Пайнс", experience: "27 лет"},
-        {name: "Венди Кордрой", experience: "3 года"},
-        {name: "Зус Рамирес", experience: "7 лет"},
-        {name: "Диппер Пайнс", experience: "2 года"}
-    ];
-}
-
-// Показ деталей экскурсии
-document.querySelectorAll('.excursion-details-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const card = this.closest('.excursion-card');
-        const photos = JSON.parse(card.dataset.photos);
-        const locations = JSON.parse(card.dataset.locations);
-        const price = card.dataset.price;
-        
-        showExcursionDetails(photos, locations, price);
-    });
-});
-
-function showExcursionDetails(photos, locations, price) {
-    const modal = document.getElementById('excursionDetailsModal');
-    const carousel = modal.querySelector('.excursion-carousel');
-    const locationsList = modal.querySelector('.locations-list');
-    
-    // Заполняем карусель
-    carousel.innerHTML = photos.map(img => `
-        <img src="${img}" alt="Фото экскурсии">
-    `).join('');
-    
-    // Заполняем места посещения
-    locationsList.innerHTML = `
-        <h3>Маршрут:</h3>
-        <ul>${locations.map(loc => `<li>${loc}</li>`).join('')}</ul>
-    `;
-    
-    // Заполняем список гидов
-    const guides = modal.querySelector('.guides-selection');
-    guides.innerHTML = `
-        <h3>Доступные гиды:</h3>
-        ${getStaff().map((guide, index) => `
-            <div class="guide-item">
-                <input type="radio" name="guide" id="guide${index}" required>
-                <label for="guide${index}">${guide.name} (опыт: ${guide.experience})</label>
-            </div>
-        `).join('')}
-    `;
-    
-    modal.style.display = 'block';
-}
-
-// Обработка оформления заказа
-document.querySelectorAll('.book-excursion-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        showBookingForm();
-    });
-});
-
-function showBookingForm() {
-    const modal = document.getElementById('bookingModal');
-    const guidesList = modal.querySelector('.guides-list');
-    
-    guidesList.innerHTML = `
-        <h3>Выберите гида:</h3>
-        ${getStaff().map((guide, index) => `
-            <div class="guide-item">
-                <input type="radio" name="guide" id="bguide${index}" required>
-                <label for="bguide${index}">${guide.name}</label>
-            </div>
-        `).join('')}
-    `;
-    
-    modal.style.display = 'block';
-}
-
-// Сохранение экскурсии
-document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const excursion = {
-        id: Date.now(),
-        date: this.querySelector('input[type="date"]').value,
-        time: this.querySelector('input[type="time"]').value,
-        guide: this.querySelector('input[name="guide"]:checked').nextElementSibling.textContent,
-        payment: this.querySelector('#paymentMethod').value,
-        status: 'Забронировано'
-    };
-    
-    const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
-    excursions.push(excursion);
-    localStorage.setItem('excursions', JSON.stringify(excursions));
-    
-    alert('Экскурсия успешно забронирована!');
-    closeModals();
-});
-
-function closeModals() {
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-}
-
-// Закрытие модальных окон
-document.querySelectorAll('.close').forEach(btn => {
-    btn.addEventListener('click', closeModals);
-});
