@@ -979,33 +979,57 @@
   </div>
 </section>
 
-<!-- Модальное окно деталей экскурсии -->
-<div id="excursionDetailsModal" class="modal">
-  <div class="modal-content">
-      <span class="close">&times;</span>
-      <div class="excursion-carousel"></div>
-      <div class="locations-list"></div>
-      <div class="guides-selection"></div>
-      <button class="proceed-booking-btn">Перейти к оформлению</button>
+<!-- Модальное окно "Подробнее" -->
+<div class="modal-overlay" id="detailsModal">
+  <div class="details-modal">
+      <div class="details-modal-content">
+          <div class="details-modal-header">
+              <h2 class="details-modal-title">Тайна Хижины Чудес</h2>
+              <button class="close-modal-btn">&times;</button>
+          </div>
+          <div class="details-modal-body">
+              <img src="pictures/excursion-details.jpg" alt="Детали экскурсии" class="details-modal-image">
+              <p class="details-modal-description">
+                  Полное описание экскурсии со всеми тайнами и секретами...
+              </p>
+              <div class="details-modal-features">
+                  <div class="feature-item">
+                      <i class="fas fa-clock feature-icon"></i>
+                      <span>Продолжительность: 2 часа</span>
+                  </div>
+                  <!-- Другие особенности -->
+              </div>
+          </div>
+      </div>
   </div>
 </div>
 
 <!-- Модальное окно оформления -->
-<div id="bookingModal" class="modal">
-  <div class="modal-content">
-      <span class="close">&times;</span>
-      <form id="bookingForm">
-          <input type="text" placeholder="Имя" required>
-          <input type="text" placeholder="Фамилия" required>
-          <input type="date" required>
-          <input type="time" required>
-          <select id="paymentMethod" required>
-              <option value="card">Карта</option>
-              <option value="cash">Наличные</option>
-          </select>
-          <div class="guides-list"></div>
-          <button type="submit">Подтвердить бронирование</button>
-      </form>
+<div class="modal-overlay" id="bookingModal">
+  <div class="booking-modal">
+      <div class="booking-modal-content">
+          <div class="booking-modal-header">
+              <h2 class="booking-modal-title">Оформление экскурсии</h2>
+          </div>
+          <form id="bookingForm">
+              <div class="booking-form-group">
+                  <label for="bookingDate">Дата экскурсии:</label>
+                  <input type="date" id="bookingDate" required>
+              </div>
+              <div class="booking-form-group">
+                  <label for="bookingTime">Время:</label>
+                  <input type="time" id="bookingTime" required>
+              </div>
+              <div class="booking-form-group">
+                  <label for="bookingPeople">Количество человек:</label>
+                  <input type="number" id="bookingPeople" min="1" required>
+              </div>
+              <div class="booking-form-actions">
+                  <button type="submit" class="booking-submit-btn">Забронировать</button>
+                  <button type="button" class="booking-cancel-btn">Отмена</button>
+              </div>
+          </form>
+      </div>
   </div>
 </div>
           
