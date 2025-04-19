@@ -939,3 +939,46 @@
     font-weight: bold;
     color: #5a2806;
 }
+
+.btn-cancel-excursion {
+    background: #ff4444;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  
+  .btn-cancel-excursion:hover {
+    background: #cc0000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+  }
+
+  /* account.css */
+.excursion-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .btn-cancel-excursion {
+    background: #ff4444;
+    color: rgb(126, 126, 126);
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .btn-cancel-excursion:hover {
+    background: #cc0000;
+    transform: translateY(-2px);
+  }
+  
