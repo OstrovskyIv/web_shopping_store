@@ -5,6 +5,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Шапка */
 header {
     display: flex;
     justify-content: center;
@@ -46,15 +47,16 @@ nav ul li:last-child {
     margin-right: 0;
 }
 
-nav ul li a:hover {
-    color: #1b9029;
-}
-
 nav ul li a {
     text-decoration: none;
     color: inherit;
     font-family: 'MedievalSharp', cursive;
     font-size: 36px;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #1b9029;
 }
 
 nav ul li a i {
@@ -62,15 +64,29 @@ nav ul li a i {
     margin-right: 10px;
 }
 
-/* Футер */
+/* Счетчик корзины */
+nav ul li a .basket-counter {
+    display: none;
+    background-color: #1b9029;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 20px;
+    position: relative;
+    top: -10px;
+    margin-left: 5px;
+}
+
+/* Подвал */
 .footer {
     background-color: #2a2929;
     color: white;
     padding: 30px 0;
     text-align: center;
     font-family: 'Arial', sans-serif;
-    position: relative;
-    overflow: hidden;
 }
 
 .footer p {
@@ -95,16 +111,35 @@ nav ul li a i {
     text-align: center;
     line-height: 70px;
     font-size: 32px;
-    position: relative;
     transition: all 0.3s ease;
 }
 
 .social-icons a:hover {
     transform: scale(1.1);
-    background-color: #1b9029;
 }
 
-/* Стили для секций */
+/* Специфичные цвета для соцсетей */
+.social-icons a.flip-cover-telegram:hover {
+    background-color: #0088cc;
+}
+
+.social-icons a.flip-cover-instagram:hover {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+}
+
+.social-icons a.flip-cover-github:hover {
+    background-color: #333;
+}
+
+.social-icons a.flip-cover-gmail:hover {
+    background-color: #d44638;
+}
+
+.social-icons a.flip-cover-discord:hover {
+    background-color: #5865f2;
+}
+
+/* Заголовки секций */
 .section-title {
     font-size: 3rem;
     color: #723308;
@@ -114,7 +149,7 @@ nav ul li a i {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Обновленные стили для секции товаров */
+/* Секция товаров */
 .products-section {
     padding: 60px 20px;
     background-color: #d4b08c;
@@ -133,6 +168,23 @@ nav ul li a i {
     padding: 0 20px;
     box-sizing: border-box;
 }
+
+/* Карточка товара */
+.product-card {
+    flex: 1 1 calc(25% - 40px);
+    min-width: 280px;
+    max-width: 320px;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .product-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
@@ -153,44 +205,6 @@ nav ul li a i {
 
 .product-card:hover .product-image img {
     transform: scale(1.1);
-}
-
-.product-info h3 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.details-btn {
-    padding: 10px 20px;
-    background-color: #723308;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    transition: background-color 0.3s ease;
-}
-
-.details-btn:hover {
-    background-color: #1b9029;
-}
-
-/* Обновленные стили для карточек товаров */
-.product-card {
-    flex: 1 1 calc(25% - 40px);
-    min-width: 280px;
-    max-width: 320px;
-    background-color: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
 }
 
 .product-info {
@@ -221,7 +235,6 @@ nav ul li a i {
     justify-content: center;
 }
 
-/* Стили для цены */
 .price {
     font-size: 1.3rem;
     font-weight: bold;
@@ -229,53 +242,84 @@ nav ul li a i {
     margin: 10px 0;
 }
 
-/* Контейнер для кнопок и рейтинга */
 .actions-container {
     margin-top: auto;
     padding-top: 15px;
 }
 
-.rating {
-    margin: 10px 0;
+/* Кнопки */
+.details-btn {
+    padding: 10px 20px;
+    background-color: #723308;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.details-btn:hover {
+    background-color: #1b9029;
+}
+
+.order-btn {
+    padding: 12px 30px;
+    background-color: #1b9029;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.order-btn:hover {
+    background-color: #147a22;
+}
+
+/* Рейтинг - увеличенные звезды */
+.rating {
+    margin: 15px 0;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 5px;
-    height: 30px;
 }
 
 .rating-value {
-    font-size: 1rem;
-    margin-left: 5px;
+    font-size: 1.2rem;
+    margin-left: 10px;
     color: #333;
 }
 
-/* Адаптация для мобильных */
-@media (max-width: 1200px) {
-    .product-card {
-        flex: 1 1 calc(33.333% - 40px);
-    }
+.star {
+    position: relative;
+    font-size: 2rem; /* Увеличенный размер звезд */
+    color: #ccc;
+    cursor: pointer;
 }
 
-@media (max-width: 900px) {
-    .product-card {
-        flex: 1 1 calc(50% - 40px);
-    }
+.star.full {
+    color: gold;
 }
 
-@media (max-width: 600px) {
-    .product-card {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-    
-    .products-container {
-        padding: 0 10px;
-    }
+.star.partial {
+    color: #ccc;
 }
 
-/* Стили для секции экскурсий */
+.star.partial::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    width: var(--fill-percent);
+    overflow: hidden;
+    color: gold;
+}
+
+/* Секция экскурсий */
 .excursions-section {
     padding: 60px 20px;
     background-color: #d4b08c;
@@ -303,99 +347,167 @@ nav ul li a i {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.5s ease;
     margin-bottom: 20px;
-}
-
-.excursion-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
-
-/* Обновленные стили для рейтинга */
-.rating {
-    margin: 15px 0;
-    font-size: 1.8rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    height: 50px; /* Фиксированная высота для контейнера */
-}
-
-.star {
-    cursor: pointer;
-    color: #cccccc; /* Серый цвет по умолчанию */
-    transition: color 0.2s ease;
     position: relative;
-    font-size: 50px; /* Увеличьте размер звезд */
-    line-height: 50px; /* Добавляем для вертикального выравнивания */
+    border: 2px solid transparent;
 }
 
-.star.active {
-    color: #ffcc00; /* Цвет активной звезды (золотой) */
+/* RGB лента вокруг карточек */
+.excursion-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, 
+        #ff0000, #ff7f00, #ffff00, #00ff00, 
+        #0000ff, #4b0082, #9400d3, #ff0000);
+    background-size: 400% 400%;
+    z-index: -1;
+    animation: rgb-border 8s linear infinite;
 }
 
-.rating-value {
-    font-size: 1.2rem;
-    margin-left: 10px;
-    color: #333;
-    line-height: 50px; /* Совпадает с высотой звезд */
-    height: 50px;
-    display: inline-flex;
+@keyframes rgb-border {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}
+
+/* Новая анимация для туров - пульсация */
+.excursion-card:hover {
+    animation: pulse 2s infinite;
+    transform: none;
+    box-shadow: 0 0 20px rgba(114, 51, 8, 0.5);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px rgba(114, 51, 8, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(114, 51, 8, 0.7); }
+    100% { box-shadow: 0 0 10px rgba(114, 51, 8, 0.3); }
+}
+
+.excursion-card::after {
+    content: "ТАЙНА!";
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #ff0000;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    z-index: 2;
+    opacity: 0.9;
+}
+
+.excursion-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+}
+
+.excursion-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.excursion-card:hover .excursion-image {
+    transform: scale(1.05);
+    filter: brightness(1.1) contrast(1.1);
+}
+
+.excursion-content {
+    padding: 20px;
+}
+
+.excursion-title {
+    font-size: 1.5rem;
+    color: #5a2806;
+    margin-bottom: 10px;
+    font-family: 'MedievalSharp', cursive;
+    position: relative;
+}
+
+.excursion-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #723308;
+}
+
+.excursion-description {
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.excursion-footer {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    padding-top: 15px;
+    border-top: 1px dashed #a08060;
 }
 
-.order-btn {
-    padding: 12px 30px;
-    background-color: #1b9029;
+.excursion-price {
+    font-size: 1.3rem;
+    color: #723308;
+    font-weight: bold;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.book-btn {
+    background-color: #723308;
     color: white;
     border: none;
+    padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.2rem;
-    transition: background-color 0.3s ease;
-    width: 100%;
+    font-family: 'MedievalSharp', cursive;
+    transition: all 0.3s;
 }
 
-.order-btn:hover {
-    background-color: #147a22;
+.book-btn:hover {
+    background-color: #5a2806;
+    transform: translateY(-2px);
 }
 
-/* Стили для модального окна товара */
+/* Модальные окна */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
     overflow: auto;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 5% auto;
+    margin: auto;
     padding: 30px;
     border-radius: 10px;
     width: 80%;
     max-width: 600px;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     animation: modalFadeIn 0.3s;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .close {
@@ -432,19 +544,15 @@ nav ul li a i {
 }
 
 .modal-rating {
-    font-size: 1.8rem;
-    color: #ffcc00;
-    margin: 15px 0;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 5px;
+    margin: 20px 0;
 }
 
-.modal-rating-value {
-    font-size: 1.2rem;
-    margin-left: 10px;
-    color: #333;
+.modal-rating .star {
+    font-size: 2.5rem; /* Увеличенные звезды в модальном окне */
 }
 
 .modal-price {
@@ -471,184 +579,344 @@ nav ul li a i {
     background-color: #147a22;
 }
 
-/* Базовый стиль для всех иконок */
-.social-icons a {
-    display: inline-block;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: #444; /* Серый по умолчанию */
-    color: white;
-    text-align: center;
-    line-height: 70px;
-    font-size: 32px;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-/* Стили при наведении для каждой платформы */
-.social-icons a.flip-cover-telegram:hover {
-    background-color: #0088cc;
-}
-
-.social-icons a.flip-cover-instagram:hover {
-    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
-}
-
-.social-icons a.flip-cover-github:hover {
-    background-color: #333;
-}
-
-.social-icons a.flip-cover-gmail:hover {
-    background-color: #d44638;
-}
-
-.social-icons a.flip-cover-discord:hover {
-    background-color: #5865f2;
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 1200px) {
-    .product-card {
-        flex: 1 1 calc(33.333% - 40px);
-    }
-}
-
-@media (max-width: 900px) {
-    .product-card {
-        flex: 1 1 calc(50% - 40px);
-    }
-    
-    .excursion-card {
-        flex: 1 1 100%;
-        max-width: 100%;
-        min-width: auto;
-    }
-}
-
-@media (max-width: 600px) {
-    .product-card {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-    
-    .modal-content {
-        width: 90%;
-        margin: 20% auto;
-    }
-    
-    .section-title {
-        font-size: 2rem;
-    }
-    
-    nav ul li a {
-        font-size: 24px;
-    }
-    
-    nav ul li {
-        margin-right: 50px;
-    }
-}
-
-/* Счетчик корзины в навигации */
-nav ul li a .basket-counter {
-    display: none;
-    background-color: #1b9029;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 0.9rem;
-    text-align: center;
-    line-height: 20px;
-    position: relative;
-    top: -10px;
-    margin-left: 5px;
-}
-
-.night-mode nav ul li a .basket-counter {
-    background-color: #d4a017;
-    color: #2a1e10;
-}
-
-/* Стили для рейтинга */
-.rating {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-}
-
-.star {
-    position: relative;
-    color: #ccc;
-    font-size: 1.2em;
-}
-
-.star.full {
-    color: gold;
-}
-
-.star.partial {
-    color: #ccc;
-}
-
-.star.partial::before {
-    content: '★';
-    position: absolute;
+/* Модальные окна для экскурсий */
+.modal-overlay {
+    position: fixed;
+    top: 0;
     left: 0;
-    width: var(--fill-percent);
-    overflow: hidden;
-    color: rgb(189, 164, 25);
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
-/* Стили для модальных окон экскурсий */
-#excursionDetailsModal .modal-content {
-    max-width: 800px;
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.details-modal, .booking-modal {
     background: #f5eee6;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    position: relative;
+}
+
+.modal-overlay.active .details-modal,
+.modal-overlay.active .booking-modal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.details-modal {
+    background: #fff5e6;
+    border: 2px solid #723308;
+}
+
+.booking-modal {
+    background: #f5eee6;
+    border: 3px double #723308;
+}
+
+.details-modal-content, .booking-modal-content {
     padding: 30px;
+}
+
+.details-modal-header, .booking-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #a08060;
+    padding-bottom: 15px;
+}
+
+.details-modal-title, .booking-modal-title {
+    font-family: 'MedievalSharp', cursive;
+    color: #5a2806;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.close-modal-btn, .booking-cancel-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #723308;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal-btn:hover, .booking-cancel-btn:hover {
+    color: #d44638;
+}
+
+.details-modal-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 3px solid #723308;
 }
 
 .excursion-carousel {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     overflow-x: auto;
-    margin: 20px 0;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #723308 #f5eee6;
 }
 
-.excursion-carousel img {
-    width: 300px;
-    height: 200px;
-    object-fit: cover;
+.excursion-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.excursion-carousel::-webkit-scrollbar-track {
+    background: #f5eee6;
     border-radius: 10px;
 }
 
+.excursion-carousel::-webkit-scrollbar-thumb {
+    background-color: #723308;
+    border-radius: 10px;
+}
+
+.excursion-carousel img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #a08060;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.excursion-carousel img:hover {
+    transform: scale(1.05);
+}
+
+.details-modal-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.feature-icon {
+    margin-right: 10px;
+    color: #723308;
+    width: 20px;
+    text-align: center;
+}
+
+.locations-list {
+    margin: 20px 0;
+}
+
+.locations-list h3 {
+    font-family: 'MedievalSharp', cursive;
+    color: #5a2806;
+    margin-bottom: 10px;
+}
+
 .locations-list ul {
-    padding-left: 20px;
-    margin: 15px 0;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.locations-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #a08060;
+    position: relative;
+    padding-left: 25px;
+}
+
+.locations-list li:before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #723308;
+}
+
+.guides-selection {
+    margin: 20px 0;
 }
 
 .guide-item {
-    margin: 10px 0;
+    margin-bottom: 10px;
     padding: 10px;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255, 255, 255, 0.7);
     border-radius: 8px;
+    border-left: 3px solid #723308;
 }
 
 #bookingForm {
     display: grid;
     gap: 15px;
-    padding: 20px;
 }
 
-#bookingForm input, #bookingForm select {
+.booking-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #5a2806;
+}
+
+.booking-form-group input, 
+.booking-form-group select {
     padding: 12px;
-    border: 1px solid #723308;
+    border: 2px solid #a08060;
     border-radius: 8px;
+    background: #fff5e6;
+    font-size: 1rem;
+    transition: all 0.3s;
 }
 
-.proceed-booking-btn {
+.booking-form-group input:focus, 
+.booking-form-group select:focus {
+    border-color: #723308;
+    box-shadow: 0 0 10px rgba(114, 51, 8, 0.2);
+    outline: none;
+}
+
+.booking-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.booking-submit-btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #723308;
+    color: white;
+    border: none;
+}
+
+.booking-submit-btn:hover {
+    background-color: #5a2806;
+    transform: translateY(-2px);
+}
+
+.booking-cancel-btn {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: transparent;
+    border: 2px solid #723308;
+    color: #723308;
+}
+
+.booking-cancel-btn:hover {
+    background-color: #f5eee6;
+    color: #d44638;
+    border-color: #d44638;
+}
+
+/* Анимации */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Уведомления */
+.toast-notification {
+    animation: slideIn 0.3s ease, fadeOut 2.5s ease forwards;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     background: #723308;
     color: white;
     padding: 15px 30px;
-    margin-top: 20px;
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 3000;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Бейджи */
+.exclusive-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #723308;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    z-index: 2;
+}
+
+.exclusive-badge.danger {
+    background: #d44638;
+}
+
+.difficulty-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    z-index: 2;
 }
