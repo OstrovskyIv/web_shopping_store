@@ -564,19 +564,46 @@ nav ul li a .basket-counter {
 
 .modal-order-btn {
     padding: 12px 30px;
-    background-color: #1b9029;
+    background: linear-gradient(45deg, #723308, #5a2806);
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.2rem;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     display: block;
     margin: 0 auto;
+    border: 2px solid #3d1a03;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
 .modal-order-btn:hover {
-    background-color: #147a22;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #5a2806, #723308);
+}
+
+.modal-order-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modal-order-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg) translate(-20%, 100%);
+    transition: all 0.5s ease;
+}
+
+.modal-order-btn:hover::after {
+    transform: rotate(45deg) translate(20%, -100%);
 }
 
 /* Модальные окна для экскурсий */
@@ -749,17 +776,47 @@ nav ul li a .basket-counter {
 }
 
 .locations-list li {
-    padding: 8px 0;
+    padding: 12px 0;
     border-bottom: 1px dashed #a08060;
     position: relative;
-    padding-left: 25px;
+    padding-left: 35px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(to right, transparent 50%, #fff5e6 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+}
+
+.locations-list li:hover {
+    background-position: left bottom;
+    transform: translateX(10px);
 }
 
 .locations-list li:before {
-    content: '→';
+    content: '🗺️';
     position: absolute;
     left: 0;
     color: #723308;
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+}
+
+.locations-list li:hover:before {
+    transform: rotate(15deg) scale(1.2);
+}
+
+.locations-list li::after {
+    content: 'Нажми для подробностей';
+    position: absolute;
+    right: 20px;
+    opacity: 0;
+    color: #723308;
+    font-size: 0.8em;
+    transition: opacity 0.3s ease;
+}
+
+.locations-list li:hover::after {
+    opacity: 1;
 }
 
 .guides-selection {
@@ -820,14 +877,39 @@ nav ul li a .basket-counter {
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s;
-    background-color: #723308;
+    background: linear-gradient(45deg, #723308, #5a2806);
     color: white;
     border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
 .booking-submit-btn:hover {
-    background-color: #5a2806;
+    background: linear-gradient(45deg, #5a2806, #723308);
     transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.booking-submit-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.booking-submit-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg) translate(-20%, 100%);
+    transition: all 0.5s ease;
+}
+
+.booking-submit-btn:hover::after {
+    transform: rotate(45deg) translate(20%, -100%);
 }
 
 .booking-cancel-btn {
@@ -859,36 +941,61 @@ nav ul li a .basket-counter {
     }
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateY(50px);
+@keyframes popIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
         opacity: 0;
     }
-    to {
-        transform: translateY(0);
+    70% {
+        transform: translate(-50%, -50%) scale(1.1);
         opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
     }
 }
 
 /* Уведомления */
 .toast-notification {
-    animation: slideIn 0.3s ease, fadeOut 2.5s ease forwards;
+    animation: popIn 0.3s ease, fadeOut 2.5s ease forwards;
     position: fixed;
-    bottom: 20px;
+    bottom: 20px; /* Изменено с top на bottom */
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* Убрано преобразование по Y */
     background: #723308;
     color: white;
     padding: 15px 30px;
     border-radius: 25px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     z-index: 3000;
+    opacity: 0;
+    width: auto;
+    max-width: 80%;
+    text-align: center;
+}
+
+/* Обновленная анимация для нового положения */
+@keyframes popIn {
+    0% {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 0;
+        bottom: -50px;
+    }
+    70% {
+        transform: translateX(-50%) scale(1.1);
+        opacity: 1;
+        bottom: 30px;
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+        bottom: 20px;
+    }
 }
 
 @keyframes fadeOut {
-    0% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { opacity: 0; }
+    0% { opacity: 1; bottom: 20px; }
+    90% { opacity: 1; bottom: 20px; }
+    100% { opacity: 0; bottom: -50px; }
 }
 
 /* Бейджи */
