@@ -1,18 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Инициализация рейтинга товаров
     initRatings();
-    
-    // Инициализация обработчиков для кнопок товаров
     initProductHandlers();
-    
-    // Инициализация обработчиков для экскурсий
     initExcursionHandlers();
-    
-    // Инициализация счетчика корзины
     updateBasketCounter();
 });
 
-// Инициализация рейтинга товаров
 function initRatings() {
     const ratingContainers = document.querySelectorAll(".rating");
     
@@ -21,28 +13,23 @@ function initRatings() {
         const ratingValue = container.querySelector(".rating-value");
         const currentRating = parseFloat(ratingValue.textContent);
         
-        // Очищаем предыдущие стили
         stars.forEach(star => {
             star.classList.remove("full", "partial");
             star.style.setProperty('--fill-percent', '0%');
         });
 
-        // Заполняем звезды в соответствии с рейтингом
         stars.forEach((star, index) => {
             const starPosition = index + 1;
             
             if (currentRating >= starPosition) {
-                // Полностью заполненная звезда
                 star.classList.add("full");
             } else if (currentRating > starPosition - 1) {
-                // Частично заполненная звезда
                 star.classList.add("partial");
                 const fillPercent = (currentRating - (starPosition - 1)) * 100;
                 star.style.setProperty('--fill-percent', `${fillPercent}%`);
             }
         });
         
-        // Обработка кликов по звездам
         stars.forEach(star => {
             star.addEventListener("click", function() {
                 const newRating = parseInt(this.getAttribute("data-rating"));
@@ -64,9 +51,7 @@ function initRatings() {
     });
 }
 
-// Инициализация обработчиков для товаров
 function initProductHandlers() {
-    // Обработчики для кнопок "Заказать"
     const orderButtons = document.querySelectorAll(".order-btn");
     orderButtons.forEach(button => {
         button.addEventListener("click", function() {
@@ -84,7 +69,6 @@ function initProductHandlers() {
         });
     });
     
-    // Обработчики для кнопок "Подробнее"
     const detailsButtons = document.querySelectorAll('.details-btn');
     detailsButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -98,7 +82,6 @@ function initProductHandlers() {
         });
     });
     
-    // Обработчик для кнопки "В корзину" в модальном окне
     const modalOrderBtn = document.querySelector('.modal-order-btn');
     if (modalOrderBtn) {
         modalOrderBtn.addEventListener('click', function() {
@@ -119,7 +102,6 @@ function initProductHandlers() {
         });
     }
     
-    // Закрытие модального окна при клике вне его
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('productModal');
         if (event.target === modal) {
@@ -128,46 +110,78 @@ function initProductHandlers() {
     });
 }
 
-// Инициализация обработчиков для экскурсий
 function initExcursionHandlers() {
-    // Обработчик для кнопки "Подробнее" в экскурсиях
     document.querySelectorAll('.excursion-details-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const card = this.closest('.excursion-card');
+            if (!card) {
+                console.error('Excursion card not found');
+                return;
+            }
             const excursionData = getExcursionData(card);
             showExcursionDetailsModal(excursionData);
         });
     });
     
-    // Обработчик для кнопки "Бронировать" в экскурсиях
     document.querySelectorAll('.book-excursion-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const card = this.closest('.excursion-card');
+            if (!card) {
+                console.error('Excursion card not found');
+                return;
+            }
             const excursionData = getExcursionData(card);
             showBookingModal(excursionData);
         });
     });
 }
 
-// Получение данных об экскурсии
 function getExcursionData(card) {
+    try {
+        const photos = card.dataset.photos ? JSON.parse(card.dataset.photos) : [];
+        const locations = card.dataset.locations ? JSON.parse(card.dataset.locations) : [];
+        
+        return {
+            id: card.dataset.id || Date.now().toString(),
+            name: card.querySelector('.product-title')?.textContent || 'Экскурсия',
+            photos: Array.isArray(photos) ? photos : [],
+            locations: Array.isArray(locations) ? locations : [],
+            price: parseFloat(card.dataset.basePrice || '0'),
+            duration: card.dataset.duration || 'Не указано',
+            description: card.querySelector('.description')?.textContent || '',
+            guide: card.querySelector('.meta-item span')?.textContent || 'Не указан',
+            time: card.querySelectorAll('.meta-item span')[1]?.textContent || 'Не указано'
+        };
+    } catch (e) {
+        console.error('Error parsing excursion data:', e);
+        return getDefaultExcursionData();
+    }
+}
+
+function getDefaultExcursionData() {
     return {
-        id: card.dataset.id,
-        name: card.querySelector('.product-title').textContent,
-        photos: JSON.parse(card.dataset.photos || '[]'),
-        locations: JSON.parse(card.dataset.locations || '[]'),
-        price: parseFloat(card.dataset.basePrice || '0'),
-        duration: card.dataset.duration || 'Не указано',
-        description: card.querySelector('.description').textContent,
-        guide: card.querySelector('.meta-item span')?.textContent || 'Не указан',
-        time: card.querySelectorAll('.meta-item span')[1]?.textContent || 'Не указано'
+        id: Date.now().toString(),
+        name: 'Экскурсия',
+        photos: [],
+        locations: ['Основные достопримечательности'],
+        price: 0,
+        duration: '2 часа',
+        description: 'Увлекательная экскурсия по интересным местам',
+        guide: 'Стэнли Пайнс',
+        time: '19:00 - 21:00'
     };
 }
 
-// Показать модальное окно с деталями экскурсии
 function showExcursionDetailsModal(excursion) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
+    
+    const photosHTML = excursion.photos && excursion.photos.length > 0 
+        ? excursion.photos.map(photo => `
+            <img src="${photo || 'pictures/default-excursion.jpg'}" alt="Фото экскурсии" onerror="this.src='pictures/default-excursion.jpg'">
+        `).join('')
+        : `<img src="pictures/default-excursion.jpg" alt="Фото экскурсии">`;
+    
     modal.innerHTML = `
         <div class="details-modal">
             <div class="details-modal-content">
@@ -177,11 +191,8 @@ function showExcursionDetailsModal(excursion) {
                 </div>
                 <div class="details-modal-body">
                     <div class="excursion-carousel">
-                        ${excursion.photos.map(photo => `
-                            <img src="${photo}" alt="Фото экскурсии">
-                        `).join('')}
+                        ${photosHTML}
                     </div>
-                    
                     <div class="order-info-grid">
                         <div class="order-info-item">
                             <strong>Продолжительность:</strong> 
@@ -200,9 +211,7 @@ function showExcursionDetailsModal(excursion) {
                             <span class="order-info-text">${excursion.price} $</span>
                         </div>
                     </div>
-                    
                     <p class="details-modal-description">${excursion.description}</p>
-                    
                     <div class="locations-list">
                         <h3>Маршрут:</h3>
                         <ul>
@@ -211,7 +220,6 @@ function showExcursionDetailsModal(excursion) {
                             `).join('')}
                         </ul>
                     </div>
-                    
                     <div class="guides-selection">
                         <h3>Доступные гиды:</h3>
                         ${getStaff().map((guide, index) => `
@@ -221,7 +229,6 @@ function showExcursionDetailsModal(excursion) {
                             </div>
                         `).join('')}
                     </div>
-                    
                     <div class="excursion-actions">
                         <button class="btn-book-now" data-excursion-id="${excursion.id}">
                             <i class="fas fa-calendar-check"></i> Забронировать сейчас
@@ -234,26 +241,22 @@ function showExcursionDetailsModal(excursion) {
     
     document.body.appendChild(modal);
     
-    // Обработчик закрытия модального окна
     modal.querySelector('.close-modal-btn').addEventListener('click', () => {
         closeModal(modal);
     });
     
-    // Обработчик клика вне модального окна
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModal(modal);
         }
     });
     
-    // Обработчик кнопки "Забронировать сейчас"
     modal.querySelector('.btn-book-now').addEventListener('click', () => {
         closeModal(modal);
         showBookingModal(excursion);
     });
 }
 
-// Показать модальное окно бронирования
 function showBookingModal(excursion) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
@@ -298,26 +301,22 @@ function showBookingModal(excursion) {
     
     document.body.appendChild(modal);
     
-    // Обработчик изменения количества человек
     modal.querySelector('#bookingPeople').addEventListener('input', function() {
         const people = parseInt(this.value) || 1;
         const total = excursion.price * people;
         modal.querySelector('#totalPrice').textContent = `${total.toFixed(2)} $`;
     });
     
-    // Обработчик закрытия модального окна
     modal.querySelector('.booking-cancel-btn').addEventListener('click', () => {
         closeModal(modal);
     });
     
-    // Обработчик клика вне модального окна
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModal(modal);
         }
     });
     
-    // Обработчик формы бронирования
     modal.querySelector('#bookingForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -331,7 +330,7 @@ function showBookingModal(excursion) {
             payment: this.querySelector('#paymentMethod').value,
             price: parseFloat(excursion.price) * parseInt(this.querySelector('#bookingPeople').value),
             status: 'Забронировано',
-            guide: getStaff()[0].name // Первый гид по умолчанию
+            guide: getStaff()[0].name
         };
         
         saveBooking(bookingData);
@@ -340,7 +339,6 @@ function showBookingModal(excursion) {
     });
 }
 
-// Закрыть модальное окно
 function closeModal(modal) {
     modal.classList.remove('active');
     setTimeout(() => {
@@ -348,14 +346,12 @@ function closeModal(modal) {
     }, 300);
 }
 
-// Сохранить бронирование в localStorage
 function saveBooking(bookingData) {
     const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
     excursions.push(bookingData);
     localStorage.setItem('excursions', JSON.stringify(excursions));
 }
 
-// Показать уведомление об успешном бронировании
 function showBookingSuccess(booking) {
     const toast = document.createElement('div');
     toast.className = 'toast-notification';
@@ -370,7 +366,6 @@ function showBookingSuccess(booking) {
     }, 5000);
 }
 
-// Получить список гидов
 function getStaff() {
     return [
         {name: "Стэнли Пайнс", experience: "27 лет"},
@@ -380,32 +375,25 @@ function getStaff() {
     ];
 }
 
-// Функция добавления товара в корзину
 function addToBasket(product) {
-    // Получаем текущую корзину из localStorage
     let basket = JSON.parse(localStorage.getItem('basket')) || [];
     
-    // Проверка валидности объекта товара
     if (!product || !product.name || typeof product.price !== 'number') {
         console.error('Invalid product object:', product);
         showToast('Ошибка добавления товара');
         return;
     }
 
-    // Создаем ключ для сравнения товаров (на основе имени и цены)
     const productKey = `${product.name.toLowerCase()}_${product.price}`;
     
-    // Поиск существующего товара
     const existingIndex = basket.findIndex(item => 
         `${item.name.toLowerCase()}_${item.price}` === productKey
     );
 
     if (existingIndex > -1) {
-        // Обновление количества существующего товара
         basket[existingIndex].quantity += product.quantity || 1;
         showToast(`Количество "${product.name}" обновлено: ${basket[existingIndex].quantity}`);
     } else {
-        // Добавление нового товара с базовым ID
         const basketItem = {
             id: Date.now().toString(),
             name: product.name,
@@ -425,7 +413,6 @@ function addToBasket(product) {
     }
 }
 
-// Функция обновления счетчика корзины
 function updateBasketCounter() {
     const basket = JSON.parse(localStorage.getItem('basket')) || [];
     const totalItems = basket.reduce((sum, item) => sum + item.quantity, 0);
@@ -445,7 +432,6 @@ function updateBasketCounter() {
     });
 }
 
-// Функции для модального окна товара
 function showProductDetails(name, image, description, price) {
     const modal = document.getElementById('productModal');
     document.getElementById('productModalTitle').textContent = name;
@@ -459,7 +445,6 @@ function closeProductModal() {
     document.getElementById('productModal').style.display = 'none';
 }
 
-// Вспомогательные функции
 function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast-notification';
