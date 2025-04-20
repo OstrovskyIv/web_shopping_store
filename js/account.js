@@ -225,42 +225,123 @@ function showOrderDetails(order) {
     `;
     
     document.body.appendChild(modal);
-    modal.style.display = 'flex';
+    modal.classList.add('active');
 
     modal.querySelector('.close-modal').addEventListener('click', () => {
-        modal.style.display = 'none';
+        modal.classList.remove('active');
         modal.remove();
     });
     
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('active');
             modal.remove();
         }
     });
 }
 
-// Загрузка экскурсий
-function loadExcursions() {
+// Функция для парсинга даты экскурсии (поддержка разных форматов)
+function parseExcursionDate(dateString, timeString = '00:00') {
+    if (!dateString) return null;
+    
+    try {
+        let day, month, year;
+        
+        // Поддержка формата "2025-04-20"
+        if (dateString.includes('-')) {
+            [year, month, day] = dateString.split('-');
+        } 
+        // Поддержка формата "20.04.2025"
+        else if (dateString.includes('.')) {
+            [day, month, year] = dateString.split('.');
+        } 
+        // Неизвестный формат
+        else {
+            return null;
+        }
+        
+        const [hours = '00', minutes = '00'] = timeString.split(':');
+        
+        return new Date(
+            parseInt(year),
+            parseInt(month) - 1,
+            parseInt(day),
+            parseInt(hours),
+            parseInt(minutes)
+        );
+    } catch (e) {
+        console.error('Ошибка парсинга даты экскурсии:', e);
+        return null;
+    }
+}
+
+// Проверка и обновление статусов экскурсий
+function updateExcursionsStatus() {
     const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+    const now = new Date();
+    
+    const updatedExcursions = excursions.map(exc => {
+        const excDate = parseExcursionDate(exc.date, exc.time);
+        const isPast = excDate && excDate < now;
+        
+        return {
+            ...exc,
+            status: isPast ? 'Завершена' : (exc.status || 'Забронировано')
+        };
+    });
+    
+    localStorage.setItem('excursions', JSON.stringify(updatedExcursions));
+    return updatedExcursions;
+}
+
+// Загрузка и отображение экскурсий
+function loadExcursions() {
+    const excursions = updateExcursionsStatus();
+    const now = new Date();
+    
+    // Определяем активную вкладку
+    const activeTab = document.querySelector('.excursions-section .tab-btn.active')?.dataset.tab || 'upcoming';
+    
+    // Фильтруем экскурсии
+    const filteredExcursions = excursions.filter(exc => {
+        const excDate = parseExcursionDate(exc.date, exc.time);
+        return activeTab === 'upcoming' 
+            ? !excDate || excDate >= now 
+            : excDate && excDate < now;
+    });
+    
+    renderExcursionsList(
+        filteredExcursions, 
+        activeTab === 'upcoming' 
+            ? 'У вас нет активных экскурсий' 
+            : 'У вас нет прошедших экскурсий'
+    );
+}
+
+// Рендер списка экскурсий
+function renderExcursionsList(excursions, emptyMessage) {
     const excursionsList = document.getElementById('excursionsList');
     
     if (excursions.length === 0) {
         excursionsList.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-binoculars"></i>
-                <p>У вас нет активных экскурсий</p>
+                <p>${emptyMessage}</p>
                 <a href="shop.html#excursions" class="btn-shop">Посмотреть экскурсии</a>
             </div>
         `;
         return;
     }
     
-    excursionsList.innerHTML = excursions.map(exc => `
-        <div class="excursion-card" data-status="${exc.status === 'Забронировано' ? 'upcoming' : 'past'}">
+    excursionsList.innerHTML = excursions.map(exc => {
+        const excDate = parseExcursionDate(exc.date, exc.time);
+        const isPast = excDate && excDate < new Date();
+        
+        return `
+        <div class="excursion-card" data-status="${isPast ? 'past' : 'upcoming'}">
             <div class="excursion-header">
-                <h3 class="excursion-title">${exc.name || 'undefined'}</h3>
-                <span class="excursion-date">${exc.date || '17.04.2025'} ${exc.time || '22:27'}</span>
+                <h3 class="excursion-title">${exc.name || 'Экскурсия'}</h3>
+                <span class="excursion-date">${exc.date || 'Не указана'} ${exc.time || ''}</span>
             </div>
             <div class="excursion-details">
                 <div class="excursion-guide">
@@ -277,16 +358,20 @@ function loadExcursions() {
                         ${exc.price || '0'} $
                     </span>
                 </div>
-                <div class="excursion-status ${exc.status === 'Забронировано' ? 'status-upcoming' : 'status-past'}">
-                    ${exc.status || 'Забронировано'}
+                <div class="excursion-status ${isPast ? 'status-past' : 'status-upcoming'}">
+                    ${isPast ? 'Завершена' : exc.status || 'Забронировано'}
                 </div>
             </div>
+            ${!isPast ? `
             <button class="excursion-details-btn" data-excursion-id="${exc.id}">
                 <i class="fas fa-info-circle"></i> Подробнее
             </button>
+            ` : ''}
         </div>
-    `).join('');
+        `;
+    }).join('');
 
+    // Добавляем обработчики событий для кнопок
     document.querySelectorAll('.excursion-details-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const excursionId = this.dataset.excursionId;
@@ -301,6 +386,9 @@ function loadExcursions() {
 
 // Отображение деталей экскурсии
 function showExcursionDetailsModal(excursion) {
+    const excDate = parseExcursionDate(excursion.date, excursion.time);
+    const isPast = excDate && excDate < new Date();
+    
     const modal = document.createElement('div');
     modal.className = 'order-modal';
     modal.innerHTML = `
@@ -315,8 +403,8 @@ function showExcursionDetailsModal(excursion) {
                 </div>
                 <div class="order-info-item">
                     <strong>Статус:</strong> 
-                    <span class="order-status ${excursion.status === 'Забронировано' ? 'status-upcoming' : 'status-past'}">
-                        ${excursion.status || 'Забронировано'}
+                    <span class="order-status ${isPast ? 'status-past' : 'status-upcoming'}">
+                        ${isPast ? 'Завершена' : excursion.status || 'Забронировано'}
                     </span>
                 </div>
                 <div class="order-info-item">
@@ -336,36 +424,40 @@ function showExcursionDetailsModal(excursion) {
             </div>
             
             <div class="excursion-actions">
+                ${!isPast ? `
                 <button class="btn-cancel-excursion" data-id="${excursion.id}">
                     <i class="fas fa-times"></i> Отменить бронь
                 </button>
+                ` : ''}
             </div>
         </div>
     `;
 
     document.body.appendChild(modal);
-    modal.style.display = 'flex';
+    modal.classList.add('active');
     
     modal.querySelector('.close-modal').addEventListener('click', () => {
-        modal.style.display = 'none';
+        modal.classList.remove('active');
         modal.remove();
     });
     
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('active');
             modal.remove();
         }
     });
 
-    modal.querySelector('.btn-cancel-excursion').addEventListener('click', function() {
-        const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
-        const updatedExcursions = excursions.filter(e => e.id != this.dataset.id);
-        localStorage.setItem('excursions', JSON.stringify(updatedExcursions));
-        loadExcursions();
-        modal.style.display = 'none';
-        modal.remove();
-    });
+    if (!isPast) {
+        modal.querySelector('.btn-cancel-excursion').addEventListener('click', function() {
+            const excursions = JSON.parse(localStorage.getItem('excursions')) || [];
+            const updatedExcursions = excursions.filter(e => e.id != this.dataset.id);
+            localStorage.setItem('excursions', JSON.stringify(updatedExcursions));
+            loadExcursions();
+            modal.classList.remove('active');
+            modal.remove();
+        });
+    }
 }
 
 // Фильтрация заказов
@@ -379,11 +471,13 @@ function filterOrders(filter) {
 
 // Фильтрация экскурсий
 function filterExcursions(filter) {
-    document.querySelectorAll('.excursion-card').forEach(card => {
-        card.style.display = (filter === 'all' || card.getAttribute('data-status') === filter)
-            ? 'flex'
-            : 'none';
+    // Обновляем активную вкладку
+    document.querySelectorAll('.excursions-section .tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === filter);
     });
+    
+    // Загружаем экскурсии с учетом фильтра
+    loadExcursions();
 }
 
 // Редактирование профиля
@@ -434,7 +528,8 @@ document.querySelector('.btn-edit-profile').addEventListener('click', function()
     `;
     
     document.body.appendChild(editModal);
-    
+    editModal.classList.add('active');
+
     const textarea = editModal.querySelector('#editAbout');
     const charCount = editModal.querySelector('#charCount');
     textarea.addEventListener('input', () => {
@@ -570,4 +665,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
+    // Периодическая проверка экскурсий (каждую минуту)
+    setInterval(() => {
+        updateExcursionsStatus();
+        loadExcursions();
+    }, 60000);
 });
