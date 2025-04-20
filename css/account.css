@@ -85,7 +85,7 @@
 }
 
 .profile-details {
-    max-width: 600px;  /* Фиксированная ширина для ограничения */
+    max-width: 600px;
     width: 100%;
     padding: 15px;
     background-color: rgba(255,255,255,0.8);
@@ -204,32 +204,52 @@
     color: #723308;
 }
 
-/* Стили для модального окна редактирования профиля */
-.edit-modal {
+/* Общие стили для модальных окон */
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     backdrop-filter: blur(5px);
 }
 
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+    margin: auto;
+}
+
+/* Стили для модального окна редактирования профиля */
 .edit-modal .modal-content {
     background: linear-gradient(135deg, #f9f5f0 0%, #f0e6d9 100%);
     padding: 30px;
-    border-radius: 20px;
-    width: 100%;
     max-width: 500px;
     box-shadow: 0 20px 40px rgba(114, 51, 8, 0.3);
     border: 1px solid #d4b78f;
-    animation: modalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
 }
 
 .edit-modal .modal-content::before {
@@ -364,41 +384,10 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-@keyframes modalOpen {
-    from { 
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to { 
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
 /* Стили для модального окна деталей заказа */
-.order-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
 .order-modal .modal-content {
-    background: white;
     padding: 30px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 800px;
-    max-height: 90vh;
-    overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    animation: modalOpen 0.3s ease;
 }
 
 .order-modal h2 {
@@ -493,6 +482,9 @@
     cursor: pointer;
     transition: color 0.3s;
     color: #333;
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 .close-modal:hover {
@@ -802,8 +794,8 @@
 /* Для всех полей ввода в модальном окне */
 .edit-modal .form-group input,
 .edit-modal .form-group textarea {
-    width: calc(100% - 30px); /* 15px слева + 15px справа */
-    margin: 0 15px; /* Равные отступы по бокам */
+    width: calc(100% - 30px);
+    margin: 0 15px;
     box-sizing: border-box;
 }
 
@@ -816,7 +808,7 @@
 
 /* Контейнер формы */
 .edit-modal .modal-content {
-    padding: 20px 15px; /* Горизонтальные отступы */
+    padding: 20px 15px;
 }
 
 /* Для текстового поля "О себе" */
@@ -950,35 +942,73 @@
     transition: all 0.3s;
     font-size: 16px;
     margin-top: 20px;
-  }
+}
   
-  .btn-cancel-excursion:hover {
+.btn-cancel-excursion:hover {
     background: #cc0000;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
-  }
+}
 
-  /* account.css */
-.excursion-card {
-    background: #fff;
-    border-radius: 12px;
+/* Дополнительные стили для body при открытой модалке */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Исправленные стили модальных окон */
+.order-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
     padding: 20px;
-    margin: 15px 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  
-  .btn-cancel-excursion {
-    background: #ff4444;
-    color: rgb(126, 126, 126);
-    padding: 12px 25px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  
-  .btn-cancel-excursion:hover {
-    background: #cc0000;
-    transform: translateY(-2px);
-  }
-  
+}
+
+.order-modal.active {
+    display: flex;
+}
+
+.order-modal .modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    margin: auto;
+    padding: 30px;
+}
+
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.edit-modal.active {
+    display: flex;
+}
+
+.edit-modal .modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+}
