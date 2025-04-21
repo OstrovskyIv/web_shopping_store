@@ -304,31 +304,45 @@ h1 {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1001; 
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex;
 }
 
 .modal-content {
-  background-color: #333;
-  margin: 15% auto;
+  position: relative;
+  background: #333;
+  color: white;
   padding: 20px;
   border: 1px solid #888;
-  width: 50%;
   border-radius: 10px;
+  width: 50%;
   text-align: center;
-  color: rgb(255, 255, 255);
-  position: relative;
-  z-index: 1002;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.modal-content.show {
+  transform: scale(1);
+  opacity: 1;
 }
 
 .modal-content h2 {
   font-size: 30px;
   margin-bottom: 20px;
+  color: white;
 }
 
 .modal-content img {
@@ -342,6 +356,7 @@ h1 {
 .modal-content p {
   font-size: 18px;
   margin: 20px 0;
+  line-height: 1.6;
 }
 
 .modal-content hr {
@@ -353,11 +368,13 @@ h1 {
 
 .close {
   color: #aaa;
-  float: right;
+  position: absolute;
+  top: 15px;
+  right: 20px;
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 1002; 
+  z-index: 1002;
 }
 
 .close:hover,
@@ -437,20 +454,46 @@ h1 {
   margin-top: 10px;
 }
 
-/* Стили для модального окна регистрации */
-#registrationModal .modal-content {
-  background-color: #333;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
-  position: relative;
-  z-index: 1002;
+/* Общие стили для модальных окон */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
 }
 
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  position: relative;
+  background: #333;
+  color: white;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 50%;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+.modal-content.show {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Стили для модального окна регистрации */
 #registrationModal .modal-content form {
   display: flex;
   flex-direction: column;
@@ -484,19 +527,6 @@ h1 {
 }
 
 /* Стили для модального окна входа */
-#loginModal .modal-content {
-  background-color: #333;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
-  position: relative;
-  z-index: 1002;
-}
-
 #loginModal .modal-content form {
   display: flex;
   flex-direction: column;
@@ -529,6 +559,7 @@ h1 {
   background-color: #1b9029;
 }
 
+/* Стили для секции регистрации */
 .registration-section {
   display: flex;
   flex-direction: column;
@@ -544,23 +575,23 @@ h1 {
 }
 
 .registration-section h2 {
-  font-size: 3.5rem; /* Увеличиваем размер шрифта */
+  font-size: 3.5rem;
   margin-bottom: 20px;
   color: #333;
-  text-transform: uppercase; /* Делаем заглавными буквами */
-  letter-spacing: 2px; /* Добавляем расстояние между буквами */
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .registration-section p {
-  font-size: 2rem; /* Увеличиваем размер шрифта */
+  font-size: 2rem;
   margin-bottom: 30px;
   color: #555;
-  font-weight: bold; /* Делаем текст жирным */
+  font-weight: bold;
 }
 
 .registration-section button {
   padding: 15px 40px;
-  font-size: 1.5rem; /* Увеличиваем размер шрифта */
+  font-size: 1.5rem;
   color: white;
   background-color: #723308;
   border: none;
@@ -571,6 +602,23 @@ h1 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Стили для кнопки закрытия */
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1002;
+}
+
+.close:hover,
+.close:focus {
+  color: white;
+  text-decoration: none;
+}
 /* Стили для ночного режима */
 .night-mode .registration-section {
   background-color: #111;
