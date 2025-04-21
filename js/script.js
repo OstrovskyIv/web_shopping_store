@@ -391,20 +391,33 @@ function updateContacts(isNightMode) {
 function showContact(name, email, imageSrc, description) {
   const modal = document.getElementById("modal");
   const modalContent = modal.querySelector('.modal-content');
-  const modalText = document.getElementById("modal-text");
-
-  modalText.innerHTML = `
+  
+  modalContent.innerHTML = `
+    <span class="close">&times;</span>
     <h2>${name}</h2>
-    <img src="${imageSrc}" alt="${name}" class="modal-contact-image">
-    <p class="modal-contact-description">${description}</p>
-    <hr class="modal-divider">
-    <p class="modal-contact-email">Пишите на: <a href="mailto:${email}">${email}</a></p>
+    <img src="${imageSrc}" alt="${name}">
+    <p>${description}</p>
+    <hr>
+    <p><strong>Контакт:</strong> <a href="mailto:${email}">${email}</a></p>
   `;
-
-  modal.style.display = "block";
+  
+  modal.style.display = "flex";
   setTimeout(() => {
     modalContent.classList.add('show');
   }, 10);
+  
+  // Добавляем обработчик закрытия
+  modal.querySelector('.close').onclick = closeModal;
+}
+
+function closeModal() {
+  const modal = document.getElementById("modal");
+  const modalContent = modal.querySelector('.modal-content');
+  
+  modalContent.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300);
 }
 
 function closeModal() {
@@ -712,14 +725,34 @@ function updateBasketCounter() {
 // Функции для регистрации и входа
 function register() {
   const modal = document.getElementById("registrationModal");
-  modal.style.display = "block";
+  modal.style.display = "flex"; // Изменено с "block" на "flex"
   setTimeout(() => {
+    modal.classList.add("show"); // Добавлено
     modal.querySelector('.modal-content').classList.add('show');
   }, 10);
 }
 
 function closeRegistrationModal() {
   const modal = document.getElementById("registrationModal");
+  modal.classList.remove("show"); // Добавлено
+  modal.querySelector('.modal-content').classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 300);
+}
+
+function login() {
+  const modal = document.getElementById("loginModal");
+  modal.style.display = "flex"; // Изменено с "block" на "flex"
+  setTimeout(() => {
+    modal.classList.add("show"); // Добавлено
+    modal.querySelector('.modal-content').classList.add('show');
+  }, 10);
+}
+
+function closeLoginModal() {
+  const modal = document.getElementById("loginModal");
+  modal.classList.remove("show"); // Добавлено
   modal.querySelector('.modal-content').classList.remove('show');
   setTimeout(() => {
     modal.style.display = "none";
@@ -735,22 +768,6 @@ document.getElementById("registrationForm")?.addEventListener("submit", function
   alert(`Регистрация успешна!\nИмя пользователя: ${username}\nEmail: ${email}`);
   closeRegistrationModal();
 });
-
-function login() {
-  const modal = document.getElementById("loginModal");
-  modal.style.display = "block";
-  setTimeout(() => {
-    modal.querySelector('.modal-content').classList.add('show');
-  }, 10);
-}
-
-function closeLoginModal() {
-  const modal = document.getElementById("loginModal");
-  modal.querySelector('.modal-content').classList.remove('show');
-  setTimeout(() => {
-    modal.style.display = "none";
-  }, 300);
-}
 
 document.getElementById("loginForm")?.addEventListener("submit", function(event) {
   event.preventDefault();
