@@ -141,12 +141,16 @@ function getExcursionData(card) {
         const photos = card.dataset.photos ? JSON.parse(card.dataset.photos) : [];
         const locations = card.dataset.locations ? JSON.parse(card.dataset.locations) : [];
         
+        const priceElement = card.querySelector('.price');
+        const price = priceElement ? parseFloat(priceElement.textContent.replace('$', '').trim()) : 
+                   parseFloat(card.dataset.basePrice || '0');
+        
         return {
             id: card.dataset.id || Date.now().toString(),
             name: card.querySelector('.product-title')?.textContent || 'Экскурсия',
             photos: Array.isArray(photos) ? photos : [],
             locations: Array.isArray(locations) ? locations : [],
-            price: parseFloat(card.dataset.basePrice || '0'),
+            price: price,
             duration: card.dataset.duration || 'Не указано',
             description: card.querySelector('.description')?.textContent || '',
             guide: card.querySelector('.meta-item span')?.textContent || 'Не указан',
@@ -176,11 +180,11 @@ function showExcursionDetailsModal(excursion) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
     
-    const photosHTML = excursion.photos && excursion.photos.length > 0 
-        ? excursion.photos.map(photo => `
-            <img src="${photo || 'pictures/default-excursion.jpg'}" alt="Фото экскурсии" onerror="this.src='pictures/default-excursion.jpg'">
-        `).join('')
-        : `<img src="pictures/default-excursion.jpg" alt="Фото экскурсии">`;
+    let photos = excursion.photos && excursion.photos.length > 0 ? [...excursion.photos] : [];
+    while (photos.length < 4) {
+        photos = [...photos, ...photos].slice(0, 4);
+    }
+    photos = photos.slice(0, 4);
     
     modal.innerHTML = `
         <div class="details-modal">
@@ -191,7 +195,24 @@ function showExcursionDetailsModal(excursion) {
                 </div>
                 <div class="details-modal-body">
                     <div class="excursion-carousel">
-                        ${photosHTML}
+                        <div class="carousel-container">
+                            ${photos.map(photo => `
+                                <div class="carousel-slide">
+                                    <img src="${photo || 'pictures/default-excursion.jpg'}" 
+                                         alt="Фото экскурсии" 
+                                         onerror="this.src='pictures/default-excursion.jpg'">
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="carousel-nav">
+                            <button class="carousel-btn prev-btn">&#10094;</button>
+                            <button class="carousel-btn next-btn">&#10095;</button>
+                        </div>
+                        <div class="carousel-dots">
+                            ${photos.map((_, index) => `
+                                <div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>
+                            `).join('')}
+                        </div>
                     </div>
                     <div class="order-info-grid">
                         <div class="order-info-item">
@@ -241,17 +262,65 @@ function showExcursionDetailsModal(excursion) {
     
     document.body.appendChild(modal);
     
+    const carouselContainer = modal.querySelector('.carousel-container');
+    const slides = modal.querySelectorAll('.carousel-slide');
+    const dots = modal.querySelectorAll('.carousel-dot');
+    let currentIndex = 0;
+    
+    function updateCarousel() {
+        carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+        });
+    }
+    
+    modal.querySelector('.prev-btn').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        updateCarousel();
+    });
+    
+    modal.querySelector('.next-btn').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateCarousel();
+    });
+    
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            currentIndex = parseInt(dot.dataset.index);
+            updateCarousel();
+        });
+    });
+    
+    let interval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateCarousel();
+    }, 5000);
+    
+    modal.querySelector('.excursion-carousel').addEventListener('mouseenter', () => {
+        clearInterval(interval);
+    });
+    
+    modal.querySelector('.excursion-carousel').addEventListener('mouseleave', () => {
+        interval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateCarousel();
+        }, 5000);
+    });
+    
     modal.querySelector('.close-modal-btn').addEventListener('click', () => {
+        clearInterval(interval);
         closeModal(modal);
     });
     
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
+            clearInterval(interval);
             closeModal(modal);
         }
     });
     
     modal.querySelector('.btn-book-now').addEventListener('click', () => {
+        clearInterval(interval);
         closeModal(modal);
         showBookingModal(excursion);
     });
@@ -260,6 +329,15 @@ function showExcursionDetailsModal(excursion) {
 function showBookingModal(excursion) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
+    
+    const guides = getStaff();
+    const guidesOptions = guides.map((guide, index) => `
+        <div class="guide-item">
+            <input type="radio" name="guide" id="guide-${index}" value="${guide.name}" ${index === 0 ? 'checked' : ''}>
+            <label for="guide-${index}">${guide.name} (опыт: ${guide.experience})</label>
+        </div>
+    `).join('');
+    
     modal.innerHTML = `
         <div class="booking-modal">
             <div class="booking-modal-content">
@@ -278,6 +356,12 @@ function showBookingModal(excursion) {
                     <div class="booking-form-group">
                         <label for="bookingPeople">Количество человек:</label>
                         <input type="number" id="bookingPeople" min="1" value="1" required>
+                    </div>
+                    <div class="booking-form-group">
+                        <label>Выберите гида:</label>
+                        <div class="guides-selection">
+                            ${guidesOptions}
+                        </div>
                     </div>
                     <div class="booking-form-group">
                         <label for="paymentMethod">Способ оплаты:</label>
@@ -320,6 +404,8 @@ function showBookingModal(excursion) {
     modal.querySelector('#bookingForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        const selectedGuide = this.querySelector('input[name="guide"]:checked').value;
+        
         const bookingData = {
             id: Date.now(),
             excursionId: excursion.id,
@@ -330,7 +416,7 @@ function showBookingModal(excursion) {
             payment: this.querySelector('#paymentMethod').value,
             price: parseFloat(excursion.price) * parseInt(this.querySelector('#bookingPeople').value),
             status: 'Забронировано',
-            guide: getStaff()[0].name
+            guide: selectedGuide
         };
         
         saveBooking(bookingData);
@@ -371,7 +457,7 @@ function getStaff() {
         {name: "Стэнли Пайнс", experience: "27 лет"},
         {name: "Венди Кордрой", experience: "3 года"},
         {name: "Зус Рамирес", experience: "7 лет"},
-        {name: "Диппер Пайнс", experience: "2 года"}
+        {name: "Диппер Пайнс", experience: "1 год"}
     ];
 }
 
@@ -434,15 +520,31 @@ function updateBasketCounter() {
 
 function showProductDetails(name, image, description, price) {
     const modal = document.getElementById('productModal');
+    const modalContent = modal.querySelector('.modal-content');
+    
     document.getElementById('productModalTitle').textContent = name;
     document.getElementById('productModalImage').src = image;
     document.getElementById('productModalDescription').textContent = description;
     document.getElementById('productModalPrice').textContent = `Цена: ${price} $.`;
-    modal.style.display = 'block';
+    
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+    
+    setTimeout(() => {
+        modalContent.classList.add('active');
+    }, 10);
 }
 
 function closeProductModal() {
-    document.getElementById('productModal').style.display = 'none';
+    const modal = document.getElementById('productModal');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    modalContent.classList.remove('active');
+    
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+    }, 300);
 }
 
 function showToast(message) {
