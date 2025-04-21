@@ -482,146 +482,23 @@ nav ul li a .basket-counter {
     transform: translateY(-2px);
 }
 
-/* Модальные окна */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 2000;
-    overflow: auto;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 30px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation: modalFadeIn 0.3s;
-}
-
-.close {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.close:hover {
-    color: #333;
-}
-
-.modal-product-image {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin: 20px auto;
-    display: block;
-    border: 3px solid #723308;
-}
-
-.modal-description {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #333;
-    margin: 20px 0;
-    text-align: left;
-}
-
-.modal-rating {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    margin: 20px 0;
-}
-
-.modal-rating .star {
-    font-size: 2.5rem; /* Увеличенные звезды в модальном окне */
-}
-
-.modal-price {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 20px 0;
-    color: #723308;
-}
-
-.modal-order-btn {
-    padding: 12px 30px;
-    background: linear-gradient(45deg, #723308, #5a2806);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    display: block;
-    margin: 0 auto;
-    border: 2px solid #3d1a03;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.modal-order-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, #5a2806, #723308);
-}
-
-.modal-order-btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.modal-order-btn::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: rotate(45deg) translate(-20%, 100%);
-    transition: all 0.5s ease;
-}
-
-.modal-order-btn:hover::after {
-    transform: rotate(45deg) translate(20%, -100%);
-}
-
-/* Модальные окна для экскурсий */
+/* Обновленные стили для модальных окон */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 9999;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+    transition: all 0.3s ease-out;
+    backdrop-filter: blur(8px);
+    padding: 20px;
 }
 
 .modal-overlay.active {
@@ -629,11 +506,12 @@ nav ul li a .basket-counter {
     visibility: visible;
 }
 
-.details-modal, .booking-modal {
-    background: #f5eee6;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    width: 90%;
+.details-modal, 
+.booking-modal {
+    background: linear-gradient(145deg, #f5eee6, #e8d9c5);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    width: 100%;
     max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
@@ -641,6 +519,7 @@ nav ul li a .basket-counter {
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0;
     position: relative;
+    border: 3px solid #723308;
 }
 
 .modal-overlay.active .details-modal,
@@ -649,56 +528,71 @@ nav ul li a .basket-counter {
     opacity: 1;
 }
 
-.details-modal {
-    background: #fff5e6;
-    border: 2px solid #723308;
-}
-
-.booking-modal {
-    background: #f5eee6;
-    border: 3px double #723308;
-}
-
-.details-modal-content, .booking-modal-content {
+.details-modal-content, 
+.booking-modal-content {
     padding: 30px;
+    position: relative;
 }
 
-.details-modal-header, .booking-modal-header {
+.details-modal-header, 
+.booking-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 2px dashed #a08060;
+    margin-bottom: 25px;
     padding-bottom: 15px;
+    border-bottom: 2px solid #723308;
+    position: relative;
 }
 
-.details-modal-title, .booking-modal-title {
+.details-modal-header::after,
+.booking-modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #723308, #d4b08c, #723308);
+}
+
+.details-modal-title, 
+.booking-modal-title {
     font-family: 'MedievalSharp', cursive;
     color: #5a2806;
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin: 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
-.close-modal-btn, .booking-cancel-btn {
+.close-modal-btn, 
+.booking-cancel-btn {
     background: none;
     border: none;
     font-size: 2rem;
     color: #723308;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: all 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
-.close-modal-btn:hover, .booking-cancel-btn:hover {
+.close-modal-btn:hover, 
+.booking-cancel-btn:hover {
     color: #d44638;
+    background: rgba(0,0,0,0.05);
+    transform: rotate(90deg);
 }
 
-.details-modal-image {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border: 3px solid #723308;
+/* Стили для details-modal */
+.details-modal-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
 }
 
 .excursion-carousel {
@@ -726,38 +620,57 @@ nav ul li a .basket-counter {
 }
 
 .excursion-carousel img {
-    width: 200px;
-    height: 150px;
+    width: 250px;
+    height: 180px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 2px solid #a08060;
     transition: transform 0.3s;
     cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
 .excursion-carousel img:hover {
     transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.order-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.order-info-item {
+    background: rgba(114, 51, 8, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid #723308;
+}
+
+.order-info-item strong {
+    display: block;
+    color: #5a2806;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.order-info-text {
+    color: #333;
+    font-size: 1rem;
 }
 
 .details-modal-description {
     font-size: 1.1rem;
-    line-height: 1.6;
+    line-height: 1.7;
     color: #333;
-    margin-bottom: 20px;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-}
-
-.feature-icon {
-    margin-right: 10px;
-    color: #723308;
-    width: 20px;
-    text-align: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 8px;
+    border: 1px dashed #a08060;
 }
 
 .locations-list {
@@ -767,35 +680,54 @@ nav ul li a .basket-counter {
 .locations-list h3 {
     font-family: 'MedievalSharp', cursive;
     color: #5a2806;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    position: relative;
+    padding-left: 15px;
+}
+
+.locations-list h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    background: #723308;
+    border-radius: 3px;
 }
 
 .locations-list ul {
     list-style-type: none;
     padding-left: 0;
+    display: grid;
+    gap: 10px;
 }
 
 .locations-list li {
-    padding: 12px 0;
-    border-bottom: 1px dashed #a08060;
+    padding: 15px;
+    border-radius: 8px;
     position: relative;
-    padding-left: 35px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: linear-gradient(to right, transparent 50%, #fff5e6 50%);
+    background: linear-gradient(to right, rgba(114, 51, 8, 0.1) 50%, rgba(255,255,255,0.7) 50%);
     background-size: 200% 100%;
     background-position: right bottom;
+    border: 1px solid rgba(114, 51, 8, 0.2);
+    overflow: hidden;
 }
 
 .locations-list li:hover {
     background-position: left bottom;
-    transform: translateX(10px);
+    transform: translateX(5px);
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
 }
 
 .locations-list li:before {
     content: '🗺️';
     position: absolute;
-    left: 0;
+    left: 15px;
     color: #723308;
     font-size: 1.2em;
     transition: transform 0.3s ease;
@@ -813,6 +745,8 @@ nav ul li a .basket-counter {
     color: #723308;
     font-size: 0.8em;
     transition: opacity 0.3s ease;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .locations-list li:hover::after {
@@ -820,20 +754,100 @@ nav ul li a .basket-counter {
 }
 
 .guides-selection {
-    margin: 20px 0;
+    margin: 30px 0;
+}
+
+.guides-selection h3 {
+    font-family: 'MedievalSharp', cursive;
+    color: #5a2806;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    position: relative;
+    padding-left: 15px;
+}
+
+.guides-selection h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    background: #723308;
+    border-radius: 3px;
 }
 
 .guide-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.7);
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(255,255,255,0.7);
     border-radius: 8px;
     border-left: 3px solid #723308;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
 }
 
+.guide-item:hover {
+    background: rgba(114, 51, 8, 0.1);
+    transform: translateX(5px);
+}
+
+.guide-item input[type="radio"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: #723308;
+}
+
+.guide-item label {
+    font-size: 1.1rem;
+    color: #333;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+.excursion-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-book-now {
+    padding: 15px 30px;
+    background: linear-gradient(45deg, #723308, #5a2806);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'MedievalSharp', cursive;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-book-now:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #5a2806, #723308);
+}
+
+.btn-book-now:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-book-now i {
+    margin-right: 10px;
+}
+
+/* Стили для booking-modal */
 #bookingForm {
     display: grid;
-    gap: 15px;
+    gap: 20px;
 }
 
 .booking-form-group {
@@ -842,19 +856,21 @@ nav ul li a .basket-counter {
 }
 
 .booking-form-group label {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: bold;
     color: #5a2806;
+    font-size: 1.1rem;
 }
 
 .booking-form-group input, 
 .booking-form-group select {
-    padding: 12px;
+    padding: 15px;
     border: 2px solid #a08060;
     border-radius: 8px;
     background: #fff5e6;
     font-size: 1rem;
     transition: all 0.3s;
+    font-family: Arial, sans-serif;
 }
 
 .booking-form-group input:focus, 
@@ -862,38 +878,50 @@ nav ul li a .basket-counter {
     border-color: #723308;
     box-shadow: 0 0 10px rgba(114, 51, 8, 0.2);
     outline: none;
+    background: white;
+}
+
+.total-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #723308;
+    padding: 10px;
+    text-align: center;
+    background: rgba(114, 51, 8, 0.1);
+    border-radius: 8px;
 }
 
 .booking-form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .booking-submit-btn {
-    padding: 12px 25px;
+    padding: 15px 30px;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s;
     background: linear-gradient(45deg, #723308, #5a2806);
     color: white;
     border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-family: 'MedievalSharp', cursive;
     position: relative;
     overflow: hidden;
 }
 
 .booking-submit-btn:hover {
     background: linear-gradient(45deg, #5a2806, #723308);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
 
 .booking-submit-btn:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .booking-submit-btn::after {
@@ -913,89 +941,227 @@ nav ul li a .basket-counter {
 }
 
 .booking-cancel-btn {
-    padding: 12px 25px;
+    padding: 15px 30px;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s;
     background-color: transparent;
     border: 2px solid #723308;
     color: #723308;
+    font-family: 'MedievalSharp', cursive;
 }
 
 .booking-cancel-btn:hover {
-    background-color: #f5eee6;
+    background-color: rgba(114, 51, 8, 0.1);
     color: #d44638;
     border-color: #d44638;
+}
+
+/* Стили для модального окна товаров */
+#productModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: auto;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #f5eee6, #e8d9c5);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    border: 3px solid #723308;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease-out;
+    overflow-y: auto;
+    margin: auto;
+}
+
+.modal-content.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.close {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    color: #723308;
+    font-size: 32px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.close:hover {
+    color: #d44638;
+    background: rgba(0,0,0,0.05);
+    transform: rotate(90deg);
+}
+
+#productModalTitle {
+    font-family: 'MedievalSharp', cursive;
+    color: #5a2806;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    border-bottom: 2px solid #723308;
+    padding-bottom: 15px;
+}
+
+.modal-product-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 15px;
+    margin: 20px auto;
+    display: block;
+    border: 3px solid #723308;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.modal-description {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #333;
+    margin: 25px 0;
+    padding: 20px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    border: 1px dashed #a08060;
+}
+
+.modal-price {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #723308;
+    margin: 25px 0;
+    text-align: center;
+    font-family: 'MedievalSharp', cursive;
+}
+
+.modal-order-btn {
+    padding: 15px 40px;
+    background: linear-gradient(45deg, #723308, #5a2806);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    transition: all 0.3s;
+    display: block;
+    margin: 0 auto;
+    font-family: 'MedievalSharp', cursive;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-order-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #5a2806, #723308);
+}
+
+.modal-order-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.modal-order-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg) translate(-20%, 100%);
+    transition: all 0.5s ease;
+}
+
+.modal-order-btn:hover::after {
+    transform: rotate(45deg) translate(20%, -100%);
 }
 
 /* Анимации */
 @keyframes modalFadeIn {
     from {
         opacity: 0;
-        transform: translate(-50%, -55%);
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-
-@keyframes popIn {
-    0% {
-        transform: translate(-50%, -50%) scale(0.5);
-        opacity: 0;
-    }
-    70% {
-        transform: translate(-50%, -50%) scale(1.1);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: translateY(0);
     }
 }
 
 /* Уведомления */
 .toast-notification {
-    animation: popIn 0.3s ease, fadeOut 2.5s ease forwards;
     position: fixed;
-    bottom: 20px; /* Изменено с top на bottom */
+    bottom: 30px;
     left: 50%;
-    transform: translateX(-50%); /* Убрано преобразование по Y */
+    transform: translateX(-50%);
     background: #723308;
     color: white;
     padding: 15px 30px;
-    border-radius: 25px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    z-index: 3000;
-    opacity: 0;
-    width: auto;
-    max-width: 80%;
-    text-align: center;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    animation: toastSlideIn 0.5s ease forwards, toastFadeOut 0.5s ease 2.5s forwards;
+    max-width: 90%;
 }
 
-/* Обновленная анимация для нового положения */
-@keyframes popIn {
-    0% {
-        transform: translateX(-50%) scale(0.5);
+@keyframes toastSlideIn {
+    from {
         opacity: 0;
-        bottom: -50px;
+        transform: translateX(-50%) translateY(100px);
     }
-    70% {
-        transform: translateX(-50%) scale(1.1);
+    to {
         opacity: 1;
-        bottom: 30px;
-    }
-    100% {
-        transform: translateX(-50%) scale(1);
-        bottom: 20px;
+        transform: translateX(-50%) translateY(0);
     }
 }
 
-@keyframes fadeOut {
-    0% { opacity: 1; bottom: 20px; }
-    90% { opacity: 1; bottom: 20px; }
-    100% { opacity: 0; bottom: -50px; }
+@keyframes toastFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.toast-notification i {
+    font-size: 1.5rem;
 }
 
 /* Бейджи */
@@ -1026,4 +1192,88 @@ nav ul li a .basket-counter {
     border-radius: 5px;
     font-size: 0.9rem;
     z-index: 2;
+}
+
+/* Карусель фотографий */
+.excursion-carousel {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.carousel-container {
+    display: flex;
+    transition: transform 0.5s ease;
+    height: 100%;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 100%;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.carousel-btn {
+    background: rgba(114, 51, 8, 0.7);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    transition: all 0.3s;
+}
+
+.carousel-btn:hover {
+    background: rgba(114, 51, 8, 0.9);
+    transform: scale(1.1);
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 2;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.carousel-dot.active {
+    background: white;
+    transform: scale(1.2);
 }
