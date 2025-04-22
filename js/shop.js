@@ -237,17 +237,17 @@ function showExcursionDetailsModal(excursion) {
                         <h3>Маршрут:</h3>
                         <ul>
                             ${excursion.locations.map(location => `
-                                <li>${location}</li>
+                                <li><span>${location}</span></li>
                             `).join('')}
                         </ul>
                     </div>
                     <div class="guides-selection">
                         <h3>Доступные гиды:</h3>
                         ${getStaff().map((guide, index) => `
-                            <div class="guide-item">
-                                <input type="radio" name="guide" id="guide${index}" ${index === 0 ? 'checked' : ''}>
-                                <label for="guide${index}">${guide.name} (опыт: ${guide.experience})</label>
-                            </div>
+                            <label class="guide-item">
+                                <input type="radio" name="guide" value="${guide.name}" ${index === 0 ? 'checked' : ''}>
+                                <span>${guide.name} (опыт: ${guide.experience})</span>
+                            </label>
                         `).join('')}
                     </div>
                     <div class="excursion-actions">
@@ -557,3 +557,5 @@ function showToast(message) {
         toast.remove();
     }, 3000);
 }
+
+showExcursionDetailsModal
