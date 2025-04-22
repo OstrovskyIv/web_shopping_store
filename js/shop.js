@@ -224,7 +224,7 @@ function showExcursionDetailsModal(excursion) {
                             <span class="order-info-text">${excursion.guide}</span>
                         </div>
                         <div class="order-info-item">
-                            <strong>Время:</strong> 
+                            <strong>Особенность:</strong> 
                             <span class="order-info-text">${excursion.time}</span>
                         </div>
                         <div class="order-info-item">
