@@ -673,6 +673,7 @@ nav ul li a .basket-counter {
     border: 1px dashed #a08060;
 }
 
+/* Стили для списка локаций */
 .locations-list {
     margin: 20px 0;
 }
@@ -706,51 +707,62 @@ nav ul li a .basket-counter {
 }
 
 .locations-list li {
-    padding: 15px;
+    padding: 15px 15px 15px 60px; /* Увеличенный левый отступ для иконки */
+    margin: 5px 0;
     border-radius: 8px;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: linear-gradient(to right, rgba(114, 51, 8, 0.1) 50%, rgba(255,255,255,0.7) 50%);
+    background: linear-gradient(to right, rgba(114, 51, 8, 0.1) 50%, rgba(255, 255, 255, 0.7) 50%);
     background-size: 200% 100%;
     background-position: right bottom;
     border: 1px solid rgba(114, 51, 8, 0.2);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .locations-list li:hover {
     background-position: left bottom;
     transform: translateX(5px);
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-.locations-list li:before {
+/* Стили для иконки (эмодзи 🗺️) */
+.locations-list li::before {
     content: '🗺️';
     position: absolute;
-    left: 15px;
-    color: #723308;
-    font-size: 1.2em;
+    left: 15px; /* Отступ иконки от края */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    transition: all 0.3s ease;
+    z-index: 1;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* Анимация иконки при наведении */
+.locations-list li:hover::before {
+    transform: translateY(-50%) rotate(15deg) scale(1.1);
+    left: 15px; /* Фиксированная позиция */
+    animation: iconWobble 0.8s ease-in-out infinite alternate;
+}
+
+/* Ключевые кадры для анимации иконки */
+@keyframes iconWobble {
+    0% { transform: translateY(-50%) rotate(-5deg) scale(1); }
+    100% { transform: translateY(-50%) rotate(25deg) scale(1.1); }
+}
+
+/* Стили для текста локации */
+.locations-list li span {
+    display: block;
+    margin-left: 10px; /* Отступ текста от иконки */
     transition: transform 0.3s ease;
 }
 
-.locations-list li:hover:before {
-    transform: rotate(15deg) scale(1.2);
-}
-
-.locations-list li::after {
-    content: 'Нажми для подробностей';
-    position: absolute;
-    right: 20px;
-    opacity: 0;
-    color: #723308;
-    font-size: 0.8em;
-    transition: opacity 0.3s ease;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.locations-list li:hover::after {
-    opacity: 1;
+/* Реакция текста на hover */
+.locations-list li:hover span {
+    transform: translateX(5px);
 }
 
 .guides-selection {
@@ -787,6 +799,7 @@ nav ul li a .basket-counter {
     display: flex;
     align-items: center;
     transition: all 0.3s;
+    cursor: pointer;
 }
 
 .guide-item:hover {
@@ -799,6 +812,12 @@ nav ul li a .basket-counter {
     width: 20px;
     height: 20px;
     accent-color: #723308;
+}
+
+.guide-item span {
+    font-size: 1.1rem;
+    color: #333;
+    flex-grow: 1;
 }
 
 .guide-item label {
@@ -1276,4 +1295,9 @@ nav ul li a .basket-counter {
 .carousel-dot.active {
     background: white;
     transform: scale(1.2);
+}
+
+.locations-list li {
+    padding: 15px 15px 15px 45px; /* Увеличиваем левый отступ */
+    position: relative;
 }
