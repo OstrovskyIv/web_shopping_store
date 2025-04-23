@@ -1012,3 +1012,115 @@ body.modal-open {
     padding: 30px;
     position: relative;
 }
+
+/* Полный редизайн модального окна экскурсий */
+.order-modal .modal-content {
+    background: #d4b08c;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+}
+
+.order-modal h2 {
+    font-size: 2.5rem;
+    color: #5a2806;
+    margin-bottom: 35px;
+    text-align: left;
+    position: relative;
+    padding-left: 60px;
+}
+
+.order-modal h2::before {
+    content: '🗺️';
+    position: absolute;
+    left: 0;
+    top: -5px;
+    font-size: 2.2rem;
+}
+
+.excursion-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px 40px;
+    margin: 30px 0;
+}
+
+.order-info-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(114, 51, 8, 0.08);
+    transition: transform 0.3s;
+}
+
+.order-info-item:hover {
+    transform: translateY(-3px);
+}
+
+.order-info-item strong {
+    font-size: 1.3rem;
+    color: #723308;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.order-info-item strong::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, #72330833, transparent);
+    margin-left: 15px;
+}
+
+.order-info-text {
+    font-size: 1.2rem;
+    color: #444;
+    line-height: 1.6;
+}
+
+.excursion-description {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.7;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    border-left: 4px solid #a08060;
+}
+
+.excursion-features {
+    columns: 2;
+    gap: 20px;
+    margin: 20px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.excursion-features li {
+    padding: 12px;
+    margin-bottom: 15px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    break-inside: avoid;
+    box-shadow: 0 3px 10px rgba(114, 51, 8, 0.05);
+}
+
+.excursion-features li::before {
+    content: '✔';
+    color: #5a2806;
+    margin-right: 12px;
+    font-size: 1.3rem;
+}
+
+.btn-cancel-excursion {
+    width: 100%;
+    padding: 18px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ff4444);
+    margin-top: 30px;
+}
