@@ -396,29 +396,35 @@ function showExcursionDetailsModal(excursion) {
             <span class="close-modal">&times;</span>
             <h2>${excursion.name || 'Экскурсия'}</h2>
             
-            <div class="order-info-grid">
+            <div class="order-info-grid excursion-grid">
                 <div class="order-info-item">
-                    <strong>Дата и время:</strong> 
+                    <strong>📅 Дата и время:</strong> 
                     <span class="order-info-text">${excursion.date || 'Не указана'} ${excursion.time || ''}</span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Статус:</strong> 
-                    <span class="order-status ${isPast ? 'status-past' : 'status-upcoming'}">
-                        ${isPast ? 'Завершена' : excursion.status || 'Забронировано'}
-                    </span>
+                    <strong>📌 Место сбора:</strong> 
+                    <span class="order-info-text">${excursion.location || 'Центральный вход в Хижину Чудес'}</span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Гид:</strong> 
+                    <strong>🕒 Продолжительность:</strong> 
+                    <span class="order-info-text">${excursion.duration || '2 часа'}</span>
+                </div>
+                <div class="order-info-item">
+                    <strong>📝 Описание:</strong> 
+                    <p class="excursion-description">${excursion.description || 'Описание отсутствует'}</p>
+                </div>
+                <div class="order-info-item">
+                    <strong>👨🏫 Гид:</strong> 
                     <span class="order-info-text">${excursion.guide || 'Не указан'}</span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Способ оплаты:</strong> 
+                    <strong>💳 Способ оплаты:</strong> 
                     <span class="order-info-text">
                         ${excursion.payment === 'card' ? 'Карта' : 'Наличные'}
                     </span>
                 </div>
                 <div class="order-info-item">
-                    <strong>Цена:</strong> 
+                    <strong>💰 Цена:</strong> 
                     <span class="order-info-text">${excursion.price || '0'} $</span>
                 </div>
             </div>
