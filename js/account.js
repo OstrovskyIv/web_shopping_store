@@ -410,8 +410,8 @@ function showExcursionDetailsModal(excursion) {
                     <span class="order-info-text">${excursion.duration || '2 часа'}</span>
                 </div>
                 <div class="order-info-item">
-                    <strong>📝 Описание:</strong> 
-                    <p class="excursion-description">${excursion.description || 'Описание отсутствует'}</p>
+                    <strong>📝 Оповещение:</strong> 
+                    <p class="excursion-description">${excursion.description || 'Оповещение при посещении экскурсии'}</p>
                 </div>
                 <div class="order-info-item">
                     <strong>👨🏫 Гид:</strong> 
