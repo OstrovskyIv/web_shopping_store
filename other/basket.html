@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Доставка</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/basket.css"/>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <img src="pictures/LoGo.png" alt="Логотип Хижины чудес" />
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="shop.html">Товары</a></li>
+                <li><a href="basket.html">Корзина</a></li>
+                <li><a href="account.html"><i class="fas fa-user"></i> Аккаунт</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="map-section">
+        <div class="delivery-header">
+            <h2>Ваша корзина</h2>
+        </div>
+<section class="basket-section">
+    <h2 class="section-title">Ваша корзина</h2>
+    <div class="basket-container">
+        <div class="basket-items" id="basketItems">
+            <div class="empty-basket-message">
+                <i class="fas fa-shopping-basket basket-icon"></i>
+                <p>Ваша корзина пуста</p>
+                <a href="shop.html" class="continue-shopping-btn">Продолжить покупки</a>
+            </div>
+        </div>
+        <div class="basket-summary">
+            <div class="summary-row">
+                <span>Товаров:</span>
+                <span id="totalQuantity">0</span>
+            </div>
+            <div class="summary-row">
+                <span>Общая сумма:</span>
+                <span id="totalPrice">0 $.</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn">Оформить заказ</button>
+        </div>
+    </div>
+</section>
+        <div class="delivery-header">
+            <h2>Вы нас точно не найдете</h2>
+            <p>поэтому оформите заказ онлайн</p>
+        </div>
+
+<div class="delivery-form-container">
+    <form class="delivery-form" id="deliveryForm">
+        <h2 class="order-title">Оформление заказа</h2>
+        
+        <div class="form-section">
+            <h3>Контактная информация</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Имя:</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Фамилия:</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Ваша фамилия" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">Телефон:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+375 (XX) XXX-XX-XX" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="example@mail.com" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Адрес доставки</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="country">Страна:</label>
+                    <input type="text" id="country" name="country" placeholder="Например: Беларусь" class="map-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">Город:</label>
+                    <input type="text" id="city" name="city" placeholder="Например: Минск" class="map-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="address">Адрес:</label>
+                    <input type="text" id="address" name="address" placeholder="Улица, дом, квартира" class="map-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="zip">Почтовый индекс:</label>
+                    <input type="text" id="zip" name="zip" placeholder="220000" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Способ оплаты</h3>
+            <div class="payment-methods">
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="card" checked>
+                    <div class="payment-content">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Банковская карта</span>
+                    </div>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="cash">
+                    <div class="payment-content">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Наличными при получении</span>
+                    </div>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="online">
+                    <div class="payment-content">
+                        <i class="fab fa-cc-paypal"></i>
+                        <span>Электронный платеж</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Комментарий к заказу</h3>
+            <div class="form-group">
+                <textarea id="comment" name="comment" placeholder="Ваши пожелания или примечания" rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Подтвердить заказ</button>
+        </div>
+    </form>
+</div>
+
+        <div class="map-container">
+            <div class="map-loader" id="mapLoader"></div>
+            <div id="map" style="width: 100%; height: 100%;"></div>
+        </div>
+    </section>
+
+    
+
+    <footer class="footer">
+        <p>&copy; Сайт создан для фанатов Gravity Falls и не связан с Disney</p>
+        <div class="social-icons">
+            <a href="https://t.me/Bambuk_lov" class="flip-cover-telegram" target="_blank">
+                <i class="fab fa-telegram"></i>
+            </a>
+            <a href="https://www.instagram.com/bamboo__o_o/" class="flip-cover-instagram" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://github.com/OstrovskyIv" class="flip-cover-github" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:ostrovskyiml@gmail.com" class="flip-cover-gmail" target="_blank">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://discord.gg/FqbDXtj6vb" class="flip-cover-discord" target="_blank">
+                <i class="fab fa-discord"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/basket.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой аккаунт | Хижина Чудес</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/account.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <img src="pictures/LoGo.png" alt="Логотип Хижины чудес">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="shop.html">Товары</a></li>
+                <li><a href="basket.html">Корзина</a></li>
+                <li><a href="account.html" class="active"><i class="fas fa-user"></i> Аккаунт</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="account-container">
+        <div id="userView" class="user-view">
+            <div class="profile-section">
+                <div class="profile-picture">
+                    <img id="userAvatar" src="pictures/default-avatar.jpg" alt="Аватар пользователя">
+                    <div class="avatar-actions">
+                        <button id="changeAvatarBtn" class="btn-avatar">
+                            <i class="fas fa-camera"></i> Изменить фото
+                        </button>
+                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+    
+                <div class="profile-info">
+                    <h2 class="profile-name">Иван Иванов</h2>
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-envelope"></i> Email:</span>
+                            <span class="detail-value" id="userEmail">iva*****@gmail.com</span>
+                            <button class="btn-show" data-field="email">Показать</button>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-phone"></i> Телефон:</span>
+                            <span class="detail-value" id="userPhone">+375 ** *** ** 67</span>
+                            <button class="btn-show" data-field="phone">Показать</button>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-shopping-bag"></i> Заказов:</span>
+                            <span class="detail-value" id="orderCount">0</span>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn-details">
+                            <i class="fas fa-info-circle"></i> Подробнее
+                        </button>
+                        <button class="btn-edit-profile">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                    </div>
+                    <div class="full-details" id="fullDetails" style="display: none;">
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-home"></i> Адрес:</span>
+                            <span class="detail-value" id="userAddress">Не указан</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-birthday-cake"></i> Дата рождения:</span>
+                            <span class="detail-value" id="userBirthday">Не указана</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="fas fa-user"></i> О себе:</span>
+                            <span class="detail-value" id="userAbout">Не указано</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <section class="orders-section">
+                <h2 class="section-title">
+                    <i class="fas fa-shopping-bag"></i> Мои заказы
+                </h2>
+                
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="all">Все заказы</button>
+                        <button class="tab-btn" data-tab="active">Активные</button>
+                        <button class="tab-btn" data-tab="completed">Завершенные</button>
+                    </div>
+                </div>
+                
+                <div class="orders-list" id="ordersList">
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>У вас пока нет заказов</p>
+                        <a href="shop.html" class="btn-shop">Перейти в магазин</a>
+                    </div>
+                </div>
+            </section>
+    
+            <section class="excursions-section">
+                <h2 class="section-title">
+                    <i class="fas fa-map-marked-alt"></i> Мои экскурсии
+                </h2>
+                
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="upcoming">Предстоящие</button>
+                        <button class="tab-btn" data-tab="past">Прошедшие</button>
+                    </div>
+                </div>
+                
+                <div class="excursions-list" id="excursionsList">
+                    <div class="empty-state">
+                        <i class="fas fa-binoculars"></i>
+                        <p>У вас нет активных экскурсий</p>
+                        <a href="shop.html#excursions" class="btn-shop">Посмотреть экскурсии</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; Сайт создан для фанатов Gravity Falls и не связан с Disney</p>
+        <div class="social-icons">
+            <a href="https://t.me/Bambuk_lov" class="flip-cover-telegram" target="_blank">
+                <i class="fab fa-telegram"></i>
+            </a>
+            <a href="https://www.instagram.com/bamboo__o_o/" class="flip-cover-instagram" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://github.com/OstrovskyIv" class="flip-cover-github" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:ostrovskyiml@gmail.com" class="flip-cover-gmail" target="_blank">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://discord.gg/FqbDXtj6vb" class="flip-cover-discord" target="_blank">
+                <i class="fab fa-discord"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/account.js"></script>
+</body>
+</html>
