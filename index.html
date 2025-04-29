@@ -1,174 +1,483 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Хижина Чудес | Gravity Falls</title>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Хижина чудес</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
-    <div id="app">
-        <!-- Хедер будет общим для всех страниц -->
-        <header>
-            <div class="logo">
-                <router-link to="/">
-                    <img src="pictures/LoGo.png" alt="Логотип Хижины чудес">
-                </router-link>
-            </div>
-            <nav>
-                <ul>
-                    <li><router-link to="/">Главная</router-link></li>
-                    <li><router-link to="/shop">Товары</router-link></li>
-                    <li><router-link to="/basket">Корзина</router-link></li>
-                    <li><router-link to="/account"><i class="fas fa-user"></i> Аккаунт</router-link></li>
-                </ul>
-            </nav>
-        </header>
+  <div id="preloader">
+    <div class="preloader-content">
+        <div class="loading-bar"></div>
+        <div class="question-mark">?</div>
+        <div class="question-mark-fill">?</div>
+    </div>
+</div>
 
-        <!-- Основное содержимое будет меняться в зависимости от маршрута -->
-        <main>
-            <router-view></router-view>
-        </main>
+  <header>
+    <div class="logo">
+      <a href="index.html"> 
+        <img src="pictures/LoGo.png" alt="Логотип Хижины чудес" />
+      </a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Главная</a></li> 
+        <li><a href="shop.html">Товары</a></li>
+        <li><a href="basket.html">Корзина</a></li>
+        <li><a href="account.html"><i class="fas fa-user"></i> Аккаунт</a></li>
+      </ul>
+    </nav>
+  </header>
 
-        <!-- Футер общий для всех страниц -->
-        <footer class="footer">
-            <p>&copy; Сайт создан для фанатов Gravity Falls и не связан с Disney</p>
-            <div class="social-icons">
-                <a href="https://t.me/Bambuk_lov" class="flip-cover-telegram" target="_blank">
-                    <i class="fab fa-telegram"></i>
-                </a>
-                <a href="https://www.instagram.com/bamboo__o_o/" class="flip-cover-instagram" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://github.com/OstrovskyIv" class="flip-cover-github" target="_blank">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="mailto:ostrovskyiml@gmail.com" class="flip-cover-gmail" target="_blank">
-                    <i class="fas fa-envelope"></i>
-                </a>
-                <a href="https://discord.gg/FqbDXtj6vb" class="flip-cover-discord" target="_blank">
-                    <i class="fab fa-discord"></i>
-                </a>
-            </div>
-        </footer>
-
-        <!-- Модальные окна -->
-        <div id="modal" class="modal" v-if="showModal">
-            <div class="modal-content">
-                <span class="close" @click="closeModal">&times;</span>
-                <p>{{ modalText }}</p>
-            </div>
-        </div>
-
-        <div id="registrationModal" class="modal" v-if="showRegistrationModal">
-            <div class="modal-content">
-                <span class="close" @click="closeRegistrationModal">&times;</span>
-                <h2>Регистрация:</h2>
-                <form id="registrationForm" @submit.prevent="register">
-                    <label for="username">Ваше имя:</label>
-                    <input type="text" id="username" v-model="registration.username" required>
-
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" v-model="registration.email" required>
-
-                    <label for="password">Пароль:</label>
-                    <input type="password" id="password" v-model="registration.password" required>
-
-                    <button type="submit">Зарегистрироваться</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="loginModal" class="modal" v-if="showLoginModal">
-            <div class="modal-content">
-                <span class="close" @click="closeLoginModal">&times;</span>
-                <h2>Вход:</h2>
-                <form id="loginForm" @submit.prevent="login">
-                    <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" v-model="loginData.email" required>
-
-                    <label for="loginPassword">Пароль:</label>
-                    <input type="password" id="loginPassword" v-model="loginData.password" required>
-
-                    <button type="submit">Войти</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="productModal" class="modal" v-if="showProductModal">
-            <div class="modal-content">
-                <span class="close" @click="closeProductModal">&times;</span>
-                <h2>{{ currentProduct.name }}</h2>
-                <img :src="currentProduct.image" :alt="currentProduct.name" class="modal-product-image">
-                <p class="modal-description">{{ currentProduct.description }}</p>
-                <p class="modal-price">{{ currentProduct.price }} $</p>
-                <button class="modal-order-btn" @click="addToCart(currentProduct)">В корзину</button>
-            </div>
-        </div>
-
-        <div class="modal-overlay" id="detailsModal" v-if="showExcursionDetailsModal">
-            <div class="details-modal">
-                <div class="details-modal-content">
-                    <div class="details-modal-header">
-                        <h2 class="details-modal-title">{{ currentExcursion.title }}</h2>
-                        <button class="close-modal-btn" @click="closeExcursionModal">&times;</button>
-                    </div>
-                    <div class="details-modal-body">
-                        <img :src="currentExcursion.photos[0]" :alt="currentExcursion.title" class="details-modal-image">
-                        <p class="details-modal-description">
-                            {{ currentExcursion.description }}
-                        </p>
-                        <div class="details-modal-features">
-                            <div class="feature-item">
-                                <i class="fas fa-clock feature-icon"></i>
-                                <span>Продолжительность: {{ currentExcursion.duration }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal-overlay" id="bookingModal" v-if="showBookingModal">
-            <div class="booking-modal">
-                <div class="booking-modal-content">
-                    <div class="booking-modal-header">
-                        <h2 class="booking-modal-title">Оформление экскурсии</h2>
-                    </div>
-                    <form id="bookingForm" @submit.prevent="bookExcursion">
-                        <div class="booking-form-group">
-                            <label for="bookingDate">Дата экскурсии:</label>
-                            <input type="date" id="bookingDate" v-model="booking.date" required>
-                        </div>
-                        <div class="booking-form-group">
-                            <label for="bookingTime">Время:</label>
-                            <input type="time" id="bookingTime" v-model="booking.time" required>
-                        </div>
-                        <div class="booking-form-group">
-                            <label for="bookingPeople">Количество человек:</label>
-                            <input type="number" id="bookingPeople" v-model="booking.people" min="1" required>
-                        </div>
-                        <div class="booking-form-actions">
-                            <button type="submit" class="booking-submit-btn">Забронировать</button>
-                            <button type="button" class="booking-cancel-btn" @click="closeBookingModal">Отмена</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+  <main>
+    <div class="backSharck">
+      <img src="pictures/backSharck.png" alt="Фоновое изображение Хижины чудес" />
+      <div class="welcome-message day-mode">Добро пожаловать в Хижину чудес! Здесь вы найдете самые загадочные и мистические товары.</div>
+      <div class="welcome-message night-mode">Приветствую, странник! Ты попал в мир, где реальность переплетается с тайнами. Готов ли ты к приключениям?</div>
     </div>
 
-    <!-- Подключаем Vue и Vue Router -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/vue-router@4"></script>
-    
-    <!-- Подключаем наши скрипты -->
-    <script src="js/app.js"></script>
-    <script src="js/components/Home.vue"></script>
-    <script src="js/components/Shop.vue"></script>
-    <script src="js/components/Basket.vue"></script>
-    <script src="js/components/Account.vue"></script>
+    <section id="aboutText">
+      <h1>Добро пожаловать в Хижину чудес</h1>
+    </section>
+
+    <div class="about-section">
+      <div class="leftSharck">
+        <img src="pictures/famPains.png" alt="Семья Пайнс" />
+      </div>
+
+      <div class="text-and-buttons">
+        <section id="aboutText">
+          <h2>О Хижине чудес</h2>
+          <div id="mainText">
+            <p><strong>Добро пожаловать в Хижину чудес — место, где реальность переплетается с тайнами, а каждый предмет
+                хранит свою историю.</strong></p>
+            <p>Здесь, среди скрипучих половиц и шепчущих стен, вы найдете не просто товары, а настоящие артефакты.
+              Загадочные книги, наполненные древними знаниями, кристаллы, мерцающие неведомой энергией, и карты, ведущие
+              туда, куда не ступала нога обычного человека.</p>
+            <p>Хижина чудес спрятана в самом сердце Гравити Фолз, и те, кто осмелится войти, уже не выйдут прежними. Что
+              вас ждет за прилавком? Мистика? Открытия? А, может, что-то, о чем лучше не знать?</p>
+            <p>Но одно можно сказать наверняка — скучно не будет. Готовы ли вы раскрыть тайны, скрытые в тени? Тогда
+              шагните вперед… если осмелитесь.</p>
+          </div>
+        </section>
+
+        <div class="buttons">
+          <button onclick="setDayMode()">День</button>
+          <button id="nightButton" onclick="setNightMode()">Ночь</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <section class="product-section">
+      <h2>Популярные сувениры</h2>
+      <div class="carousel">
+        <button class="carousel-button prev" onclick="moveCarousel(-1)">&#10094;</button>
+        <div class="carousel-container">
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/eyeballs.png" alt="Глазные яблоки" />
+              </div>
+              <div class="product-info">
+                <h3>Глазные яблоки</h3>
+                <p class="price">14.99 $</p>
+                <p class="description">
+                  Эти глаза смотрят прямо в душу (и кошелёк)!
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/nightImage.jpg" alt="Мороженое" />
+              </div>
+              <div class="product-info">
+                <h3>Мороженое "Сюрприз"</h3>
+                <p class="price">1.99 $</p>
+                <p class="description">
+                  Вкуснейшее мороженое ручной работы с самыми загадочными вкусами.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/wendyFace.png" alt="Брелоки" />
+              </div>
+              <div class="product-info">
+                <h3>Брелки</h3>
+                <p class="price">12.99 $</p>
+                <p class="description">
+                  Коллекция данных брелков всегда будет вам напоминать о нашей хижине.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="product">
+              <div class="product-image">
+                <img src="pictures/stanlyFace.png" alt="Журналы" />
+              </div>
+              <div class="product-info">
+                <h3>Журналы "Для ванной"</h3>
+                <p class="price">5.99 $</p>
+                <p class="description">
+                  Коллекция от модных тенденций 1920-х до рецептов сомнительных зелий! 
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-button next" onclick="moveCarousel(1)">&#10095;</button>
+      </div>
+    </section>
+
+    <section class="exhibits-section ancient-scroll-theme">
+      <h2 class="section-title">Таинственные экспонаты</h2>
+      
+      <!-- Древнее письмо -->
+      <div class="letter-container">
+        <div class="ancient-letter">
+          <div class="letter-content">
+            <p class="letter-text">Только для избранных...</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="discovery-interface">
+        <button id="discoveryBtn" class="discovery-btn">
+          <i class="fas fa-scroll"></i>
+          <span class="btn-tooltip">Развернуть древние свитки</span>
+        </button>
+        
+        <div class="discovery-animation">
+          <div class="animation-path"></div>
+          <div class="animation-sphere"></div>
+        </div>
+      </div>
+      
+      <div class="exhibits-wrapper">
+        <div class="exhibit" data-index="1">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-crystal" style="margin-right: 10px;"></i>Камень, похожий на лицо</h3>
+              <p>Уникальный камень с естественным узором, напоминающим человеческое лицо. Найден в карьере близ Гравити Фолз. Геологи не могут объяснить природу этого сходства. Посетители утверждают, что выражение "лица" меняется в зависимости от угла обзора.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-history"></i> Происхождение: природное образование</span>
+                <span><i class="fas fa-calendar-alt"></i> Обнаружен: 1982 год</span>
+                <span><i class="fas fa-eye"></i> Особенность: меняющееся выражение</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit1.jpg" alt="Камень с лицом" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="2">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-user-secret" style="margin-right: 10px;"></i>Невидимый человек</h3>
+              <p>Загадочный экспонат - пустое пространство в форме человеческой фигуры, сохраняющее очертания даже при движении. Температура в этой области всегда на 10°C ниже окружающей среды. Некоторые посетители сообщают о тактильных ощущениях при приближении.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-ruler-combined"></i> Размер: 180 см</span>
+                <span><i class="fas fa-temperature-low"></i> Температура: +15°C</span>
+                <span><i class="fas fa-question"></i> Природа: неизвестна</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit2.jpg" alt="Невидимый человек" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="3">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-pastafarianism" style="margin-right: 10px;"></i>Двухголовая фея</h3>
+              <p>Уникальное чучело мифического существа с двумя головами. Каждая голова выражает противоположные эмоции. Согласно легендам, такие феи исполняли желания, но всегда с неожиданными последствиями. Биологи не могут определить видовую принадлежность.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-dna"></i> Вид: неизвестен</span>
+                <span><i class="fas fa-magic"></i> Легенда: исполнение желаний</span>
+                <span><i class="fas fa-exclamation-triangle"></i> Особенность: противоречивые эмоции</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit3.jpg" alt="Двухголовая фея" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="4">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-magic" style="margin-right: 10px;"></i>Таинственный мешок волшебства</h3>
+              <p>Старинный холщовый мешок, который, согласно легендам, принадлежал бродячему магу. Несмотря на небольшие размеры, в него невозможно поместить больше трех предметов - новые просто "не помещаются". При встряхивании всегда издает звук, будто внутри что-то есть.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-weight-hanging"></i> Вес: всегда 300 г</span>
+                <span><i class="fas fa-list-ol"></i> Вместимость: максимум 3 предмета</span>
+                <span><i class="fas fa-theater-masks"></i> Происхождение: цирковой артефакт</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit4.jpg" alt="Мешок волшебства" class="exhibit-img">
+          </div>
+        </div>
+        
+        <div class="exhibit" data-index="5">
+          <div class="exhibit-content">
+            <div class="exhibit-info">
+              <h3><i class="fas fa-eye" style="margin-right: 10px;"></i>Самый завораживающий объект в мире</h3>
+              <p>Гипнотический спиральный диск, при взгляде на который 98% людей впадают в состояние транса. Вращается без видимого источника энергии. Ученые предупреждают: не смотреть более 30 секунд подряд. Известны случаи временной потери памяти после длительного наблюдения.</p>
+              <div class="exhibit-meta">
+                <span><i class="fas fa-stopwatch"></i> Безопасное время: 30 сек</span>
+                <span><i class="fas fa-bolt"></i> Энергия: неизвестного типа</span>
+                <span><i class="fas fa-brain"></i> Эффект: гипнотический транс</span>
+              </div>
+            </div>
+            <img src="pictures/exhibit5.jpg" alt="Гипнотический диск" class="exhibit-img">
+          </div>
+        </div>
+      </div>
+    </section>
+  
+
+    <section class="employee-section">
+      <h2>Наши сотрудники</h2>
+      <div class="employee-container">
+        <!-- Владелец магазина -->
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/StanFace.png" alt="Сотрудник-Стэнли" />
+          </div>
+          <div class="employee-info">
+            <h3>Владелец магазина Стэнли Пайнс</h3>
+            <p class="description">
+              Стэнли — хитрый и жадный, но в душе добряк.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+
+        <!-- Сотрудники -->
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/wendyFace.png" alt="Сотрудник-Венди" />
+          </div>
+          <div class="employee-info">
+            <h3>Старший сотрудник Венди Кордрой</h3>
+            <p class="description">
+              Венди — крутая, саркастичная, но всегда готовая помочь.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/zooseFace.png" alt="Сотрудник-Зус" />
+          </div>
+          <div class="employee-info">
+            <h3>Главный помощник Зус Рамирес</h3>
+            <p class="description">
+              Зус — добрый, наивный и преданный друг.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/DipperFace.png" alt="Сотрудник-Диппер" />
+          </div>
+          <div class="employee-info">
+            <h3>Младший сотрудник Диппер Пайнс</h3>
+            <p class="description">
+              Диппер - зануда, так что лучше ничего у него не спрашивайте.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/MabelFace.png" alt="Сотрудник-Мэйбл" />
+          </div>
+          <div class="employee-info">
+            <h3>Младший сотрудник Мэйбл Пайнс</h3>
+            <p class="description">
+              Мэйбл — энергичная, весёлая и немного хаотичная.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+
+        <!-- Временные сотрудники -->
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/StanfordFace.png" alt="Сотрудник-Стэнфорд" />
+          </div>
+          <div class="employee-info">
+            <h3>Владелец хижины Стэнфорд Пайнс</h3>
+            <p class="description">
+              Стэнфорд — гениальный, но загадочный учёный.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+
+        <div class="employee">
+          <div class="employee-image">
+            <img src="pictures/Puhla.png" alt="Сотрудник-Пухля" />
+          </div>
+          <div class="employee-info">
+            <h3>Временный сотрудник Пухля</h3>
+            <p class="description">
+              Пухля — милая, преданная и неожиданно умная свинка.
+            </p>
+            <button class="contact-button">Контакты</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="registration-section">
+      <h2 id="discount-text">Получи скидку в 0% за регистрацию!</h2>
+      <p id="uncle-story-text">А также историю от Дяди Стэна!</p>
+      <button onclick="register()">Зарегистрироваться</button>
+      <button onclick="login()">Войти</button>
+    </section>
+
+    <section class="map">
+      <div class="map-header">
+        <h2 class="day-title">Тайные координаты Хижины</h2>
+        <h2 class="night-title">Давай заключим сделку, гений!</h2>
+        <div class="map-subtitle day-subtitle">Где реальность искажается...</div>
+        <div class="map-subtitle night-subtitle">Я покажу тебе путь, если ты покажешь мне душу...</div>
+      </div>
+      
+      <div class="map-container">
+        <div class="map-frame">
+          <div style="position: relative; overflow: hidden; width: 100%; height: 100%;">
+            <iframe src="https://yandex.by/map-widget/v1/?from=mapframe&l=sat%2Cskl&ll=-107.045527%2C29.239074&z=2" 
+                    width="100%" height="500" frameborder="0" allowfullscreen="true" style="position: relative;"></iframe>
+          </div>
+          
+          <div class="map-overlay night-only"></div>
+
+        </div>
+        
+        <div class="map-notes day-only">
+          <div class="note note-left">
+            <h3>Подсказка от Стэна</h3>
+            <p>"Ищите старый дуб с вырезанным глазом - там поворот на нашу дорогу."</p>
+          </div>
+          <div class="note note-right">
+            <h3>Координаты</h3>
+            <p>46°45' N<br>122°45' W</p>
+            <div class="compass">
+              <i class="fas fa-compass"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-notes night-only">
+          <div class="note note-left">
+            <h3>Шепот Теней</h3>
+            <p>"Ищи врата там, где время течёт вспять, а камни поют..."</p>
+          </div>
+          <div class="note note-right">
+            <h3>Истинные координаты</h3>
+            <p>∞°∞' N<br>∞°∞' W</p>
+            <div class="compass">
+              <i class="fas fa-eye"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="map-riddle day-only">
+          <p>Карта показывает, но не рассказывает. Приходите после заката.</p>
+        </div>
+        
+        <div class="map-riddle night-only">
+          <p>Ты нашел то, что искал? Или это нашло тебя?</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>&copy; Сайт создан для фанатов Gravity Falls и не связан с Disney</p>
+    <div class="social-icons">
+      <a href="https://t.me/Bambuk_lov" class="flip-cover-telegram" target="_blank">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="https://www.instagram.com/bamboo__o_o/" class="flip-cover-instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://github.com/OstrovskyIv" class="flip-cover-github" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="mailto:ostrovskyiml@gmail.com" class="flip-cover-gmail" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a href="https://discord.gg/FqbDXtj6vb" class="flip-cover-discord" target="_blank">
+        <i class="fab fa-discord"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- Модальное окно для каждого из персонажей -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modal-text"></p>
+    </div>
+  </div>
+
+  <!-- Модальное окно для регистрации -->
+  <div id="registrationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeRegistrationModal()">&times;</span>
+      <h2>Регистрация:</h2>
+      <form id="registrationForm">
+        <label for="username">Ваше имя:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Зарегистрироваться</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно для входа -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>Вход:</h2>
+      <form id="loginForm">
+        <label for="loginEmail">Email:</label>
+        <input type="email" id="loginEmail" name="email" required>
+
+        <label for="loginPassword">Пароль:</label>
+        <input type="password" id="loginPassword" name="password" required>
+
+        <button type="submit">Войти</button>
+      </form>
+    </div>
+  </div>
+
+
+  <script src="js/script.js"></script>
 </body>
+
 </html>
