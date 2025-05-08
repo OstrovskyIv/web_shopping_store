@@ -1,0 +1,13 @@
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Конфиги редакторов и инструментов
+.vscode/
+.bito/
+.docker/
+.crossnote/
+*.json
+*.lock
+*.seed
+*.cache
