@@ -1717,7 +1717,6 @@ nav ul li a .basket-counter {
   transform: translateY(0);
   opacity: 1;
 }
-/* ... предыдущие стили ... */
 
 /* Мобильные устройства (до 768px) */
 @media (max-width: 768px) {
@@ -1913,4 +1912,101 @@ img {
 .letter-text {
   word-wrap: break-word;
   hyphens: auto;
+}
+
+/* Стили для блока с подсказкой и координатами */
+.map-notes,
+.map-riddle {
+  position: relative;
+  width: 90%;
+  margin: 20px auto;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.coordinates {
+  font-size: 1.2rem;
+  word-break: break-all;
+  padding: 10px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+  .map-notes,
+  .map-riddle {
+    width: 95%;
+    padding: 10px;
+    margin: 15px auto;
+  }
+
+  .coordinates {
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 8px;
+  }
+
+  .note {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .note h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .note p {
+    font-size: 0.9rem;
+  }
+
+  .map-riddle {
+    font-size: 1rem;
+  }
+}
+
+/* Планшеты */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .coordinates {
+    font-size: 1.1rem;
+  }
+
+  .note {
+    padding: 20px;
+  }
+
+  .map-riddle {
+    font-size: 1.2rem;
+  }
+}
+
+/* Горизонтальная ориентация */
+@media (max-height: 500px) and (min-width: 768px) {
+  .map-notes {
+    flex-wrap: wrap;
+  }
+  
+  .note {
+    flex: 1 1 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 360px) {
+  .coordinates {
+    font-size: 0.8rem;
+    padding: 5px;
+  }
+
+  .map-riddle {
+    font-size: 0.9rem;
+  }
+}
+
+/* Фикс для длинных координат */
+.compass {
+  overflow-wrap: anywhere;
+  hyphens: manual;
 }
